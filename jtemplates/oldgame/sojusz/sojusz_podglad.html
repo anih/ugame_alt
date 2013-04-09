@@ -1,0 +1,42 @@
+{% include 'game/simple_header.html' %}
+{% include 'game/topnav.html' %}
+
+
+<center>
+<table align=center width="650"><tr align=center><td>
+  
+  <table width="100%"><tr><td class="c" align="center">Sojusz</td></tr></table>
+  
+
+  
+  <table border="0" cellpadding="2" cellspacing="3" style="padding:5px"  width="100%">
+  	
+  <tr><td class="c" align="center">Nazwa:</td><td align="center" class="l"><strong>{{ sojusz.nazwa|e }}</strong></td></tr>
+  
+ 	{% if sojusz.avatar %}
+		<tr><td align="center" class="c" colspan="2"><strong>Avatar:</strong></td></tr>
+  		<tr><th align="center" colspan="2"><img title="{{sojusz.avatar}}" src="/media/{{ sojusz.avatar|thumbnail|e }}"></th></tr>
+	{% endif %}
+  
+  {% if sojusz.profil %}
+  	<tr><td align="center" class="c" colspan="2"><strong>Profil:</strong></td></tr>
+	<tr><th align="center" colspan="2">{{ sojusz.profil|e|bbcodes|linebreaks }}</th></tr>
+  {% endif %}
+  
+  
+  </table>
+  {% if czlonkowie %}
+  <table border="0" cellpadding="2" cellspacing="1">
+  <tr><td align="center" class="c" colspan=2><strong>Członkowie sojuszu:</strong></td></tr>
+  {% for c in czlonkowie %}
+  <tr>
+  	<th>{{ loop.index|e }}</th>
+	<th>{{ c.user.username|e }}</th>
+  </tr>
+  {% endfor %}
+  </table>
+  {% endif %}
+
+</td></tr></table>
+
+{% include 'game/simple_footer.html' %}

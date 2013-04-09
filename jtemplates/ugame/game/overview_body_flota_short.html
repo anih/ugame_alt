@@ -1,0 +1,15 @@
+<table width="519" border="0" cellpadding="0" cellspacing="1">
+{% if floty_own %}
+	<tr height="20" align="center">
+		<td class="c">Floty własne:</td>
+		<td class="f">{{ floty_own|e }}</td>
+	</tr>
+{% endif %}
+
+{% if floty_obce %}
+	<tr height="20" align="center">
+		<td class="c">Floty obce:</td>
+		<td class="f">{{ floty_obce|e }}</td>
+	</tr>
+{% endif %}
+</table>

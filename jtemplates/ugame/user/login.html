@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<form method="post" action="{% if next %}?next={{ next|e }}{% endif %}">
+<table class="ramkaTab" border="0" align=center width="770">
+    <tr>
+        <td width="250" align="right">
+            Login:
+        </td>
+        <td align="left">
+            <input type=text name=username />
+        </td>
+    </tr>
+    <tr>
+        <td align="right">
+            Hasło:
+        </td>
+        <td align="left">
+            <input type=password name=password value=""/>
+        </td>
+    </tr>
+    <tr>
+        <td align="right">
+            &nbsp;
+        </td>
+        <td align="left">
+            <input type=submit name=log value="Zaloguj" />
+        </td>
+    </tr>
+    <tr>
+    	<td align="right">
+            &nbsp;
+        </td>
+    	<td align="left">
+    		Jeśli nie posiadasz konta możesz je założyć <a href="/accounts/register/">tutaj</a>.
+    	</td>
+    </tr>
+</table>
+</form>
+
+
+{% endblock %}

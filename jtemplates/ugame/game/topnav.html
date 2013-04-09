@@ -1,0 +1,94 @@
+
+<table>
+<tr>
+	<td>
+	<center>
+	<table>
+	<tr>
+	<td align="center">
+		<img src="/media/planeten/small/s_{{ topnav.image|e }}.jpg" height="50" width="50">
+		<br>Zostało {{ topnav.cp.powierzchnia_max|sub(topnav.cp.powierzchnia_zajeta)|e }} p.
+	</td>
+	<td align=center>
+	<select size="1" onChange="eval('location=\''+this.options[this.selectedIndex].value+'\'');">
+	<!-- pequeńo loop para agregar todos los planetas disponibles del mismo jugador... -->
+	{% for p in topnav.plist %}
+	<option value="?cp={{ p.pl.id|e }}" {% if p.selected %}selected{% endif %}>{{ p.pl.name|e }} [{{ p.pl.galaxy.galaxy|e }}:{{ p.pl.galaxy.system|e }}:{{ p.pl.galaxy.field|e }}]</option>
+	{% endfor %}
+	</select>
+	<p>{% if topnav.prevp %}<a href="?cp={{ topnav.prevp.pk|e }}">&lt;&lt;&lt;</a>&nbsp;&nbsp;&nbsp;{% endif %}{% if topnav.nextp %}<a href="?cp={{ topnav.nextp.pk|e }}">&gt;&gt;&gt;</a>{% endif %}</span>
+	</td>
+	</tr>
+	</table>
+	</center>
+	</td>
+
+	<td>
+	<table border="0" cellpadding="0" cellspacing="0" width="100%">
+	<tr>
+	<td align="center"></td>
+	<td align="center" width="85"><img src="/media/images/metall.gif" title="{{ topnav.cp.metal_perhour|e }}/h" border="0" height="22" width="42"></td>
+	<td align="center" width="85"><img src="/media/images/kristall.gif" title="{{ topnav.cp.crystal_perhour|e }}/h" border="0" height="22" width="42"></td>
+	<td align="center" width="85"><img src="/media/images/deuterium.gif" title="{{ topnav.cp.deuter_perhour|e }}/h" border="0" height="22" width="42"></td>
+	<td align="center" width="85"><img src="/media/images/energie.gif"  border="0" height="22" width="42"></td>
+	<td align="center"></td>
+	</tr>
+	<tr>
+	<td align="center"><i><b>&nbsp;&nbsp;</b></i></td>
+	<td align="center" width="85"><i><b style="color: rgb(173, 174, 173);">Metal</b></i></td>
+	<td align="center" width="85"><i><b style="color: rgb(239, 81, 239);">Kryształ</b></i></td>
+	<td align="center" width="85"><i><b style="color: rgb(247, 117, 66);">Deuter</b></i></td>
+	<td align="center" width="85"><i><b style="color: rgb(156, 113, 198);">Energia</b></i></td>
+	<td align="center"><i><b>&nbsp;&nbsp;</b></i></td>
+	</tr>
+	<tr>
+	<td align="center"></td>
+	
+	<td align="center" width="85" style="color:{{ topnav.metal_color|e }}">{{ topnav.cp.metal|make_int|intcomma|e }}</td>
+	<td align="center" width="85" style="color:{{ topnav.crystal_color|e }}">{{ topnav.cp.crystal|make_int|intcomma|e }}</td>
+	<td align="center" width="85" style="color:{{ topnav.deuter_color|e }}">{{ topnav.cp.deuter|make_int|intcomma|e }}</td>
+	<td align="center" width="85" style="color:{{ topnav.energy_color|e }}">{{ topnav.cp.energy_used|make_int|intcomma|e }}/{{ topnav.cp.energy_max|make_int|intcomma|e }}</td>
+	<td align="center"></td>
+	</tr>
+	</table>
+	</td>
+
+	<td>
+	<table border="0" cellpadding="0" cellspacing="0" width="100%">
+		<tr><td align="center">ID planety:{{ topnav.cp.pk|e }}</td></tr>
+	<tr><td align="center">Online(10 minut): {{ topnav.users_online|e }}</td></tr>
+	
+	<tr><td align="center">Czas serwera</td></tr>
+	<tr><td align="center"><div id=czas_serwera></div>
+	<script type="text/javascript" language="JavaScript">
+	czas = {{ topnav.czas_serwera|e }};
+	czas_serwera();
+	</script>
+	</td></tr>
+	</table>
+	</td>
+</tr>
+</table>
+
+<table width="750">
+	<tr>
+		<td align="center">
+{% if topnav.new_message %}
+<table>
+<tr><td align="center" class="f" style="width:400px;height:30px">
+<a href="/game/messages/" style="color:red;font-size: 10pt;font-weight: bold;">Masz {{ topnav.new_message|e }} wiadomo{% if topnav.new_message != 1 %}ści{% else %}ść{% endif %}</a>
+</td></tr>
+</table>
+{% endif %}
+
+{% if topnav.nowe_raporty %}
+<table>
+<tr><td align="center" class="f" style="width:400px;height:30px">
+<a href="/game/raporty/" style="color:red;font-size: 10pt;font-weight: bold;">Masz {{ topnav.nowe_raporty|e }} {% if topnav.nowe_raporty != 1 %}nowe raporty{% else %}nowy raport{% endif %}</a>
+</td></tr>
+</table>
+{% endif %}
+
+		</td>
+	</tr>
+</table>

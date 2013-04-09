@@ -1,0 +1,85 @@
+{% extends this.application+'/base.html' %}
+{% block content %}
+{% include this.application+'/game/topnav.html' %}
+
+{% include this.application+'/fleet/fleets_in_move.html' %}
+
+<table width="519" border="0" cellpadding="0" cellspacing="1">
+<tr height="20">
+<th>Nazwa statku</th>
+<th>Liczba</th>
+</tr>
+{% for s in dostepne_statki %}
+<tr height="20">
+<th><a title="Predkość: {{ s.speed|e }}">{{ s.budynek.nazwa|e }}</a></th>
+<th>{{ s.ilosc|e }}</th>
+</tr>
+{% endfor %}
+</table>
+
+<form action="/game/fleet/" method="post">
+<table width="519" border="0" cellpadding="0" cellspacing="1">
+<tr height="20"><td colspan="3" class="c">Wyślij flote</td></tr>
+<tr height="20">
+	<th>
+		Galaktyka:<input type="text" name="g" style="text-align:center;width:30px">
+		System:<input type="text" name="s" style="text-align:center;width:30px">
+		Planeta:<input type="text" name="p" style="text-align:center;width:30px">
+	</th>
+	<th>
+		<select name="typ">
+			<option value="a">atak</option>
+			<option value="k">kolonizuj</option>
+			<option value="p">prześlij</option>
+			<option value="t">transport</option>
+			<option value="z">złom</option>
+			<option value="s">szpieg</option>
+		</select>
+	</th>
+	<th>
+		<input type="submit" value="Wyślij">
+	</th>
+</tr>
+</table>
+</form>
+
+<table width="519" border="0" cellpadding="0" cellspacing="1">
+	<tr height="20"><td colspan="4" class="c">Fast Fleet</td></tr>
+	<tr height="20">
+		<th>Planeta</th>
+		<th>Gracz</th>
+		<th>Akcja</th>
+		<th>-</th>
+	</tr>
+	{% if fast_fleet %}
+	{% for p in fast_fleet %}
+	<tr height="20">
+		<th>{{ p.name|e }} [{{ p.galaxy.galaxy|e }}:{{ p.galaxy.system|e }}:{{ p.galaxy.field|e }}]</th>
+		<th><a href="/game/usr/{{ p.owner.pk|e }}/">{{ p.owner.username|e }}</a></th>
+		<th>
+			<a href="/game/fs/atak/?g={{ p.galaxy.galaxy|e }}&s={{ p.galaxy.system|e }}&p={{ p.galaxy.field|e }}" class="guzik2">a</a>
+			<a href="/game/fs/surowce/?g={{ p.galaxy.galaxy|e }}&s={{ p.galaxy.system|e }}&p={{ p.galaxy.field|e }}" class="guzik2">t</a>
+			<a href="/game/fs/zlom/?g={{ p.galaxy.galaxy|e }}&s={{ p.galaxy.system|e }}&p={{ p.galaxy.field|e }}" class="guzik2">z</a>
+			<a href="/game/fs/spy/?g={{ p.galaxy.galaxy|e }}&s={{ p.galaxy.system|e }}&p={{ p.galaxy.field|e }}" class="guzik2">s</a>
+		</th>
+		<th><a href="/game/fleet/?fast_fleet_del={{ p.pk|e }}" class="guzik2">usuń</a></th>
+	</tr>
+	{% endfor %}
+	<tr height="20"><th colspan="4">
+		Strony:
+		{% for p in paginator.page_range %}
+		<a href="/game/fleet/?page={{ p|e }}" class="guzik2">{{ p|e }}</a>
+		{% endfor %}
+	</th></tr>
+	{% else %}
+	<tr height="20"><th colspan="4">Lista planet jest pusta</th></tr>
+	{% endif %}
+</table>
+
+<table width="519" border="0" cellpadding="0" cellspacing="1">
+	<tr height="20"><th>W galaktyce jest zielony przycisk dodający flote do Fast Fleet, przyciski w akcji oznaczają: a=atak, t=transport i z=złom
+	<br>po naciśnięciu zostaniecie przeniesieni do wyboru floty jaką chcecie wysłać</th></tr>
+
+
+
+{% endblock %}

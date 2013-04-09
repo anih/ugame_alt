@@ -1,0 +1,518 @@
+# -*- coding: utf-8 -*-
+from __future__ import division
+from math import floor,ceil
+from string import split
+from random import uniform
+import copy
+
+from django.template.loader import render_to_string
+
+from game.models import *
+from game.funkcje import lock_user_cron
+from game.cron_fun import helpers,raporty_fun
+from settings import GAME_SPEED,RES_SPEED,MNOZNIK_MAGAZYNOW,ILOSC_PLANET
+
+class Output():pass
+
+class FleetAtak():
+
+	def flota_atak_alien(self,flota,czas_teraz):
+		req_alien = Output()
+		req_alien.user=flota.fleet_owner
+		from game.klasy.BaseGame import BaseGame
+		GraAlienObj=BaseGame(req_alien,czas_teraz=flota.time,cron=False)
+		
+		obronca = self
+		agresor=GraAlienObj
+		
+		planeta_new = self.walka(flota,GraAlienObj,self)
+		
+		GraAlienObj.save_all()
+		
+		return True
+			
+
+
+
+	def flota_atak(self,flota,czas_teraz):
+		req_alien = Output()
+		req_alien.user=flota.galaxy_end.planet.owner
+		print "atakkk-----------------------------------------------------------"
+		from game.klasy.BaseGame import BaseGame
+		GraAlienObj=BaseGame(req_alien,czas_teraz=flota.time,cron=False)
+		GraAlienObj.cron_function(flota.galaxy_end.planet_id,flota.time-1)
+		
+		
+		"""
+		tutaj user jest obronca!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		"""
+		planeta_new = self.walka(flota,self,GraAlienObj)
+		
+		GraAlienObj.save_all()
+		
+		return True
+			
+	
+	def get_agresor_statki(self,flota_array):
+		agresor_statki_tmp = split(flota_array,";")
+		agresor_statki = {}
+		agresor_zlom_poczatek = {"met":0,"cry":0}
+		
+		for i in agresor_statki_tmp:
+			tmp = split(i,",")
+			statek = Flota.objects.get(pk=tmp[0])
+			ilosc = int(tmp[1])
+			agresor_statki[statek.pk]={"statek":statek,"ilosc":ilosc,"typ":"f"}
+			agresor_zlom_poczatek['met']+=ilosc* statek.c_met
+			agresor_zlom_poczatek['cry']+=ilosc* statek.c_cry
+		return agresor_statki,agresor_zlom_poczatek
+			
+	def get_obronca_obrona(self,GraObj,obronca_planeta):
+		obronca_obrona_tmp = obronca_planeta.obrona_p_set.values_list("budynek_id",flat=True).select_for_update().filter(ilosc__gt=0)
+		obronca_statki = {}
+		obronca_zlom_obrona_poczatek = {"met":0,"cry":0}
+		for i in obronca_obrona_tmp:
+			obrona_p_obj = GraObj.cache_obj.get_obrona_p(obronca_planeta.pk,i)
+			obronca_statki[i]={"statek":obrona_p_obj.budynek,"ilosc":obrona_p_obj.ilosc,"typ":"o"}
+			ilosc = int(obrona_p_obj.ilosc)
+			obronca_zlom_obrona_poczatek['met']+=ilosc*obrona_p_obj.budynek.c_met
+			obronca_zlom_obrona_poczatek['cry']+=ilosc*obrona_p_obj.budynek.c_cry
+		return obronca_statki,obronca_zlom_obrona_poczatek
+	
+			
+	def get_obronca_statki(self,GraObj,obronca_planeta):
+		obronca_statki_tmp = obronca_planeta.flota_p_set.values_list("budynek_id",flat=True).select_for_update().filter(ilosc__gt=0)
+		obronca_statki = {}
+		obronca_zlom_poczatek = {"met":0,"cry":0}
+		
+		for i in obronca_statki_tmp:
+			obrona_p_obj = GraObj.cache_obj.get_flota_p(obronca_planeta.pk,i)
+			obronca_statki[i]={"statek":obrona_p_obj.budynek,"ilosc":obrona_p_obj.ilosc,"typ":"f"}
+			ilosc = int(obrona_p_obj.ilosc)
+			obronca_zlom_poczatek['met']+=ilosc*obrona_p_obj.budynek.c_met
+			obronca_zlom_poczatek['cry']+=ilosc*obrona_p_obj.budynek.c_cry
+			
+		return obronca_statki,obronca_zlom_poczatek
+	
+	def get_technologie(self,user,dane):
+		try:dane.military_tech = user.badania_p_set.get(badanie__atak=1).level
+		except:dane.military_tech=0
+		try:dane.defence_tech = user.badania_p_set.get(badanie__ochrona=1).level
+		except:dane.defence_tech=0
+		try:dane.shield_tech = user.badania_p_set.get(badanie__pancerz=1).level
+		except:dane.shield_tech=0
+		try:dane.spy_tech = user.badania_p_set.get(badanie__szpieg=1).level
+		except:dane.spy_tech=0
+		
+	def walka(self,flota_atak,agresor,obronca):
+		
+		obronca_galaktyka = obronca.get_galaxy(flota_atak.galaxy_end_id)
+		obronca_planeta = obronca.get_planet(obronca_galaktyka.planet_id)
+		
+		agresor_galaktyka = agresor.get_galaxy(flota_atak.galaxy_start_id)
+		agresor_planeta = agresor.get_planet(agresor_galaktyka.planet_id)
+		
+		
+		agresor_dane = Output()	
+		self.get_technologie(agresor.user,agresor_dane)
+	
+		agresor_statki,agresor_zlom_poczatek = self.get_agresor_statki(flota_atak.fleet_array)
+		
+		obronca_dane = Output()
+		self.get_technologie(obronca.user,obronca_dane)
+			
+		obronca_statki,obronca_zlom_poczatek = self.get_obronca_statki(obronca,obronca_planeta)
+		obronca_obrona,obronca_zlom_obrona_poczatek = self.get_obronca_obrona(obronca,obronca_planeta)
+		
+		
+		rundy = []
+		
+		for run in range(1,11):
+			"""
+			agresor_statki
+			obronca_statki
+			obronca_obrona
+			nazwa - ilosc
+			"""
+			agresor_atak = 0
+			agresor_defence = 0
+			agresor_ilosc = 0
+			agresor_tarcza = 0
+			
+			obronca_atak = 0
+			obronca_defence = 0
+			obronca_ilosc = 0
+			obronca_tarcza = 0
+			for i in agresor_statki:
+				statek = agresor_statki[i]['statek']
+				ilosc = agresor_statki[i]['ilosc']
+				agresor_statki[i]['obrona'] =ilosc*statek.c_met/10(*(1+agresor_dane.defence_tech*0.1))
+				agresor_statki[i]['tarcza'] =ilosc*statek.shield*(1+agresor_dane.shield_tech*0.1)*uniform(80, 120)/100
+				agresor_statki[i]['atak'] =ilosc*statek.attack*(1+agresor_dane.military_tech*0.1)*uniform(80, 120)/100
+				agresor_atak+=agresor_statki[i]['atak']
+				agresor_defence+=agresor_statki[i]['obrona']
+				agresor_tarcza+=agresor_statki[i]['tarcza']
+				agresor_ilosc+=agresor_statki[i]['ilosc']
+			
+			for i in obronca_obrona:
+				ilosc = obronca_obrona[i]['ilosc']
+				statek = obronca_obrona[i]['statek']
+				obronca_obrona[i]['obrona'] =ilosc*statek.c_met/10*(1+obronca_dane.defence_tech*0.1)
+				obronca_obrona[i]['tarcza'] =ilosc*statek.shield*(1+obronca_dane.shield_tech*0.1)*uniform(80, 120)/100
+				obronca_obrona[i]['atak'] =ilosc*statek.attack*(1+obronca_dane.military_tech*0.1)*uniform(80, 120)/100
+				obronca_atak+=obronca_obrona[i]['atak']
+				obronca_defence+=obronca_obrona[i]['obrona']
+				obronca_tarcza+=obronca_obrona[i]['tarcza']
+				obronca_ilosc+=obronca_obrona[i]['ilosc']
+				
+			for i in obronca_statki:
+				ilosc = obronca_statki[i]['ilosc']
+				statek = obronca_statki[i]['statek']
+				obronca_statki[i]['obrona'] =ilosc*statek.c_met/10*(1+obronca_dane.defence_tech*0.1)
+				obronca_statki[i]['tarcza'] =ilosc*statek.shield*(1+obronca_dane.shield_tech*0.1)*uniform(80, 120)/100
+				obronca_statki[i]['atak'] =ilosc*statek.attack*(1+obronca_dane.military_tech*0.1)*uniform(80, 120)/100
+				obronca_atak+=obronca_statki[i]['atak']
+				obronca_defence+=obronca_statki[i]['obrona']
+				obronca_tarcza+=obronca_statki[i]['tarcza']
+				obronca_ilosc+=obronca_statki[i]['ilosc']
+			
+			if obronca_ilosc<=0 or agresor_ilosc<=0:
+				break
+			
+			
+			runda = {}
+			runda['agresor_statki']=copy.deepcopy(agresor_statki)
+			runda['obronca_statki']=copy.deepcopy(obronca_statki)
+			runda['obronca_obrona']=copy.deepcopy(obronca_obrona)
+			runda['agresor_atak']=copy.deepcopy(agresor_atak)
+			runda['agresor_tarcza'] =copy.deepcopy(agresor_tarcza)
+			runda['agresor_defence']=copy.deepcopy(agresor_defence)
+			runda['agresor_ilosc']=copy.deepcopy(agresor_ilosc)
+			
+			runda['obronca_atak']=copy.deepcopy(obronca_atak)
+			runda['obronca_tarcza']=copy.deepcopy(obronca_tarcza)
+			runda['obronca_defence']=copy.deepcopy(obronca_defence)
+			runda['obronca_ilosc']=copy.deepcopy(obronca_ilosc)
+			
+				
+			runda['agresor_tarcza']=agresor_tarcza
+			runda['obronca_tarcza']=obronca_tarcza
+			rundy.append(runda)
+			
+			print "----------------walka------------"
+			agresor_statki_n = {}
+			for ind in agresor_statki:
+				agresor_statki_n[ind]=agresor_statki[ind]
+				obronca_moc = agresor_statki[ind]['ilosc']*obronca_atak/agresor_ilosc
+				if agresor_statki[ind]['tarcza']<obronca_moc:
+					max_zdjac = floor(agresor_statki[ind]['ilosc']*obronca_ilosc/agresor_ilosc)
+					obronca_moc-=agresor_statki[ind]['tarcza']
+					agresor_tarcza+=agresor_statki[ind]['tarcza']
+					ile_zdjac = floor(obronca_moc/((agresor_statki[ind]['statek'].c_met+agresor_statki[ind]['statek'].c_cry)/10))
+					if ile_zdjac>max_zdjac:
+						ile_zdjac=max_zdjac
+					agresor_statki_n[ind]['ilosc']=ceil(agresor_statki_n[ind]['ilosc']-ile_zdjac)
+					if agresor_statki_n[ind]['ilosc']<0:agresor_statki_n[ind]['ilosc']=0
+				else:
+					agresor_tarcza+=obronca_moc
+				
+			
+			obronca_obrona_n = {}
+			for ind in obronca_obrona:
+				obronca_obrona_n[ind]=obronca_obrona[ind]
+				agresor_moc = obronca_obrona[ind]['ilosc']*agresor_atak/obronca_ilosc
+				if obronca_obrona[ind]['tarcza']<agresor_moc:
+					max_zdjac = floor(obronca_obrona[ind]['ilosc']*agresor_ilosc/obronca_ilosc)
+					agresor_moc-=obronca_obrona[ind]['tarcza']
+					obronca_tarcza+=obronca_obrona[ind]['tarcza']
+					ile_zdjac = floor(agresor_moc/((obronca_obrona[ind]['statek'].c_met+obronca_obrona[ind]['statek'].c_cry)/10))
+					if ile_zdjac>max_zdjac:
+						ile_zdjac=max_zdjac
+					obronca_obrona_n[ind]['ilosc']=ceil(obronca_obrona_n[ind]['ilosc']-ile_zdjac)
+					if obronca_obrona_n[ind]['ilosc']<0:obronca_obrona_n[ind]['ilosc']=0
+				else:
+					obronca_tarcza+=agresor_moc
+			
+			obronca_statki_n = {}
+			for ind in obronca_statki:
+				obronca_statki_n[ind]=obronca_statki[ind]
+				agresor_moc = obronca_statki[ind]['ilosc']*agresor_atak/obronca_ilosc
+				if obronca_statki[ind]['tarcza']<agresor_moc:
+					max_zdjac = floor(obronca_statki[ind]['ilosc']*agresor_ilosc/obronca_ilosc)
+					agresor_moc-=obronca_statki[ind]['tarcza']
+					obronca_tarcza+=obronca_statki[ind]['tarcza']
+					ile_zdjac = floor(agresor_moc/((obronca_statki[ind]['statek'].c_met+obronca_statki[ind]['statek'].c_cry)/10))
+					if ile_zdjac>max_zdjac:
+						ile_zdjac=max_zdjac
+					obronca_statki_n[ind]['ilosc']=ceil(obronca_statki_n[ind]['ilosc']-ile_zdjac)
+					if obronca_statki_n[ind]['ilosc']<0:obronca_statki_n[ind]['ilosc']=0
+				else:
+					obronca_tarcza+=agresor_moc
+			
+			for ind in agresor_statki:
+				sd = split(agresor_statki[ind]['statek'].sd_flota , ";")
+				for sd_o in sd:
+					obj = split(sd_o,",")
+					try:
+						obj[0]=int(obj[0])
+						if obronca_statki_n.has_key(obj[0]):
+							ilosc = agresor_statki_n[ind]['ilosc']
+							ile = floor(ilosc*float(obj[1])*uniform(30.0, 100.0) / 100.0)
+							print "sd agresor_statki:",ile
+							obronca_statki_n[obj[0]]['ilosc']-= ile
+							if obronca_statki_n[obj[0]]['ilosc']<=0:obronca_statki_n[obj[0]]['ilosc']=0
+					except:pass
+				
+				sd_obrona = split(agresor_statki[ind]['statek'].sd_obrona , ";")
+				
+				for sd_o in sd_obrona:
+					obj = split(sd_o,",")
+					try:
+						obj[0]=int(obj[0])
+						if obronca_obrona_n.has_key(obj[0]):
+							ilosc = agresor_statki_n[ind]['ilosc']
+							ile = floor(ilosc*float(obj[1])* uniform(30.0, 100.0) / 100)
+							print "sd agresor_statki obrona:",ile
+							obronca_obrona_n[obj[0]]['ilosc']-= ile
+							if obronca_obrona_n[obj[0]]['ilosc']<=0:obronca_obrona_n[obj[0]]['ilosc']=0
+					except:pass	
+				
+				for ind in obronca_statki:
+					sd = split(obronca_statki[ind]['statek'].sd_flota , ";")
+					for sd_o in sd:
+						obj = split(sd_o,",")
+						try:
+							obj[0]=int(obj[0])
+							if agresor_statki_n.has_key(obj[0]):
+								ilosc=obronca_statki[ind]['ilosc']
+								ile = floor(ilosc*float(obj[1])*uniform(30.0, 100.0) / 100.0)
+								print "sd obronca_statki:",ile
+								agresor_statki_n[obj[0]]['ilosc']-= ile
+								if agresor_statki_n[obj[0]]['ilosc']<=0:agresor_statki_n[obj[0]]['ilosc']=0
+						except:pass
+			agresor_statki = agresor_statki_n
+			obronca_statki = obronca_statki_n
+			obronca_obrona = obronca_obrona_n
+		#koniec fora dla rund
+		wygrana = ''
+		if agresor_ilosc<=0 or obronca_ilosc<=0:
+			if agresor_ilosc<=0 and obronca_ilosc<=0:
+				wygrana = 'R'
+			else:
+				if agresor_ilosc<=0:
+					wygrana='O'
+				else:
+					wygrana='A'
+		else:
+			run = len(rundy)-1
+			rundy[run]['agresor_statki']=copy.deepcopy(agresor_statki)
+			rundy[run]['obronca_statki']=copy.deepcopy(obronca_statki)
+			
+			rundy[run]['agresor_atak']=copy.deepcopy(agresor_atak)
+			rundy[run]['agresor_ilosc']=copy.deepcopy(agresor_ilosc)
+			
+			rundy[run]['obronca_atak']=copy.deepcopy(obronca_atak)
+			rundy[run]['obronca_ilosc']=copy.deepcopy(obronca_ilosc)
+			wygrana='R'
+		
+		agresor_zlom_koniec = {"met":0,"cry":0}
+		for i in agresor_statki:
+			statek = agresor_statki[i]['statek']
+			agresor_zlom_koniec['met']+=int(agresor_statki[i]['ilosc'])* statek.c_met
+			agresor_zlom_koniec['cry']+=int(agresor_statki[i]['ilosc'])* statek.c_cry
+			
+		obronca_zlom_koniec = {"met":0,"cry":0}
+		for i in obronca_statki:
+			obronca_zlom_koniec['met']+=int(obronca_statki[i]['ilosc'])* obronca_statki[i]["statek"].c_met
+			obronca_zlom_koniec['cry']+=int(obronca_statki[i]['ilosc'])* obronca_statki[i]["statek"].c_cry
+		
+		obronca_zlom_obrona_koniec = {"met":0,"cry":0}
+		for i in obronca_obrona:
+			obronca_zlom_obrona_koniec['met']+=int(obronca_obrona[i]['ilosc'])* obronca_obrona[i]["statek"].c_met
+			obronca_zlom_obrona_koniec['cry']+=int(obronca_obrona[i]['ilosc'])* obronca_obrona[i]["statek"].c_cry
+		
+		ilosc_obronca = 0
+		straty_obronca_obrona = 0
+		odbudowa_obrona = []
+		print "ODBUDOWA"
+		print obronca_planeta.pk
+		for i in obronca_obrona:
+			print "obronca obronca:",obronca_obrona[i]['statek'].nazwa
+			try:
+				ilosc = rundy[0]['obronca_obrona'][obronca_obrona[i]['statek'].pk]['ilosc'] 
+			except:
+				ilosc=obronca_obrona[i]['ilosc']
+				
+			stracil_faltycznie = ilosc-obronca_obrona[i]['ilosc']
+			odbudowal = int(stracil_faltycznie*uniform(60,80)/100)
+			odbudowa_obrona.append({"statek":obronca_obrona[i]['statek'],"ilosc":odbudowal})
+			
+			stracil = stracil_faltycznie-odbudowal
+			print "obronca obrona:",stracil
+			straty_obronca_obrona += (stracil) *(obronca_obrona[i]['statek'].c_met+obronca_obrona[i]['statek'].c_cry)
+			
+			pozycja = obronca.cache_obj.get_obrona_p(obronca_planeta.pk,obronca_obrona[i]['statek'].pk)
+			punkty_strata = (obronca_obrona[i]['statek'].c_met+obronca_obrona[i]['statek'].c_cry+obronca_obrona[i]['statek'].c_deu)/1000*stracil
+			print "obronca obrona punkty strata:",punkty_strata
+			obronca_planeta.points_obrona-=punkty_strata
+			obronca.userprofile.points_obrona-=punkty_strata
+			obronca.userprofile.points-=punkty_strata
+			pozycja.ilosc-=stracil
+			
+			
+		straty_obronca_statki = 0
+		for i in obronca_statki:
+			print "obronca statek:",obronca_statki[i]['statek'].nazwa
+			try:
+				ilosc = rundy[0]['obronca_statki'][obronca_statki[i]['statek'].pk]['ilosc']
+			except:
+				ilosc=obronca_statki[i]['ilosc']
+			stracil = ilosc -obronca_statki[i]['ilosc']
+			print "obronca stracil:",stracil
+			straty_obronca_statki += (stracil) *(obronca_statki[i]['statek'].c_met+obronca_statki[i]['statek'].c_cry)
+			
+			pozycja = obronca.cache_obj.get_flota_p(obronca_planeta.pk,obronca_statki[i]['statek'].pk)
+			
+			punkty_strata = (obronca_statki[i]['statek'].c_met+obronca_statki[i]['statek'].c_cry+obronca_statki[i]['statek'].c_deu)/1000*stracil
+			print "obronca punkty strata:",punkty_strata
+			obronca_planeta.points_flota-=punkty_strata
+			obronca.userprofile.points_flota-=punkty_strata
+			obronca.userprofile.points-=punkty_strata
+			pozycja.ilosc-=stracil
+			
+			
+		straty_agresor_statki = 0
+		agresor_flota_powrot = []
+		pojemnosc_floty = 0
+		for i in agresor_statki:
+			print "agresor statek:",agresor_statki[i]['statek'].nazwa
+			try:
+				ilosc = rundy[0]['agresor_statki'][agresor_statki[i]['statek'].pk]['ilosc']
+			except:
+				ilosc=agresor_statki[i]['ilosc']
+			stracil = ilosc -agresor_statki[i]['ilosc']
+			print "agresor stracil:",stracil
+			straty_agresor_statki += (stracil) *(agresor_statki[i]['statek'].c_met+agresor_statki[i]['statek'].c_cry)
+			agresor_flota_powrot.append(str(agresor_statki[i]['statek'].pk)+","+str(agresor_statki[i]['ilosc']))
+			
+			pojemnosc_floty+=int(agresor_statki[i]['statek'].capacity)*int(agresor_statki[i]['ilosc'])
+			
+			punkty_strata = (agresor_statki[i]['statek'].c_met+agresor_statki[i]['statek'].c_cry+agresor_statki[i]['statek'].c_deu)/1000*stracil
+			print "agresor punkty strata:",punkty_strata
+			agresor_planeta.points_flota-=punkty_strata
+			agresor.userprofile.points_flota-=punkty_strata
+			agresor.userprofile.points-=punkty_strata
+		
+		zlom_metal = (obronca_zlom_poczatek['met']-obronca_zlom_koniec['met']+agresor_zlom_poczatek['met']-agresor_zlom_koniec['met'])*0.70
+		
+		zlom_crystal = (obronca_zlom_poczatek['cry']-obronca_zlom_koniec['cry']+agresor_zlom_poczatek['cry']-agresor_zlom_koniec['cry'])*0.70
+		
+		zlom_metal_agresor =  agresor_zlom_poczatek['met']-agresor_zlom_koniec['met']
+		zlom_crystal_agresor = agresor_zlom_poczatek['cry']-agresor_zlom_koniec['cry']
+		
+		zlom_metal_obronca = obronca_zlom_poczatek['met']-obronca_zlom_koniec['met'] + obronca_zlom_obrona_poczatek['met']-obronca_zlom_obrona_koniec['met']
+		zlom_crystal_obronca = obronca_zlom_poczatek['cry']-obronca_zlom_koniec['cry'] + obronca_zlom_obrona_poczatek['cry']-obronca_zlom_obrona_koniec['cry']
+		
+		"""
+		refaktoring
+		obronca_planeta.save()
+		obronca_userprofile.save()
+		agresor_planeta.save()
+		userprofile.save()
+		"""
+		#ODBUDOWA
+		#for odb in odbudowa_obrona:
+		#	if int(odb['ilosc'])>0:
+		#		msg = odbudowa(odb['statek'],odb['ilosc'], obronca_planeta)	
+		
+		if(wygrana=='A'):
+			surowce_zdobyte  = {}
+			if pojemnosc_floty>0:
+				metal = obronca_planeta.metal/2
+				krysztal = obronca_planeta.crystal/2
+				deuter = obronca_planeta.deuter/2
+				
+				surowce_zdobyte['met']=0
+				surowce_zdobyte['cry']=0
+				surowce_zdobyte['deu']=0
+				print "pojemnosc_floty:",pojemnosc_floty
+				while 1==1:
+					ile_surowcow=0
+					if metal>0:ile_surowcow+=1
+					if krysztal>0:ile_surowcow+=1
+					if deuter>0:ile_surowcow+=1
+					if ile_surowcow<=0:break
+					
+					zabieramy_pojedynczego_surowca=pojemnosc_floty/ile_surowcow
+					
+					if metal>0:
+						if metal>zabieramy_pojedynczego_surowca:
+							surowce_zdobyte['met']+=zabieramy_pojedynczego_surowca
+							pojemnosc_floty-=zabieramy_pojedynczego_surowca
+							metal-=zabieramy_pojedynczego_surowca
+						else:
+							surowce_zdobyte['met']+=metal
+							pojemnosc_floty-=metal
+							metal=0
+					
+					if krysztal>0:
+						if krysztal>zabieramy_pojedynczego_surowca:
+							surowce_zdobyte['cry']+=zabieramy_pojedynczego_surowca
+							pojemnosc_floty-=zabieramy_pojedynczego_surowca
+							krysztal-=zabieramy_pojedynczego_surowca
+						else:
+							surowce_zdobyte['cry']+=krysztal
+							pojemnosc_floty-=krysztal
+							krysztal=0
+					
+					if deuter>0:
+						if deuter>zabieramy_pojedynczego_surowca:
+							surowce_zdobyte['deu']+=zabieramy_pojedynczego_surowca
+							pojemnosc_floty-=zabieramy_pojedynczego_surowca
+							deuter-=zabieramy_pojedynczego_surowca
+						else:
+							surowce_zdobyte['deu']+=deuter
+							pojemnosc_floty-=deuter
+							deuter=0
+						
+					pojemnosc_floty=floor(pojemnosc_floty)
+					if pojemnosc_floty<=0:break
+					print "pojemnosc_floty_while:",pojemnosc_floty
+					
+				surowce_zdobyte['met']=round(surowce_zdobyte['met'])
+				surowce_zdobyte['cry']=round(surowce_zdobyte['cry'])
+				surowce_zdobyte['deu']=round(surowce_zdobyte['deu'])
+				
+				obronca_planeta.metal-=surowce_zdobyte['met']
+				obronca_planeta.crystal-=surowce_zdobyte['cry']
+				obronca_planeta.deuter-=surowce_zdobyte['deu']
+		else:
+			surowce_zdobyte  = {}
+			surowce_zdobyte['met']=0
+			surowce_zdobyte['cry']=0
+			surowce_zdobyte['deu']=0
+		"""
+		refaktoring
+		obronca_planeta.save()
+		"""
+		obronca_galaktyka.metal += zlom_metal
+		obronca_galaktyka.crystal += zlom_crystal
+		"""
+		refaktoring
+		obronca_galaktyka.save()
+		"""
+		
+		#tutaj laduje raport
+		dane_raport = {"agresor":agresor,"obronca":obronca,"rundy":rundy,"surowce_zdobyte":surowce_zdobyte,
+											  "galaktyka":obronca_galaktyka,"obronca_obrona":obronca_obrona,"obronca_statki":obronca_statki,
+											  "agresor_statki":agresor_statki,"obronca_dane":obronca_dane,"agresor_dane":agresor_dane}
+		raporty_fun.rap_atak(dane_raport,flota_atak,wygrana)
+		
+		if wygrana!='O':
+			flota_atak.fleet_resource_metal+=surowce_zdobyte['met']
+			flota_atak.fleet_resource_crystal+=surowce_zdobyte['cry']
+			flota_atak.fleet_resource_deuterium+=surowce_zdobyte['deu']
+			flota_atak.fleet_array = ";".join(agresor_flota_powrot)
+			helpers.make_fleet_back(flota_atak)
+		else:
+			flota_atak.delete()

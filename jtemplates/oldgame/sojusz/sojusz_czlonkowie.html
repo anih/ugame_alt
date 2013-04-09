@@ -1,0 +1,66 @@
+{% include 'game/simple_header.html' %}
+{% include 'game/topnav.html' %}
+
+
+<center>
+
+<table align=center width=100%><tr align=center><td>
+
+  {%include 'game/sojusz/sojusz_menu.html'%}
+  
+  {% if czlonkowie %}
+  <table border="0" cellpadding="0" cellspacing="1" >
+  <tr>
+  	<td class="c">Lp.</td>
+	<td class="c">Gracz</td>
+	{% if GraObject.soj_czy_zalozyciel() %}
+		<td class="c">Ostatnie logowanie</td>
+		<td class="c">Email</td>
+	{% endif %}
+	{% if GraObject.soj_czy_moze_wyrzucac() %}
+		<td class="c">Wyrzuć</td>
+	{% endif %}
+	{% if GraObject.soj_czy_zalozyciel() %}
+		<td class="c">Uprawnienia</td>
+	{% endif %}
+  </tr>
+  {% for c in czlonkowie %}
+  <tr>
+  <th width="20">{{ loop.index|e }}</th>
+  <th align="center">{{ c.user.username|e }}</th>
+  {% if GraObject.soj_czy_zalozyciel() %}
+  	<th align="center">{{ c.user.last_login|date("Y-m-d H:i:s") }}</th>
+	<th align="center">{{ c.user.email }}</th>
+  {% endif %}
+  {% if GraObject.soj_czy_moze_wyrzucac() %}
+  	<th align="center" width="70">
+  		
+			{% if c.wlasciciel %}
+				{% if GraObject.soj_czy_zalozyciel() %}
+					<a href="/game/sojusz/czlonkowie/?del={{ c.pk|e }}"><font color=#00FF00>wyrzuć</font></a>
+				{% else %}
+					&nbsp;
+				{% endif %}
+			{% else %}
+			<a href="/game/sojusz/czlonkowie/?del={{ c.pk|e }}"><font color=#00FF00>wyrzuć</font></a>
+			{% endif %}
+		
+	</th>
+   {% endif %}
+   {% if GraObject.soj_czy_zalozyciel() %}
+	<th align="center" width="80">
+		<a href="javascript:void(0)" onclick="edytuj_uprawnienia('{{ c.user_id|e }}')"><font color=#00FF00>uprawnienia</font></a>
+   
+	</th>
+   {% endif %}
+  </tr>
+  <tr style="display:none" id="uprawnienia_{{ c.user_id|e }}">
+  	<td colspan="5">&nbsp;</td>
+  </tr>
+  {% endfor %}
+  </table>
+  {% endif %}
+
+</td></tr></table>
+
+{% include 'game/simple_footer.html' %}

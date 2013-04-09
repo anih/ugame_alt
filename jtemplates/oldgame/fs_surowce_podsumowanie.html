@@ -1,0 +1,94 @@
+{% include 'game/simple_header.html' %}
+{% include 'game/topnav.html' %}
+
+
+<center>
+
+
+<form action="/game/fs/surowce/2/" method=post>
+<table width="519" border="0" cellpadding="0" cellspacing="1">
+<tr height="20"><td colspan="2" class="c">Wyślij flotę</td></tr>
+<tr height="20"><th width="50%">Cel</th><th>{{ planeta_dane.galaktyka_id|e }}:{{ planeta_dane.system_id|e }}:{{ planeta_dane.planeta_id|e }}</th></tr>
+<tr height="20">
+<th>Odległość</th>
+<th><div id="distance">{{ dane_floty.odleglosc|e }}</div></th>
+</tr>
+<tr height="20">
+<th>Czas trwania (odcinek)</th>
+<th><div id="duration">{{ dane_floty.czas_lotu|pretty_time|e }}</div></th>
+</tr>
+
+<tr height="20">
+<th>Pojemność baku:</th>
+<th><div id="bak">{{ dane_floty.bak_pojemnosc|e }}</div></th>
+</tr>
+
+<tr height="20">
+<th>Zużycie Deuteru</th>
+<th><div id="consumption">{{ dane_floty.zuzycie_deuter|e }}</div></th>
+</tr>
+
+<tr height="20">
+<th>Max. prędkość</th>
+<th><div id="maxspeed">{{ dane_floty.speed|e }}</div></th>
+</tr>
+<tr height="20">
+<th>Ładowność</th>
+<th><div id="storage">{{ dane_floty.ladownosc|e }}</div></th>
+</tr>
+
+
+<tr height="20">
+<th>Surowce:</th>
+<th>
+
+<table>
+
+<tr height="20">
+<th>Metal</th>
+<th><div id="lad_met"><input type="text" name="zab_met" id="zab_met" value=""></div></th>
+<th><a href="javascript:void(0)" onclick="javascript:
+ladownosc_left = {{ dane_floty.ladownosc|e }}-toInt($('#zab_cry').val())-toInt($('#zab_deu').val());
+if(ladownosc_left<0)ladownosc_left=0;
+set_max('zab_met',{{ topnav.cp.metal|make_int|e }},ladownosc_left);
+">max</a></th>
+</tr>
+
+<tr height="20">
+<th>Kryształ</th>
+<th><div id="lad_cry"><input type="text" name="zab_cry" id="zab_cry" value=""></div></th>
+<th><a href="javascript:void(0)" onclick="javascript:
+ladownosc_left = {{ dane_floty.ladownosc|e }}-toInt($('#zab_met').val())-toInt($('#zab_deu').val());
+if(ladownosc_left<0)ladownosc_left=0;
+set_max('zab_cry',{{ topnav.cp.crystal|make_int|e }},ladownosc_left);">max</a></th>
+</tr>
+
+<tr height="20">
+<th>Deuter</th>
+<th><div id="lad_deu"><input type="text" name="zab_deu" id="zab_deu" value=""></div></th>
+<th><a href="javascript:void(0)" onclick="javascript:
+ladownosc_left = {{ dane_floty.ladownosc|e }}-toInt($('#zab_cry').val())-toInt($('#zab_met').val());
+if(ladownosc_left<0)ladownosc_left=0;
+set_max('zab_deu',{{ topnav.cp.deuter|make_int|e }}-{{ dane_floty.zuzycie_deuter|floatformat(0)|e }},ladownosc_left);">max</a></th>
+</tr>
+
+</table>
+
+
+</th>
+</tr>
+
+<tr height="20" >
+<th><input type="button" value="Wróć" onclick="javascript:history.back()" /></th><th><input type="submit" value="Dalej" /></th>
+</table>
+</form>
+
+<table width="519" border="0" cellpadding="0" cellspacing="1">
+<tr height="20"><td class="c">Statek</td><td class="c">Prędkość</td><td class="c">Ilość</td></tr>
+{% for s in statki_podsumowanie %}
+<tr height="20"><th>{{ s.statek.nazwa|e }}</th><th>{{ s.speed|e }}</th><th>{{ s.ilosc|e }}</th></tr>
+{% endfor %}
+</table>
+
+</center>
+{% include 'game/simple_footer.html' %}

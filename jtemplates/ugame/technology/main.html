@@ -1,0 +1,112 @@
+{% extends this.application+'/base.html' %}
+{% block content %}
+{% include this.application+'/game/topnav.html' %}
+
+<table width="800">
+
+
+	<tr>
+	  <td class="c">Konstrukcja</td>
+	  <td class="c">Wymagania</td>
+	</tr>
+	
+	{% for budynek in budynki %}
+	<tr>
+	  <td class="l"><a href="/game/info/bud/{{ budynek.id|e }}">{{ budynek.nazwa|e }}</a></td>
+	  <td class="l">
+	  {% for zal in budynek.zal_bud %}
+	  <font color={% if zal.spelnione %}#00ff00{% else %}#ff0000{% endif %}>{{ zal.nazwa|e }}(Poziom {{ zal.level|e }})</font><br>
+	  {% endfor %}
+	  {% for zal in budynek.zal_bad %}
+	  <font color={% if zal.spelnione %}#00ff00{% else %}#ff0000{% endif %}>{{ zal.nazwa|e }}(Poziom {{ zal.level|e }})</font><br>
+	  {% endfor %}
+	  </td>
+	</tr>
+	{% endfor %}
+	
+	
+	<tr>
+	  <td class="c">Badanie</td>
+	  <td class="c">Wymagania</td>
+	</tr>
+	{% for badanie in badania %}
+	<tr>
+	  <td class="l"><a href="/game/info/bad/{{ badanie.id|e }}">{{ badanie.nazwa|e }}</a></td>
+	  <td class="l">
+	  {% for zal in badanie.zal_bud %}
+	  <font color={% if zal.spelnione %}#00ff00{% else %}#ff0000{% endif %}>{{ zal.nazwa|e }}(Poziom {{ zal.level|e }})</font><br>
+	  {% endfor %}
+	  {% for zal in badanie.zal_bad %}
+	  <font color={% if zal.spelnione %}#00ff00{% else %}#ff0000{% endif %}>{{ zal.nazwa|e }}(Poziom {{ zal.level|e }})</font><br>
+	  {% endfor %}
+	  </td>
+	</tr>
+	{% endfor %}
+	
+	<tr>
+	  <td class="c">Statki kosmiczne</td>
+	  <td class="c">Wymagania</td>
+	</tr>
+	{% for flota in floty %}
+	<tr>
+		<td class="l"><a href="/game/info/flo/{{ flota.id|e }}">{{ flota.nazwa|e }}</a></td>
+		<td class="l">
+		{% for zal in flota.zal_bud %}
+		<font color={% if zal.spelnione %}#00ff00{% else %}#ff0000{% endif %}>{{ zal.nazwa|e }}(Poziom {{ zal.level|e }})</font><br>
+		{% endfor %}
+		{% for zal in flota.zal_bad %}
+		<font color={% if zal.spelnione %}#00ff00{% else %}#ff0000{% endif %}>{{ zal.nazwa|e }}(Poziom {{ zal.level|e }})</font><br>
+		{% endfor %}
+		</td>
+	</tr>
+	{% endfor %}
+
+	
+	<tr>
+		<td class="c">Systemy obronne</td>
+		<td class="c">Wymagania</td>
+	</tr>
+	{% for obrona in obronne %}
+	<tr>
+		<td class="l"><a href="/game/info/obr/{{ obrona.id|e }}">{{ obrona.nazwa|e }}</a></td>
+		<td class="l">
+		{% for zal in obrona.zal_bud %}
+		<font color={% if zal.spelnione %}#00ff00{% else %}#ff0000{% endif %}>{{ zal.nazwa|e }}(Poziom {{ zal.level|e }})</font><br>
+		{% endfor %}
+		{% for zal in obrona.zal_bad %}
+		<font color={% if zal.spelnione %}#00ff00{% else %}#ff0000{% endif %}>{{ zal.nazwa|e }}(Poziom {{ zal.level|e }})</font><br>
+		{% endfor %}
+		</td>
+	</tr>
+	{% endfor %}
+<!--
+	
+	<tr>
+	  <td class="c">Systemy obronne</td>
+	  <td class="c">Wymagania</td>
+	</tr>
+	<tr>
+	  <td class="l"><a href="infos.php?gid=402">Lekkie działo laserowe</a></td>
+	  <td class="l"><font color=#00ff00>Technologia energetyczna(Poziom 1)</font><br><font color=#00ff00>Stocznia(Poziom 2)</font><br><font color=#00ff00>Technologia laserowa(Poziom 3)</font><br></td>
+	</tr>
+	
+	<tr>
+	  <td class="c">Budynki specjalne</td>
+	  <td class="c">Wymagania</td>
+	</tr>
+	<tr>
+	  <td class="l"><a href="infos.php?gid=41">Stacja księżycowa</a></td>
+	  <td class="l"></td>
+	</tr>
+	<tr>
+	  <td class="l"><a href="infos.php?gid=42">Falanga czujników</a></td>
+	  <td class="l"><font color=#ff0000>Stacja księżycowa(Poziom 1)</font><br></td>
+	</tr>
+	<tr>
+	  <td class="l"><a href="infos.php?gid=43">Teleporter</a></td>
+	  <td class="l"><font color=#ff0000>Stacja księżycowa(Poziom 1)</font><br><font color=#00ff00>Technologia nadprzestrzenna(Poziom 7)</font><br></td>
+	</tr>
+-->
+</table>
+
+{% endblock %}

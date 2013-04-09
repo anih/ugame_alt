@@ -1,0 +1,21 @@
+{% include 'game/simple_header.html' %}
+{% include 'game/topnav.html' %}
+
+
+<center>
+
+<table align=center width=100%><tr align=center><td>
+
+  {%include 'game/sojusz/sojusz_menu.html'%}
+  
+  <form action="" method=post>
+  <table border="0" cellpadding="0" cellspacing="1">
+  <tr><td align=center class="l" width="100">Zaproszenie dla:</td><td align="center" class="l">{{ zapraszany.username|e }}</td></tr>
+  <tr><td colspan=2  align=center class="l">{{ form.text }}</td></tr>
+  <tr><td colspan=2  align=center class="l"><input type="submit" value="Wyślij"></td></tr>
+  </table>
+  </form>
+
+</td></tr></table>
+
+{% include 'game/simple_footer.html' %}

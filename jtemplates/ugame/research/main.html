@@ -1,0 +1,75 @@
+{% extends this.application+'/base.html' %}
+{% block content %}
+{% include this.application+'/game/topnav.html' %}
+
+{% if kolejka %}
+<table width=530>
+	<tr>
+		<td class="c">Budujesz:</td><td class="c">Trwanie:</td><td class="c">Anuluj *</td>
+	</tr>
+	{% for k in kolejka %}
+	<tr>
+		<td class="l">{{ k.badanie.nazwa|e }} poziom {{ k.level|e }}</td><td class="l"> {% if loop.first %}
+		<div id=bxx>
+			<script language="JavaScript">
+				site = "{{ url(this.url) }}";
+				pp = {{ k.seconds|e }};
+				przeskok = 0;
+				t();
+			</script>
+		</div> {% else %}
+		{{ k.time|e }}
+		{% endif %} </td>
+		<td class="l"><a href="?anuluj={{ k.badanie.pk|e }}">anuluj</a></td>
+	</tr>
+	{% endfor %}
+	<tr>
+		<td colspan=3>* (zostanie zwrócone 50% surowców)</td>
+	</tr>
+</table>
+{% endif %}
+
+<table width=530>
+	{% if builds %}
+	{% for b in builds %}
+	<tr>
+		<td class="l"><a href="/game/info/bad/{{ b.id|e }}"> <img border="0" src="/media/badania/{{ b.id|e }}.gif" align="top" width="120" height="120"> </a></td>
+
+		<td class="l"><a href="/game/info/bad/{{ b.id|e }}/">{{ b.nazwa|e }}</a> (Poziom {{ b.level_faktyczny|e }})
+		<br>
+		{{ b.opis|e }}
+		<br>
+		Wymagania:
+		{% if b.c_met != 0 %}
+		Metal: <b style="color:{{ b.c_met_color|e }};"> <span class="noresources">{{ b.c_met|ceilh|e }}</span></b> {% endif %}
+
+		{% if b.c_cry != 0 %}
+		Kryształ: <b style="color:{{ b.c_cry_color|e }};"> <span class="noresources">{{ b.c_cry|ceilh|e }}</span></b> {% endif %}
+
+		{% if b.c_deu != 0 %}
+		Deuter: <b style="color:{{ b.c_deu_color|e }};"> <span class="noresources">{{ b.c_deu|ceilh|e }}</span></b> {% endif %}
+
+		{% if b.energy > 0 %}
+		Energia: <b style="color:{{b.c_ene_color}};"> <span class="noresources">{{b.energy|ceilh}}</span></b> {% endif %}
+
+		{% if b.c_czas != 0 %}
+		<br>
+		Czas ukończenia: {{ b.c_czas|pretty_time|e }}
+		{% endif %}
+		<br>
+		<font color="#7f7f7f">Zostanie:
+			Metal: <b style="color: rgb(95, 127, 108);">{{ b.z_met|ceilh|e }}</b> Kryształ: <b style="color: rgb(95, 127, 108);">{{ b.z_cry|ceilh|e }}</b> Deuter: <b style="color: rgb(95, 127, 108);">{{ b.z_deu|ceilh|e }}</b> {% if b.koniec_powierzchni %} <font color=#FF0000><b>Niestety żeby zbadać to potrzebujesz {{ b.c_powierzchnia|e }} km</b></font> {% endif %} </td>
+		<td class="k"> {% if b.mozna %} <a href="?bud={{ b.id|e }}"><font color=#00FF00>Rozbudowa na
+			<br />
+			Poziom {{ b.level|e }}</font></a> {% else %} <font color=#FF0000>Nie możesz zbadać</font> {% endif %} </td>
+	</tr>
+	{% endfor %}
+	{% else %}
+	<tr>
+		<td class="l">Niestety warunki budynkowe nie są spełnione</td>
+	</tr>
+	{% endif %}
+
+</table>
+
+{% endblock %}

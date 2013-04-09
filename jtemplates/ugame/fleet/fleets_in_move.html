@@ -1,0 +1,170 @@
+{% if floty_own %}
+<table width="519" border="0" cellpadding="0" cellspacing="1">
+	<tr height="20" align="center"><td class="f" colspan="10">Floty własne</td></tr>
+<tr height="20" align="center">
+<td class="c">Nr.</td>
+<td class="c">Misja</td>
+<td class="c">Ilość</td>
+<td class="c">Godzina startu</td>
+<td class="c">Start</td>
+
+<td class="c">Godzina dotarcia</td>
+<td class="c">Cel</td>
+<td class="c">Godzina powrotu</td>
+<td class="c">Czas do dotarcia</td>
+<td class="c">Rozkaz</td>
+</tr>
+
+{% for f in floty_own %}
+<tr height=20>
+<th>{{ loop.index|e }}</th>
+<th><a title="">{{ f.typ_lotu|e }}</a></th>
+<th>
+<a id="chmurka_{{ f.pk|e }}">{{ f.fleet_amount|e }}</a>
+
+<div class="hovertip" target="chmurka_{{ f.pk|e }}" >
+	{% for s in f.statki %}{{ s.nazwa|e }}: {{ s.ilosc|e }}<br>{% endfor %}
+		Metal: {{ f.fleet_resource_metal|e }}<br>
+		Kryształ: {{ f.fleet_resource_crystal|e }}<br>
+		Deuter: {{ f.fleet_resource_deuterium|e }}<br>
+</div>
+</th>
+<th>{{ f.start_time|e }}</th>
+<th>[{{ f.galaxy_start.galaxy|e }}:{{ f.galaxy_start.system|e }}:{{ f.galaxy_start.field|e }}]</th>
+<th>{{ f.end_time|e }}</th>
+<th>[{{ f.galaxy_end.galaxy|e }}:{{ f.galaxy_end.system|e }}:{{ f.galaxy_end.field|e }}]</th>
+<th>{{ f.back_time|e }}</th>
+<th><div style="display:none" id="hfl_{{ f.pk|e }}">{{ f.czas_do|e }}</div><div style="color:lime" id="fl_{{ f.pk|e }}"></div>
+<script language="Javascript1.2">
+site="/game/fleet/";
+przeskok=0;
+function t_div_{{ f.pk|e }}(){
+	v=new Date();
+	var bxx=document.getElementById('fl_{{ f.pk|e }}');
+	var pp = document.getElementById('hfl_{{ f.pk|e }}');
+	n=new Date();
+	ss=pp.innerHTML;
+	s=ss-Math.round((n.getTime()-v.getTime())/1000.);
+	m=0;h=0;
+	if(s<0 && przeskok==0){
+		przeskok = 1;
+		document.location.href=site;
+	} else if (s<0){
+		przeskok = 1;
+	}else{
+		if(s>59){
+			m=Math.floor(s/60);
+			s=s-m*60
+		}
+		if(m>59){
+			h=Math.floor(m/60);
+			m=m-h*60
+		}
+		if(s<10){
+			s="0"+s
+		}
+		if(m<10){
+			m="0"+m
+		}
+		bxx.innerHTML=h+":"+m+":"+s
+	}
+	pp.innerHTML=pp.innerHTML-1;
+	window.setTimeout("t_div_{{ f.pk|e }}();",999);
+
+}
+t_div_{{ f.pk|e }}();
+</script>
+</th>
+
+<th>
+{% if f.zawroc %}<a href="?fs_zawroc={{ f.pk|e }}">Zawróć</a>{% endif %}
+{% if f.fleet_back == 1 %}powrót{% endif %}
+</th>
+</tr>
+{% endfor %}
+</table>
+<br>
+{% endif %}
+
+{% if floty_obce %}
+<table width="519" border="0" cellpadding="0" cellspacing="1">
+	<tr height="20" align="center"><td class="f" colspan="9">Floty obce</td></tr>
+<tr height="20" align="center">
+<td class="c">Nr.</td>
+<td class="c">Misja</td>
+<td class="c">Ilość</td>
+<td class="c">Godzina startu</td>
+<td class="c">Start</td>
+
+<td class="c">Godzina dotarcia</td>
+<td class="c">Cel</td>
+<td class="c">Godzina powrotu</td>
+<td class="c">Czas do dotarcia</td>
+</tr>
+
+{% for f in floty_obce %}
+<tr height=20>
+<th>{{ loop.index|e }}</th>
+<th><a title="">{{ f.typ_lotu|e }}</a></th>
+<th>
+{% if f.ilosc_danych %}
+<a id="chmurka_{{ f.pk|e }}">{{ f.fleet_amount|e }}</a>
+<div class="hovertip" target="chmurka_{{ f.pk|e }}" >
+	{{ f.nazwa|e }}{% if f.ilosc_danych == 'wszystkie' %}: {{ f.ilosc|e }}{% endif %}<br>
+</div>
+{% else %}
+	{{ f.fleet_amount|e }}
+{% endif %}
+</th>
+<th>{{ f.start_time|e }}</th>
+<th>[{{ f.galaxy_start.galaxy|e }}:{{ f.galaxy_start.system|e }}:{{ f.galaxy_start.field|e }}]</th>
+<th>{{ f.end_time|e }}</th>
+<th>[{{ f.galaxy_end.galaxy|e }}:{{ f.galaxy_end.system|e }}:{{ f.galaxy_end.field|e }}]</th>
+<th>{{ f.back_time|e }}</th>
+<th><div style="display:none" id="hfl_{{ f.pk|e }}">{{ f.czas_do|e }}</div><div style="color:lime" id="fl_{{ f.pk|e }}"></div>
+<script language="Javascript1.2">
+site="/game/fleet/";
+przeskok=0;
+function t_div_{{ f.pk|e }}(){
+	v=new Date();
+	var bxx=document.getElementById('fl_{{ f.pk|e }}');
+	var pp = document.getElementById('hfl_{{ f.pk|e }}');
+	n=new Date();
+	ss=pp.innerHTML;
+	s=ss-Math.round((n.getTime()-v.getTime())/1000.);
+	m=0;h=0;
+	if(s<0 && przeskok==0){
+		przeskok = 1;
+		document.location.href=site;
+	} else if (s<0){
+		przeskok = 1;
+	}else{
+		if(s>59){
+			m=Math.floor(s/60);
+			s=s-m*60
+		}
+		if(m>59){
+			h=Math.floor(m/60);
+			m=m-h*60
+		}
+		if(s<10){
+			s="0"+s
+		}
+		if(m<10){
+			m="0"+m
+		}
+		bxx.innerHTML=h+":"+m+":"+s
+	}
+	pp.innerHTML=pp.innerHTML-1;
+	window.setTimeout("t_div_{{ f.pk|e }}();",999);
+
+}
+t_div_{{ f.pk|e }}();
+</script>
+</th>
+
+</tr>
+{% endfor %}
+</table>
+<br>
+{% endif %}

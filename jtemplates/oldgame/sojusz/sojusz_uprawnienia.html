@@ -1,0 +1,66 @@
+<td colspan=4>
+{% if messages %}
+<center>
+<table align="center" width="100%">
+{% for m in messages %}<tr><td align="center" class="zielona" style="min-width:400px;height:10px">{{ m|e }}</td></tr>{% endfor %}
+</table>
+</center>
+{% endif %}
+{% if form %}
+<form action="/game/sojusz/uprawnienia/{{ id }}/" method=post enctype="multipart/form-data" id="up_form_{{ id|e }}">
+<table border="0" cellspacing="1" cellpadding="2" width="100%">
+<tr>
+	<th>Tytuł</th>
+	<th>{{ form.tytul }}<span style="vertical-align:top;color:red;padding-left:20px">{{ form.tytul.errors|join(', ') }}</span></th>
+</tr>
+
+<tr>
+	<th>Właściciel</th>
+	<th>{{ form.wlasciciel }}<span style="vertical-align:top;color:red;padding-left:20px">{{ form.wlasciciel.errors|join(', ') }}</span></th>
+</tr>
+
+<tr>
+	<th>Zmiana opisu sojuszu</th>
+	<th>{{ form.zmiana_opisu }}<span style="vertical-align:top;color:red;padding-left:20px">{{ form.zmiana_opisu.errors|join(', ') }}</span></th>
+</tr>
+
+<tr>
+	<th>Wysyłanie zaproszeń</th>
+	<th>{{ form.wysylanie_zaproszen }}<span style="vertical-align:top;color:red;padding-left:20px">{{ form.wysylanie_zaproszen.errors|join(', ') }}</span></th>
+</tr>
+
+<tr>
+	<th>Wyrzucanie</th>
+	<th>{{ form.wyrzucanie }}<span style="vertical-align:top;color:red;padding-left:20px">{{ form.wyrzucanie.errors|join(', ') }}</span></th>
+</tr>
+
+<tr bgcolor="#F3A705" align=center>
+<td><input type=submit value="Zapisz"></td>
+<td><input type="button" value="Zamknij" onclick="$('#uprawnienia_'+{{ id }}).hide()"></td>
+</tr>
+</table>
+</form>
+<script language="JavaScript1.2">
+	$("#up_form_{{ id }}").submit(function(){
+		var options = { 
+        target:        '#uprawnienia_{{ id|e }}',   // target element(s) to be updated with server response 
+        //success:       showResponse  // post-submit callback 
+ 
+        // other available options: 
+        //url:       url         // override for form's 'action' attribute 
+        type:     "post",        // 'get' or 'post', override for form's 'method' attribute 
+        //dataType:  null        // 'xml', 'script', or 'json' (expected server response type) 
+        //clearForm: true        // clear all form fields after successful submit 
+        //resetForm: true        // reset the form after successful submit 
+ 
+        // $.ajax options can be used here too, for example: 
+        //timeout:   3000 
+    	}; 
+		$(this).ajaxSubmit(options);
+		//zapisz_uprawnienia("#up_form_{{ id|e }}");
+		return false;
+	})
+	
+</script>
+{% endif %}
+</td>

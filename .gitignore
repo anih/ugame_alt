@@ -1,0 +1,9 @@
+/.idea/
+/_settings/
+/settings_custom.py
+/trace
+/media/avatar/
+/media/photo/
+/old_game/
+/tmp/
+*.pyc

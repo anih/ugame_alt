@@ -1,0 +1,204 @@
+{% extends this.application+'/base.html' %}
+{% block content %}
+{% include this.application+'/game/topnav.html' %}
+
+<form action="" method="post">
+	<div>
+		<table width="500">
+			<tbody>
+				<tr>
+					<td class="c">Poziom wydobycia</td>
+					<th>{{ produkcja.procent|e }}%</th>
+					<th width="250">
+					<div style="border: 1px solid rgb(153, 153, 255); width: 250px;">
+						<div id="prodBar" style="background-color: #00ff00; width: {{ (produkcja.procent / 100 * 250)|round|int }}px;">
+							&nbsp;
+						</div>
+					</div></th>
+				</tr>
+			</tbody>
+		</table>
+		<br>
+	</div>
+
+	<table width="500">
+		<tbody>
+			<tr>
+				<td class="c" colspan="5">Wydobycie surowców na planecie "{{ planet.name|e }}"</td>
+			</tr>
+			<tr>
+				<th></th>
+				<th>Metal</th>
+				<th>Kryształ</th>
+				<th>Deuter</th>
+				<th>Energia</th>
+			</tr>
+			<!-- resource_row -->
+			{% for s in surowce %}
+			<tr>
+				<th>{{ s.nazwa|e }} ({% if s.statek.czy_statek == 1 %}Ilość {{ s.statek.dane.ilosc|e }}{% endif %}{% if s.statek.czy_budynek == 1 %}Poziom {{ s.statek.dane.level|e }}{% endif %})</th>
+				<th><font color="{% if s.metal >= 0 %}#00ff00{% else %}#ff0000{% endif %}">{{s.metal|kk_resources}}</font></th>
+				<th><font color="{% if s.crystal >= 0 %}#00ff00{% else %}#ff0000{% endif %}">{{s.crystal|kk_resources}}</font></th>
+				<th><font color="{% if s.deuter >= 0 %}#00ff00{% else %}#ff0000{% endif %}">{{s.deuter|kk_resources}}</font></th>
+				<th><font color="{% if s.energy >= 0 %}#00ff00{% else %}#ff0000{% endif %}">{{s.energy|kk_resources}}</font></th>
+				<th>
+				<input type=text maxlength=3 value="{{ s.statek.dane.procent|e }}" name="{% if s.statek.czy_statek == 1 %}flo_{% endif %}{% if s.statek.czy_budynek == 1 %}bud_{% endif %}{{ s.statek.dane.budynek_id|e }}" style="width:30px">
+				</th>
+			</tr>
+			{% endfor %}
+
+			<tr></tr>
+			<tr>
+				<th>Ładowność</th>
+				<td class="k"><font color="{% if planet.metal_max > planet.metal %}#00ff00{%else%}#ff0000{%endif%}">{{planet.metal_max|kk_resources}}</font></td>
+				<td class="k"><font color="{% if planet.crystal_max > planet.crystal %}#00ff00{%else%}#ff0000{%endif%}">{{planet.crystal_max|kk_resources}}</td>
+				<td class="k"><font color="{% if planet.deuter_max > planet.deuter %}#00ff00{%else%}#ff0000{%endif%}">{{planet.deuter_max|kk_resources}}</td>
+				<td class="k"><font color="#00ff00">-</font></td>
+				<td class="k">
+				<input name="action" value="Przelicz" type="submit">
+				</td>
+			</tr>
+			<tr>
+				<th colspan="5" height="4"></th>
+			</tr>
+			<tr>
+				<th>Suma:</th>
+				<td class="k"><font color="#00ff00">{{ produkcja.metal|kk_resources|e }}</font></td>
+				<td class="k"><font color="#00ff00">{{ produkcja.crystal|kk_resources|e }}</font></td>
+				<td class="k"><font color="#00ff00">{{ produkcja.deuter|kk_resources|e }}</font></td>
+				<td class="k"><font color="#00ff00">{{ produkcja.energy|kk_resources|e }}</font></td>
+			</tr>
+
+			<tr></tr>
+
+			<tr>
+				<td colspan="5"><center></center></td>
+			</tr>
+		</tbody>
+	</table>
+
+	<div>
+		<br>
+		<table width="500">
+			<tbody>
+				<tr>
+					<td class="c" colspan="4">Wydobycie - informacje</td>
+				</tr>
+				<tr>
+
+					<th>&nbsp;</th>
+
+					<th>Dziennie</th>
+
+					<th>Tygodniowo</th>
+
+					<th>Miesięcznie</th>
+
+				</tr>
+
+				<tr>
+
+					<th>Metal</th>
+
+					<th><font color="#00ff00">{{ produkcja.metal_dzien|kk_resources|e }}</font></th>
+
+					<th><font color="#00ff00">{{ produkcja.metal_tydzien|kk_resources|e }}</font></th>
+
+					<th><font color="#00ff00">{{ produkcja.metal_miesiac|kk_resources|e }}</font></th>
+
+				</tr>
+
+				<tr>
+
+					<th>Kryształ</th>
+
+					<th><font color="#00ff00">{{ produkcja.crystal_dzien|kk_resources|e }}</font></th>
+
+					<th><font color="#00ff00">{{ produkcja.crystal_tydzien|kk_resources|e }}</font></th>
+
+					<th><font color="#00ff00">{{ produkcja.crystal_miesiac|kk_resources|e }}</font></th>
+
+				</tr>
+
+				<tr>
+
+					<th>Deuter</th>
+
+					<th><font color="#00ff00">{{ produkcja.deuter_dzien|kk_resources|e }}</font></th>
+
+					<th><font color="#00ff00">{{ produkcja.deuter_tydzien|kk_resources|e }}</font></th>
+
+					<th><font color="#00ff00">{{ produkcja.deuter_miesiac|kk_resources|e }}</font></th>
+
+				</tr>
+
+			</tbody>
+
+		</table>
+
+		<br>
+
+		<table width="500">
+			<tbody>
+				<tr>
+					<td class="c" colspan="3">Wykorzystana ładowność</td>
+				</tr>
+				<tr>
+					<th>Metal</th>
+					<th>{{ produkcja.metal_ladownosc_procent|e }}%</th>
+					<th width="250">
+					<div style="border: 1px solid rgb(153, 153, 255); width: 250px;">
+						{%if produkcja.metal_ladownosc_procent >= 100 %}
+						<div id="AlmMBar" style="background-color: #C00000;width: {{ (100/ 100 * 250)|round|int }}px; opacity: 0.98;">
+							&nbsp;
+						</div>
+						{%else%}
+						<div id="AlmMBar" style="background-color:#00C000;width: {{ (produkcja.metal_ladownosc_procent/ 100 * 250)|round|int }}px; opacity: 0.98;">
+							&nbsp;
+						</div>
+						{%endif%}
+					</div></th>
+				</tr>
+				<tr>
+					<th>Kryształ</th>
+					<th>{{ produkcja.crystal_ladownosc_procent|e }}%</th>
+					<th width="250">
+					<div style="border: 1px solid rgb(153, 153, 255); width: 250px;">
+						{%if produkcja.crystal_ladownosc_procent >= 100 %}
+						<div id="AlmCBar" style="background-color: #C00000;width: {{ (100/ 100 * 250)|round|int }}px; opacity: 0.98;">
+							&nbsp;
+						</div>
+						{%else%}
+						<div id="AlmCBar" style="background-color: #00C000;width: {{ (produkcja.crystal_ladownosc_procent/ 100 * 250)|round|int }}px; opacity: 0.98;">
+							&nbsp;
+						</div>
+						{%endif%}
+					</div></th>
+				</tr>
+				<tr>
+					<th>Deuter</th>
+					<th>{{ produkcja.deuter_ladownosc_procent|e }}%</th>
+					<th width="250">
+					<div style="border: 1px solid rgb(153, 153, 255); width: 250px;">
+						{%if produkcja.deuter_ladownosc_procent >= 100 %}
+						<div id="AlmCBar" style="background-color: #C00000; width: {{ (100/ 100 * 250)|round|int }}px; opacity: 0.98;">
+							&nbsp;
+						</div>
+						{%else%}
+						<div id="AlmCBar" style="background-color: #00C000;width: {{ (produkcja.deuter_ladownosc_procent/ 100 * 250)|round|int }}px; opacity: 0.98;">
+							&nbsp;
+						</div>
+						{%endif%}
+
+					</div></th>
+				</tr>
+			</tbody>
+		</table>
+
+		<br>
+
+	</div>
+
+</form>
+
+{% endblock %}

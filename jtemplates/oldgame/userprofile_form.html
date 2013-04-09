@@ -1,0 +1,44 @@
+{% include 'game/simple_header.html' %}
+{% include 'game/topnav.html' %}
+
+
+<center>
+<table align=center width=100%><tr align=center><td>
+
+<form action="/game/usr/" method=post enctype="multipart/form-data">
+<table border="0" cellspacing="1" cellpadding="5">
+{% for f in form %}
+<tr>
+	<th width=150>{{ f.label }}<br></th>
+	<th>{{ f }}<span style="vertical-align:top;color:red;padding-left:20px">{{ f.errors|join(', ') }}</span></th>
+</tr>
+{% endfor %}
+<tr align="center">
+	<th colspan="2"><strong>Jeśli chcesz zmienić hasło lub email wypełnij tutaj,<br>na emaila zostanie wysłany link potwierdzający:</strong></th>
+</tr>
+{% for f in form_change %}
+<tr>
+	<th width=150>{{ f.label }}<br></th>
+	<th>{{ f }}<span style="vertical-align:top;color:red;padding-left:20px">{{ f.errors|join(', ') }}</span></th>
+</tr>
+{% endfor %}
+
+
+<tr align=center>
+<th colspan=2><input type=submit value="Zapisz"></th>
+</tr>
+<tr align=center>
+	<th colspan=2><a href="/game/usr/{{ user.pk }}/">Zobacz swój profil</a></th>
+</tr>
+</table>
+</form>
+
+
+</td></tr></table>
+
+
+</td></tr></table>
+
+
+</center>
+{% include 'game/simple_footer.html' %}

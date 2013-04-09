@@ -1,0 +1,45 @@
+<html>
+<head>
+<!-- TradeDoubler site verification 1620297 --> 
+<title>Alfa Ugame</title>
+<link rel="SHORTCUT ICON" href="favicon.ico">
+<link href="/media_static/libs/bootstrap/css/bootstrap.css" rel="stylesheet">
+<link rel='stylesheet' type='text/css' href='/media/css/default.css' />
+<link rel="stylesheet" type="text/css" href="/media/css/formate.css" />
+<meta http-equiv="pragma" content="no-cache">
+<meta http-equiv="cache-control" content="no-cache">
+<meta http-equiv="expires" content="0">
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-34285840-1']);
+      _gaq.push(['_setDomainName', 'ugame.net.pl']);
+        _gaq.push(['_trackPageview']);
+
+	  (function() {
+	        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+		      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+		            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+			       })();
+
+			       </script>
+
+</head>
+<body>
+	<div class="container">
+    	<div class="content">
+    		{%if user_messages%}
+		{% for m in user_messages%}
+			<div class="alert alert-{{ m.tags }}">
+			    <a class="close" data-dismiss="alert" href="#">×</a>
+			    <h4 class="alert-heading">{{m|safe}}</h4>
+		    </div>
+		{%endfor%}
+		{%endif%}
+    	{% block content %}{% endblock %}
+    	</div>
+    </div>
+</body>
+</html>

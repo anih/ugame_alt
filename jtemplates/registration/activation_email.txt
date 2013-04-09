@@ -1,0 +1,3 @@
+Prosze skopiować ten link aktywacyjny do przeglądarki:
+{{ site|e }}/accounts/activate/{{ activation_key|e }}/
+

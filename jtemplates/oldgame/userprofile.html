@@ -1,0 +1,61 @@
+{% include 'game/simple_header.html' %}
+{% include 'game/topnav.html' %}
+
+
+
+<center>
+
+<table align=center width=100%><tr align=center><td>
+
+<table border="0" cellspacing="1" cellpadding="5">
+<tr>
+<td class="c" width=100>Nick:</td>
+<th class="c">{{ u.user.username }}</th>
+<td width=100 class="c">Data urodzin:</td>
+<th class="c">{{ u.data_urodzenia }}</th>
+</tr>
+
+<tr>
+<td class="c" width=100>Płeć:</td>
+<th class="c">{{ u.get_sex_display() }}</th>
+<td width=100 class="c">Zamieszkały w:</td>
+<th class="c">{{ u.miasto }}</th>
+</tr>
+
+<tr>
+<td class="c" width=100>Punkty:</td>
+<th class="c">{{ u.points }}</th>
+<td width=100 class="c">Sojusz:</td>
+<th class="c">
+	{%if models.Czlonkowie.objects.filter(user=u.user).count()>0 %}
+	<a href="/game/sojusz_podglad/{{ models.Sojusz.objects.get(czlonkowie__user=u.user).pk }}/">{{ models.Sojusz.objects.get(czlonkowie__user=u.user).nazwa }}</a>
+	{%else%}brak{%endif%}
+</th>
+
+</tr>
+
+
+
+{% if u.avatar %}
+<tr>
+<th colspan=4 align="center"><img src="/{{ u.avatar|thumbnail }}"></th>
+</tr>
+
+{% endif %}
+
+<tr>
+<td colspan=4 class="c" align="center">Opis:</td>
+</tr>
+
+<tr>
+<th colspan=4 align="center">{{ u.sign|e|bbcodes|linebreaks }}</th>
+</tr>
+
+</table>
+
+
+</td></tr></table>
+
+
+</center>
+{% include 'game/simple_footer.html' %}

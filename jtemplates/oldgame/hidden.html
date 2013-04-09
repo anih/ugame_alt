@@ -1,0 +1,15 @@
+{% include 'game/simple_header.html' %}
+<center>
+
+<br />
+{% if msg %}
+<table width=530>
+{% for m in msg %}
+<tr><td align="center" class="f" style="width:400px;height:30px;color:red;font-size: 10pt;font-weight: bold;">{{ m|e }}</td></tr>
+{% endfor %}
+</table>
+{% endif %}
+
+
+</center>
+{% include 'game/simple_footer.html' %}

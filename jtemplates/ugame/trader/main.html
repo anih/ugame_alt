@@ -1,0 +1,90 @@
+{% extends this.application+'/base.html' %}
+{% block content %}
+{% include this.application+'/game/topnav.html' %}
+
+<table align="center"><tr>
+  <td class="l"><a href="{{ url(this.urls.main) }}">rynek</a></td>
+  <td class="l"><a href="{{ url(this.urls.for_sale) }}">wystaw na rynku</a></td>
+  <td class="l"><a href="{{ url(this.urls.dealer) }}">handlarz</a></td>
+</tr></table>
+
+<table width="700">
+<tr>
+	<td class="c" colspan="3">Rynek</td>
+</tr>
+
+<tr><td class="l" colspan="3">
+	Na rynku wystawiane są surowce w "paczkach", mozesz kupić od razu kilka paczek
+</td></tr>
+
+
+<tr><td colspan="3">
+<form action="{{ url(this.url) }}" method=post>
+<table width="100%">
+<tr><td class="c">Oferuję: </td><td class="c">Za:</td><td class="c">&nbsp;</td></tr>
+<tr><td class="l">{{ sort_form.co }}</td>
+<td class="l">{{ sort_form.na }}</td>
+<td class="l"><input type="submit" value="Pokaż"></td>
+</tr>
+</table>
+</form>
+</td></tr>
+
+<tr>
+{% if page_list.has_previous() %}
+<td width="20" onclick="javascript:document.location='{{ url(this.url, page=page_list.previous_page_number()) }}'" class="nav_simple" valign="middle">
+	<img src="/media/img/lt.gif">
+</td>
+{% else %}<td width="20" >&nbsp;</td>{% endif %}
+
+<td>
+<table width="100%">
+<tr>
+	<td class="c">Kto: </td>
+	<td class="c">Oferuję: </td>
+	<td class="c">Ile: </td>
+	<td class="c">Za:</td>
+	<td class="c">Ile: </td>
+	<td class="c">Stosunek: </td>
+	<td class="c">Dostępne: </td>
+	<td class="c" width="150">Kup</td></tr>
+{% for r in rynek %}
+<tr>
+	<td class="l">
+		<a href="/game/usr/{{ r.planeta.owner.pk|e }}/">{{ r.planeta.owner.username|e }}</a>
+		<a href="/game/compose/{{ r.planeta.owner.pk|e }}/"><img src="/media/img/m.gif" alt="Wyslij wiadomosć" title="Wyslij wiadomosć" border="0"></a>
+	</td>
+	<td class="l">{{ r.get_co_display()|e }}</td>
+	<td class="l">{{ r.co_ile|e }}</td>
+	<td class="l">{{ r.get_na_display()|e }}</td>
+	<td class="l">{{ r.na_ile|e }}</td>
+	<td class="l">{{ r.ratio|e }}</td>
+	<td class="l">{{ r.ilosc|e }} X</td>
+	<td class="l">
+		<form action="{{ url(this.urls.take_offer) }}?id={{ r.pk|e }}" method=post>
+		<input type="text" name="ilosc" value="1" style="width:50px"><input type=submit value="Przyjmij">
+		</form>
+	</td>
+</tr>
+{% endfor %}
+</table>	
+</td>
+{% if page_list.has_next() %}
+<td width="20" onclick="javascript:document.location='{{ url(this.url, page=page_list.next_page_number()) }}'" class="nav_simple" valign="middle">
+<img src="/media/img/gt.gif">
+</td>
+{% else %}<td width="20">&nbsp;</td>{% endif %}
+</tr>
+
+<tr><td colspan="3">
+	<div style="text-align:center">
+		{% for i in paginator.page_range %}
+		{% if i == page %}<div class="paginator"><span class="paginate-current">{{ i|e }}</span></div>
+		{% else %}<div class="paginator"><span class="paginate-link"><a href="{{ url(this.url, page=i) }}">{{ i|e }}</a></span></div>
+		{% endif %}
+		{% endfor %}
+	</div>
+</td></tr>
+</table>
+
+{% endblock %}

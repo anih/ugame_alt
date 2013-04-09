@@ -1,0 +1,64 @@
+{% include 'game/simple_header.html' %}
+{% include 'game/topnav.html' %}
+
+
+<center>
+<form action="/game/compose/{{ alien_user.pk|e }}/" method="post" id="form{{ ktory|e }}">
+<table width="569"><tbody>
+
+{% if errors %}
+<tr>
+<td align=center class="c" colspan="2" style="color:red;">{% for error in errors %}{{ error|e }}<br>{% endfor %}</td></tr>
+{% endif %}
+
+<tr>
+<td class="c">Do:</td><td class="c">{{ alien_user.username|e }}</td>
+</tr>
+
+<tr>
+<td class="c">Tytuł:</td><td class="c"><input type="text" name="temat" value="{{ req.temat|e }}" style="width:400px"></td>
+</tr>
+
+
+<tr>
+<td class="c" colspan=2><textarea name="wiadomosc" rows="10" cols="60">{{ req.wiadomosc|e }}</textarea></td>
+</tr>
+
+<tr>
+<td align=center class="c" colspan=2><input type="submit" value="Wyślij"></td>
+</tr>
+
+
+
+</tbody></table>
+
+</form>
+<script language="JavaScript1.2">
+	attrs={
+		type   : 'hidden',
+     name : 'ticket1',
+	 	
+	}
+	var link = new Element('input', attrs);
+	if({{ ktory|e }}==0){
+		link.value='{{ dane1|e }}';
+		$('form0').insert(link);
+	}
+	attrs={
+		type   : 'hidden',
+     name : 'ticket2',
+	 	
+	}
+	var link2 = new Element('input', attrs);
+	if({{ ktory|e }}==1){
+		link2.value='{{ dane2|e }}';
+		$('form1').insert(link2);
+	}
+</script>
+<!--(*) Movimiento de flotas o actividad en el planeta &nbsp;&nbsp;&nbsp;&nbsp;(g) Usuario suspendido<br>(i) Jugador 2 semanas inactivo&nbsp;&nbsp;&nbsp;    (I) Jugador 4 semanas inactivo<br>
+
+<font color="#ffa0a0">Jugador fuerte </font> &nbsp;&nbsp;&nbsp; <font color="#a0ffa0">Jugador débil</font><font color="#ffffff">&nbsp;&nbsp;&nbsp; <font color="#0000ff">Modo de vacaciones</font>-->
+
+</center>
+<script language="JavaScript" src="/media/js/wz_tooltip.js"></script>
+{% include 'game/simple_footer.html' %}

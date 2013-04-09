@@ -1,0 +1,55 @@
+{% include 'game/simple_header.html' %}
+{% include 'game/topnav.html' %}
+
+
+<center>
+<table width="569">
+
+<tr>
+<td class="c">Temat:</td><td class="c">Gracz:</td><td class="c">Ostatni wpis:</td>
+</tr>
+
+{% for temat in tematy %}
+<tr>
+<td class="f">
+	<a href="/game/mes_del/{{ temat.id|e }}/"><img src="/media/images/del_mail.png" width="15"></a>
+	<a href="/game/message/{{ temat.id|e }}/">
+	{% if user == temat.nadawca %}
+		{% if temat.n_prz == 'N' %}
+		<img src="/media/images/new_mail.png"> 
+		{% else %}
+		<img src="/media/images/read_mail.png"> 
+		{% endif %}
+	{% else %}
+		{% if temat.o_prz == 'N' %}
+		<img src="/media/images/new_mail.png"> 
+		{% else %}
+		<img src="/media/images/read_mail.png"> 
+		{% endif %}
+	{% endif %}
+
+	{{ temat.temat|e }}</a></td><td class="f">{% if temat.nadawca != user %}{{ temat.nadawca.username|e }}{% else %}{{ temat.odbiorca.username|e }}{% endif %}</td><td class="f">{{ temat.data|e }}</td>
+</tr>
+{% endfor %}
+
+</table>
+
+<form action="/game/compose/" method="get">
+<table>
+<tr><td class="c" width="50px" align="center">Nick:</td><td><input type="text" name="nick"></td></tr>
+<tr><td align=center colspan=2><input type=submit value="Napisz"></td></tr>
+</table>
+</form>
+
+<table width="569">
+<tr>
+<td colspan=2 class="c">Załoga:</td>
+</tr>
+
+<tr>
+<td class="f" width="160">Admin i główny programista:</td><td class="f"><a href="/game/compose/?nick=anih">anih</a></td>
+</tr>
+</table>
+</center>
+<script language="JavaScript" src="/media/js/wz_tooltip.js"></script>
+{% include 'game/simple_footer.html' %}

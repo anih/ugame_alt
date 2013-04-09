@@ -1,0 +1,49 @@
+{% include 'game/simple_header.html' %}
+  <center>
+  <h1><font size="24">Rejestracja</font></h1>
+  <h2>Alfa Ugame</h2>
+  <p>
+      <form action="" method="post">
+    <table border="0" cellspacing="0" cellpadding="4">
+    <tr><td colspan=2 align="center"><strong>Konta nieaktywowane przez 24 godziny będą usuwane</strong></td></tr>
+     <tr>
+      <td>Adres E-Mail<br>(będzie na niego wysłany link aktywacyjny)</td>
+      <td>{{ form.email }}{{ form.email.errors|join:", " }}</td>
+     </tr>
+     <tr>
+      <td>Nazwa głównej planety (bez specjalnych znaków!)</td>
+       <td>{{ form.planet }}{{ form.planet.errors|join:", " }}</td>
+     </tr>
+     <tr>
+      <td>Login</td>
+      <td>{{ form.username }}{{ form.username.errors|join:", " }}</td>
+     </tr>
+    <tr>
+	<td>Hasło</td>
+	<td>{{ form.password1 }}{{ form.password2.errors|join:", " }}</td>
+    </tr> 
+    <tr>
+    	<td>Potwierdź hasło</td>
+    	<td>{{ form.password2 }}{{ form.password2.errors|join:", " }}</td>
+    </tr> 
+
+     <tr>
+      <td>Płeć</td>
+      <td><select name="sex">
+          <option value="">Niezdefiniowana</option>
+          <option value="M">Meżczyzna</option>
+          <option value="F">Kobieta</option>
+        </select></td>
+     </tr>
+
+<tr><td colspan=2 align="center">Rejestrując się użytkownik akceptuje <a href="/game/regulamin/" target="_blank">Regulamin</a></td></tr>
+
+     <tr>
+      <td colspan="2"><center><input type="submit" value="Rejestracja" />
+	  </center></td>
+     </tr>
+    </table>
+      </form>
+     </p>
+  <center>
+{% include 'game/simple_footer.html' %}

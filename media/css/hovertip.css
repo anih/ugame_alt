@@ -1,0 +1,57 @@
+/* classes for tooltips */
+
+.hovertip {
+	position: relative;
+    display: none; /* in case javascript is disabled */
+	width: 240px;
+	background-color: #000000;
+	font-size: 12px;
+	z-index: 100;
+	margin-left: 5px;
+	margin-top: 10px;
+}
+.hovertip_wrap0 .hovertip {
+			   margin: 0;
+}
+.hovertip_wrap0 {
+	margin-left: 5px;
+	margin-top: 10px;			   
+	z-index: 100;
+}
+
+
+.hovertip_target:hover {
+						text-decoration: none;
+					  cursor:help;
+}
+
+/* drop shadow based on http://jquery.com/test/zomg.html 
+   and also http://www.positioniseverything.net/articles/sidepages/dropshadow/dropshadow.html
+*/
+
+html>body .hovertip_wrap0 {
+		  display: none;
+}
+html>body .hovertip_wrap1 {
+		  display: block;
+  padding-top: 8px;
+  padding-left: 8px;
+}
+html>body .hovertip_wrap2 {
+		  display: block;
+}
+html>body .hovertip_wrap3 {
+        display:block;
+		position: relative;
+		left: -8px;
+		top: -8px;
+	background-color: #000000;
+}
+.hovertip_wrap3 {
+        border:1px solid #ccc;
+		/*border-color:#efefef #ccc #ccc #efefef;*/
+		padding: 5px;
+}
+span {
+	 display: inline;
+}

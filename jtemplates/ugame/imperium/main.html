@@ -1,0 +1,197 @@
+{% extends this.application+'/base.html' %}
+{% block content %}
+{% include this.application+'/game/topnav.html' %}
+
+<table align="center">
+	<tr>
+		<td class="l"><a href="?typ=surowce">surowce</a></td>
+		<td class="l"><a href="?typ=budynki">budynki</a></td>
+		<td class="l"><a href="?typ=badania">badania</a></td>
+		<td class="l"><a href="?typ=flota">flota</a></td>
+		<td class="l"><a href="?typ=obrona">obrona</a></td>
+	</tr>
+</table>
+
+<form action='{{ url(this.urls.change_planets_order) }}' method="post">
+	<table border="0" cellpadding="0" cellspacing="1" width="800">
+
+		{% if typ == 'surowce' %}
+		<tr>
+			<th>Kolej</th>
+			<th>Nazwa</th>
+			<th>Pozycja</th>
+			<th>Pola</th>
+			<td class="c" align="left">&nbsp;</td>
+			<th>Metal</th>
+			<th>Kryształ</th>
+			<th>Deuter</th>
+			<th>Energia</th>
+		</tr>
+		{% endif %}
+
+		{% if typ == 'budynki' %}
+		<tr>
+			<th>Kolej</th>
+			<th>Nazwa</th>
+			<th>Pozycja</th>
+			<th>Pola</th>
+			<td class="c" align="left">&nbsp;</td>
+			{% for b in budynki %}
+			<th><img border="0" src="/media/gebaeude/{{ b.id|e }}.gif" alt="{{ b.nazwa|e }}" title="{{ b.nazwa|e }}" width=20></th>
+			{% endfor %}
+		</tr>
+		{% endif %}
+
+		{% if typ == 'badania' %}
+		<tr>
+			{% for b in badania %}
+			<th><img border="0" src="/media/badania/{{ b.id|e }}.gif" alt="{{ b.nazwa|e }}" title="{{ b.nazwa|e }}" width=20></th>
+			{% endfor %}
+		</tr>
+		{% endif %}
+
+		{% if typ == 'flota' %}
+		<tr>
+			<th>Kolej</th>
+			<th>Nazwa</th>
+			<th>Pozycja</th>
+			<th>Pola</th>
+			<td class="c" align="left">&nbsp;</td>
+			{% for b in floty %}
+			<th><img border="0" src="/media/flota/{{ b.id|e }}.gif" alt="{{ b.nazwa|e }}" title="{{ b.nazwa|e }}" width=20></th>
+			{% endfor %}
+		</tr>
+		{% endif %}
+
+		{% if typ == 'obrona' %}
+		<tr>
+			<th>Kolej</th>
+			<th>Nazwa</th>
+			<th>Pozycja</th>
+			<th>Pola</th>
+			<td class="c" align="left">&nbsp;</td>
+			{% for b in obrona %}
+			<th><img border="0" src="/media/obrona/{{ b.id|e }}.gif" alt="{{ b.nazwa|e }}" title="{{ b.nazwa|e }}" width=20></th>
+			{% endfor %}
+		</tr>
+		{% endif %}
+
+		{% if typ == 'badania' %}
+		<tr>
+			{% for p in planety %}
+			<th>{{ p|intcomma|e }}</th>
+			{% endfor %}
+		</tr>
+		{% else %}
+
+		{% for p in planety %}
+
+		{% if typ == 'surowce' %}
+		<tr>
+			<th>
+			<input type="text" name="kolej_{{ p.planeta.pk|e }}" value="{{ p.planeta.kolej|e }}" style="width:20px">
+			</th>
+			<th><a href="{{ url(this.all_urls.game.main) }}?cp={{ p.planeta.pk|e }}">{{ p.planeta.name|e }}</a></th>
+			<th >{{ p.planeta.galaxy.galaxy|e }}:{{ p.planeta.galaxy.system|e }}:{{ p.planeta.galaxy.field|e }}</th>
+			<th >{{ p.planeta.powierzchnia_zajeta|e }} / {{ p.planeta.powierzchnia_max|e }}</th>
+			<td class="c" align="left">&nbsp;</td>
+			<th >{{ p.planeta.metal|floatformat(0)|intcomma|e }} / {{ p.planeta.metal_max|floatformat(0)|intcomma|e }}</th>
+			<th >{{ p.planeta.crystal|floatformat(0)|intcomma|e }} / {{ p.planeta.crystal_max|floatformat(0)|intcomma|e }}</th>
+			<th >{{ p.planeta.deuter|floatformat(0)|intcomma|e }} / {{ p.planeta.deuter_max|floatformat(0)|intcomma|e }}</th>
+			<th >{{ p.planeta.energy_used|floatformat(0)|intcomma|e }} / {{ p.planeta.energy_max|floatformat(0)|intcomma|e }}</th>
+		</tr>
+		{% endif %}
+
+		{% if typ == 'budynki' %}
+		<tr>
+			<th>
+			<input type="text" name="kolej_{{ p.planeta.pk|e }}" value="{{ p.planeta.kolej|e }}" style="width:20px">
+			</th>
+			<th><a href="{{ url(this.all_urls.game.main) }}?cp={{ p.planeta.pk|e }}">{{ p.planeta.name|e }}</a></th>
+			<th >{{ p.planeta.galaxy.galaxy|e }}:{{ p.planeta.galaxy.system|e }}:{{ p.planeta.galaxy.field|e }}</th>
+			<th >{{ p.planeta.powierzchnia_zajeta|e }} / {{ p.planeta.powierzchnia_max|e }}</th>
+			<td class="c" align="left">&nbsp;</td>
+			{% for b in p.budynki %}
+			<th>{{ b|intcomma|e }}</th>
+			{% endfor %}
+		</tr>
+		{% endif %}
+
+		{% if typ == 'flota' %}
+		<tr>
+			<th>
+			<input type="text" name="kolej_{{ p.planeta.pk|e }}" value="{{ p.planeta.kolej|e }}" style="width:20px">
+			</th>
+			<th><a href="{{ url(this.all_urls.game.main) }}?cp={{ p.planeta.pk|e }}">{{ p.planeta.name|e }}</a></th>
+			<th >{{ p.planeta.galaxy.galaxy|e }}:{{ p.planeta.galaxy.system|e }}:{{ p.planeta.galaxy.field|e }}</th>
+			<th >{{ p.planeta.powierzchnia_zajeta|e }} / {{ p.planeta.powierzchnia_max|e }}</th>
+			<td class="c" align="left">&nbsp;</td>
+			{% for b in p.floty %}
+			<th>{{ b|intcomma|e }}</th>
+			{% endfor %}
+		</tr>
+		{% endif %}
+
+		{% if typ == 'obrona' %}
+		<tr>
+			<th>
+			<input type="text" name="kolej_{{ p.planeta.pk|e }}" value="{{ p.planeta.kolej|e }}" style="width:20px">
+			</th>
+			<th><a href="{{ url(this.all_urls.game.main) }}?cp={{ p.planeta.pk|e }}">{{ p.planeta.name|e }}</a></th>
+			<th >{{ p.planeta.galaxy.galaxy|e }}:{{ p.planeta.galaxy.system|e }}:{{ p.planeta.galaxy.field|e }}</th>
+			<th >{{ p.planeta.powierzchnia_zajeta|e }} / {{ p.planeta.powierzchnia_max|e }}</th>
+			<td class="c" align="left">&nbsp;</td>
+			{% for b in p.obrona %}
+			<th>{{ b|intcomma|e }}</th>
+			{% endfor %}
+		</tr>
+		{% endif %}
+
+		{% endfor %}
+		{% endif %}
+
+		{% if typ == 'surowce' %}
+		<tr>
+			<td colspan=9 style="heigth:1px;background-color:white">&nbsp;</td>
+		</tr>
+		<tr>
+			<th colspan="4">RAZEM:</th>
+			<td class="c" align="left">&nbsp;</td>
+			<th>{{ razem.met|floatformat(0)|intcomma|e }}</th>
+			<th>{{ razem.cry|floatformat(0)|intcomma|e }}</th>
+			<th>{{ razem.deu|floatformat(0)|intcomma|e }}</th>
+			<th>{{ razem.ene_used|floatformat(0)|intcomma|e }}/{{ razem.ene_max|floatformat(0)|intcomma|e }}</th>
+		</tr>
+		<tr align="center">
+			<td colspan=9 >
+			<input type="submit" value="Zmień kolejność">
+			</td>
+		</tr>
+		{% endif %}
+
+		{% if typ != 'surowce' %}
+		{% if typ == 'badania' %}
+		{% else %}
+		<tr>
+			<td colspan={{ colspan|e }} style="heigth:1px;background-color:white">&nbsp;</td>
+		</tr>
+		<tr>
+			<th colspan="4">RAZEM:</th>
+			<td class="c" align="left">&nbsp;</td>
+			{% for k, v in razem.items() %}
+			<th>{{ v|intcomma|e }}</th>
+			{% endfor %}
+		</tr>
+		<tr align="center">
+			<td colspan={{ colspan|e }} >
+			<input type="submit" value="Zmień kolejność">
+			</td>
+		</tr>
+
+		{% endif %}
+		{% endif %}
+
+	</table>
+</form>
+
+{% endblock %}

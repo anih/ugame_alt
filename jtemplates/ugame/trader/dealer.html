@@ -1,0 +1,68 @@
+{% extends this.application+'/base.html' %}
+{% block content %}
+{% include this.application+'/game/topnav.html' %}
+
+
+<table align="center"><tr>
+  <td class="l"><a href="{{ url(this.urls.main) }}">rynek</a></td>
+  <td class="l"><a href="{{ url(this.urls.for_sale) }}">wystaw na rynku</a></td>
+  <td class="l"><a href="{{ url(this.urls.dealer) }}">handlarz</a></td>
+</tr></table>
+	
+<script>
+	function ustal_max(){
+		var wybrane = $('co_sprzedaje').value;
+		if(wybrane=='m'){
+			set_max('ilosc_sprzedawanego',{{ topnav.cp.metal|floatformat(0)|e }},{{ topnav.cp.metal|floatformat(0)|e }});
+		} else if(wybrane=='k'){
+			set_max('ilosc_sprzedawanego',{{ topnav.cp.crystal|floatformat(0)|e }},{{ topnav.cp.crystal|floatformat(0)|e }});
+		} else if(wybrane=='d'){
+			set_max('ilosc_sprzedawanego',{{ topnav.cp.deuter|floatformat(0)|e }},{{ topnav.cp.deuter|floatformat(0)|e }});
+		}
+	}
+</script>
+
+<table width=530>
+
+<tr>
+	<td class="c" >Handlarz</td>
+</tr>
+<tr><td class="l">
+	Handlarz ma takie ceny surowców:<br>
+	100 metalu = 60 kryształu = 30 deuteru<br>
+	przy czym zawsze pobiera 10% prowizji z surowca ktory chcemy sprzedać
+</td></tr>
+
+<tr><td>
+<form action="{{ url(this.urls.take_from_dealer) }}" method=post>
+<table width="100%">
+<tr><td class="c">Sprzedaję: </td><td class="c">Na:</td><td class="c">&nbsp;</td></tr>
+<tr><td class="l">
+<select name="co_sprzedaje" id="co_sprzedaje">
+	<option value="">--wybierz--</option>
+	<option value="m">Metal</option>
+	<option value="k">Kryształ</option>
+	<option value="d">Deuter</option>
+</select>
+<input type="text" name="ilosc_sprzedawanego" id="ilosc_sprzedawanego">
+<a href="javascript:void(0);" onclick="javascript:ustal_max();">max</a>
+<td class="l">
+<select name="sprzedaje_na" id="sprzedaje_na">
+	<option value="">--wybierz--</option>
+	<option value="m">Metal</option>
+	<option value="k">Kryształ</option>
+	<option value="d">Deuter</option>
+</select>
+</td>
+<td class="l"><input type="submit" value="Kup"></td>
+</tr>
+
+
+</table>
+</form>
+</td></tr>
+</table>
+
+
+
+{% endblock %}

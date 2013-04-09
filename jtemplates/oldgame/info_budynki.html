@@ -1,0 +1,72 @@
+{% include 'game/simple_header.html' %}
+{% include 'game/topnav.html' %}
+
+<center>
+
+<table width=519>
+  <tr>
+	<td class=c colspan=2>Konstrukcja:</td>
+  </tr>
+  <tr>
+	<th>Nazwa</th>
+	<th>{{ budynek.nazwa|e }}</th>
+  </tr>
+  <tr>
+	<th colspan=2>
+	 <table>
+	  <tr>
+	   <td><img border=0 src="/media/gebaeude/{{ budynek.pk|e }}.gif" align=top width=120 height=120></td>
+	   <td>{{ budynek.opis_dlugi|e }}</td>
+	  </tr>
+	 </table>
+	 {% if produkcja %}
+	 <table align=center>
+	 	<tr>
+		<td class="c">Poziom</td>
+		{% if pp.metal %}
+		<td class="c">Metal/Godz.</td>
+		{% endif %}
+		{% if pp.krysztal %}
+		<td class="c">Kryształ/Godz.</td>
+		{% endif %}
+		{% if pp.deuter %}
+		<td class="c">Deuter/Godz.</td>
+		{% endif %}
+		{% if pp.energia %}
+		<td class="c">Energia/Godz.</td>
+		{% endif %}
+		</tr>
+		{% for p in produkcja %}
+		<tr>
+		<th>{{ p.level|e }}</th>
+		{% if pp.metal %}
+		<th style="color:{{ pp.metal|e }}">{{ p.metal|e }}{% if p.metal_plus %}<strong>({{ p.metal_plus|e }})</strong>{% endif %}</th>
+		{% endif %}
+		{% if pp.krysztal %}
+		<th style="color:{{ pp.krysztal|e }}">{{ p.krysztal|e }}{% if p.krysztal_plus %} <strong>({{ p.krysztal_plus|e }})</strong>{% endif %}</th>
+		{% endif %}
+		{% if pp.deuter %}
+		<th style="color:{{ pp.deuter|e }}">{{ p.deuter|e }}{% if p.deuter_plus %} <strong>({{ p.deuter_plus|e }})</strong>{% endif %}</th>
+		{% endif %}
+		{% if pp.energia %}
+		<th style="color:{{ pp.energia|e }}">{{ p.energia|e }}{% if p.energia_plus %} <strong>({{ p.energia_plus|e }})</strong>{% endif %}</th>
+		{% endif %}
+		</tr>
+		{% endfor %}
+	 </table>
+	 {% endif %}
+
+	 {% if magazyn %}
+	 <table align=center>
+	 	<tr><td class="c">Poziom</td><td class="c">Pojemność</td></tr>
+		{% for p in magazyn %}
+		<tr><th style="color:#00ff00">{{ p[0]|e }}</th><th style="color:#00ff00">{{ p[1]|e }}</th></tr>
+		{% endfor %}
+	 {% endif %}
+
+	</th>
+  </tr>
+</table>
+</center>
+
+{% include 'game/simple_footer.html' %}

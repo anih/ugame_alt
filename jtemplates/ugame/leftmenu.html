@@ -1,0 +1,117 @@
+<p>
+	Wersja <span style="color:red"> 0.003 </span>
+	<br />
+	Twój numer: <span style="color:red">{{ this.user.pk }} </span>
+</p>
+
+<!-- Menu  -->
+<div class="clearfix">
+	<table class="nav nav-list bs-docs-sidenav affix pull-right" style="text-align: right" width="110" cellspacing="0" cellpadding="0">
+		<tr>
+			<td align="center"><img src="/media/gfx/ogame-produktion.jpg" width="110" height="40"/></td>
+		</tr>
+		<tr>
+			<td align="center"><a href="{{ url(this.all_urls.game.main) }}">Podgląd</a></td>
+		</tr>
+		<tr>
+			<td align="center"><a href="{{ url(this.all_urls.imperium.main) }}">Imperium</a></td>
+		</tr>
+		<tr>
+			<td align="center"><a href="{{ url(this.all_urls.buildings.main) }}">Budynki</a></td>
+		</tr>
+		<tr>
+			<td align="center"><a href="{{ url(this.all_urls.resources.main) }}">Surowce</a></td>
+		</tr>
+		<tr>
+			<td align="center"><a href="{{ url(this.all_urls.research.main) }}">Badania</a></td>
+		</tr>
+		<tr>
+			<td align="center"><a href="{{ url(this.all_urls.shipyard.main) }}">Stocznia</a></td>
+		</tr>
+		<tr>
+			<td align="center"><a href="{{ url(this.all_urls.fleet.main) }}">Flota</a></td>
+		</tr>
+		<tr>
+			<td align="center"><a href="{{ url(this.all_urls.technology.main) }}">Technologia</a></td>
+		</tr>
+		<tr>
+			<td align="center"><a href="{{ url(this.all_urls.galaxy.main) }}">Galaktyka</a></td>
+		</tr>
+		<tr>
+			<td align="center"><a href="{{ url(this.all_urls.defence.main) }}">Obrona</a></td>
+		</tr>
+		<tr>
+			<td align="center"><img src="/media/gfx/info-help.jpg" width="110" height="19"/></td>
+		</tr>
+	
+		<tr>
+			<td align="center"><a href="{{ url(this.all_urls.trader.main) }}">Handlarz</a></td>
+		</tr>
+		<tr>
+			<td align="center"><a href="{{ url(this.all_urls.alliance.main) }}">Sojusz</a></td>
+		</tr>
+		<tr>
+			<td align="center"><a href="/game/usr/" accesskey="a" target="mainframe">Profil</a></td>
+		</tr>
+		<tr>
+			<td align="center"><img src="/media/gfx/info-help.jpg" width="110" height="19"/></td>
+		</tr>
+	
+		<tr>
+			<td align="center"><a href="/game/stats/{{ stats_page|e }}" accesskey="k" target="mainframe">Statystyki</a></td>
+		</tr>
+	
+		<tr>
+			<td align="center"><a href="/game/raporty/" accesskey="c" target="mainframe">Raporty</a></td>
+		</tr>
+		<tr>
+			<td align="center"><a href="/game/messages/" accesskey="c" target="mainframe">Wiadomości</a></td>
+		</tr>
+		{% if this.user.is_staff %}
+		<tr>
+			<td align="center"><img src="/media/gfx/info-help.jpg" width="110" height="19"/></td>
+		</tr>
+		<tr>
+			<td align="center"><a href="{{ url('cms.views.wiadomosci_przeslane') }}" target="mainframe">Wiadomości przeslane</a></td>
+		</tr>
+		{% endif %}
+		<tr>
+			<td align="center"><img src="/media/gfx/user-menu.jpg" width="110" height="35"/></td>
+		</tr>
+	
+		<tr>
+			<td align="center"><a href="javascript:top.location.href='/accounts/logout/'" accesskey="s" style="color:red">Logout</a></td>
+		</tr>
+	</table>
+</div>
+<br class="clearfix" />
+<p>
+	Jeśli masz problem z wyświetlaniem strony, a używasz Internet Explorera to ściągnij:
+	<br>
+	<a href="http://firefox.pl">FIREFOX'a</a>
+</p>
+
+<p>
+
+	<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+		<input type="hidden" name="cmd" value="_s-xclick">
+		<input type="hidden" name="hosted_button_id" value="YSRHC7UEF6LHJ">
+		<input type="image" src="https://www.paypalobjects.com/en_GB/i/btn/btn_donate_LG.gif" border="0" name="submit" alt="PayPal — The safer, easier way to pay online.">
+		<img alt="" border="0" src="https://www.paypalobjects.com/pl_PL/i/scr/pixel.gif" width="1" height="1">
+	</form>
+
+	<div id="fb-root"></div>
+	<script>
+		( function(d, s, id) {
+				var js, fjs = d.getElementsByTagName(s)[0];
+				if (d.getElementById(id))
+					return;
+				js = d.createElement(s);
+				js.id = id;
+				js.src = "//connect.facebook.net/pl_PL/all.js#xfbml=1&appId=132791563446500";
+				fjs.parentNode.insertBefore(js, fjs);
+			}(document, 'script', 'facebook-jssdk'));
+	</script>
+
+	<div class="fb-like-box" data-href="https://www.facebook.com/pages/UGame/423208861049751" data-width="180" data-colorscheme="dark" data-show-faces="false" data-stream="false" data-header="false"></div>
+</p>

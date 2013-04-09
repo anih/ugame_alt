@@ -1,0 +1,177 @@
+{% load extras%}
+{% load humanize%}
+<table border="0" cellpadding="0" cellspacing="1" width="100%">
+
+<tr>
+	<td>
+	<table width="100%">
+		<tr><th class="z_b">Agresor:</th><td class="z">{{agresor.user.username}}</td></tr>
+		<tr><th class="z_b">Obronca:</th><td class="z">{{obronca.user.username}}</td></tr>
+	</table>
+	</td>
+</tr>
+
+<tr>
+	<td class="z_b">Surowce:</td>
+<tr>
+	{%if surowce%}
+	<td>
+		<table width="100%">
+			<tr>
+				<th class="z">Metal</th>
+				<th class="z">Kryształ</th>
+				<th class="z">Deuter</th>
+				<th class="z">Energia</th>
+			</tr>
+			<tr>
+				<td class="z">{{surowce.metal|floatformat:0|intcomma}}</td>
+				<td class="z">{{surowce.crystal|floatformat:0|intcomma}}</td>
+				<td class="z">{{surowce.deuter|floatformat:0|intcomma}}</td>
+				<td class="z">{{surowce.energy_used|floatformat:0|intcomma}}</td>
+			</tr>
+		</table>
+	</td>
+	{%else%}
+	<td class="z">udało się powstrzymać wyszpiegowanie surowców</td>
+	{%endif%}	
+</tr>
+
+
+<tr>
+	<td class="z_b">Budynki:</td>
+<tr>
+<tr>
+	{%if budynki%}
+	<td>
+		<table width="100%">
+			<tr>
+				{% for b in budynki.budynki %}
+					<th class="z"><img border="0" src="/media/gebaeude/{{ b.id }}.gif" alt="{{b.nazwa}}" title="{{b.nazwa}}" width=20></th>
+				{% endfor%}
+			</tr>
+			<tr>
+				{% for b in budynki.levele %}
+					<td class="z">{{b|intcomma}}</td>
+				{% endfor%}
+			</tr>
+		</table>
+	</td>
+	{%else%}
+	<td class="z">udało się powstrzymać wyszpiegowanie poziomów budynków</td>
+	{%endif%}	
+</tr>
+
+<tr>
+	<td class="z_b">Badania:</td>
+<tr>
+<tr>
+	{%if badania%}
+	<td>
+		<table width="100%">
+			<tr>
+				{% for b in badania.badania %}
+					<th class="z"><img border="0" src="/media/badania/{{ b.id }}.gif" alt="{{b.nazwa}}" title="{{b.nazwa}}" width=20></th>
+				{% endfor%}
+			</tr>
+			<tr>
+				{% for b in badania.levele %}
+					<td class="z">{{b|intcomma}}</td>
+				{% endfor%}
+			</tr>
+		</table>
+	</td>
+	{%else%}
+	<td class="z">udało się powstrzymać wyszpiegowanie poziomów badań</td>
+	{%endif%}	
+</tr>
+
+
+<tr>
+	<td class="z_b">Flota:</td>
+<tr>
+<tr>
+	{%if flota%}
+	<td>
+		<table width="100%">
+			<tr>
+				{% for b in flota.flota %}
+					<th class="z"><img border="0" src="/media/flota/{{ b.id }}.gif" alt="{{b.nazwa}}" title="{{b.nazwa}}" width=20></th>
+				{% endfor%}
+			</tr>
+			<tr>
+				{% for b in flota.levele %}
+					<td class="z">{{b|intcomma}}</td>
+				{% endfor%}
+			</tr>
+		</table>
+	</td>
+	{%else%}
+	<td class="z">udało się powstrzymać wyszpiegowanie ilości floty</td>
+	{%endif%}	
+</tr>
+
+
+<tr>
+	<td class="z_b">Obrona:</td>
+<tr>
+<tr>
+	{%if obrona%}
+	<td>
+		<table width="100%">
+			<tr>
+				{% for b in obrona.obrona %}
+					<th class="z"><img border="0" src="/media/obrona/{{ b.id }}.gif" alt="{{b.nazwa}}" title="{{b.nazwa}}" width=20></th>
+				{% endfor%}
+			</tr>
+			<tr>
+				{% for b in obrona.levele %}
+					<td class="z">{{b|intcomma}}</td>
+				{% endfor%}
+			</tr>
+		</table>
+	</td>
+	{%else%}
+	<td class="z">udało się powstrzymać wyszpiegowanie ilości obrony</td>
+	{%endif%}	
+</tr>
+
+<tr>
+	<td class="z_b">Straty agresora:</td>
+<tr>
+<tr>
+	{%if straty%}
+	<td>
+		<table width="100%">
+			<tr>
+				{% for b in straty|tabularize:2 %}
+					<th class="z">{{b.0.nazwa}}</th>
+					<td class="z">{{b.0.stracil}} z {{b.0.ilosc}}</td>
+					{%if b.1%}
+						<th class="z">{{b.1.nazwa}}</th>
+						<td class="z">{{b.1.stracil}} z {{b.1.ilosc}}</td>
+					{%else%}
+						<th class="z">&nbsp;</th>
+						<td class="z">&nbsp;</td>
+					{%endif%}
+				{% endfor%}
+			</tr>
+		</table>
+	</td>
+	{%else%}
+	<td class="z">Niestety agresor nie stracił żadnego statku</td>
+	{%endif%}	
+</tr>
+
+<tr>
+	<td class="z_b">Szansa na zestrzelenie:</td>
+</tr>
+<tr>
+	<td>
+		<table width="100%">
+			<tr>
+					<th class="z">{{szansa_na_zestrzelenie}}%</th>
+			</tr>
+		</table>
+	</td>
+</tr>
+</table>

@@ -1,0 +1,58 @@
+{% include 'game/simple_header.html' %}
+{% load extras%}
+
+<center>
+<form action="" method="post">
+<table width="300">
+
+<tr>
+<td class="c" width="100px">Temat:</td><td class="f">{{temat.temat}}</td>
+<td width="50">&nbsp;</td>
+
+</tr>
+<tr>
+	<td class="c">Kto zgłosił:</td><td class="f">{{temat.kto_raportowal.username}}</td>
+	<td class="c">Ban dla:</td>
+</tr>
+<tr>
+	<td class="c">Nadawca:</td><td class="f">{{temat.nadawca.username}}</td>
+	<td class="f"><input type="radio" name="ban_dla" value="{{temat.nadawca.pk}}"></td>
+</tr>
+<tr>
+	<td class="c">Odbiorca:</td><td class="f">{{temat.odbiorca.username}}</td>
+	<td class="f"><input type="radio" name="ban_dla" value="{{temat.odbiorca.pk}}"></td>
+</tr>
+<tr>
+	<td class="c" width="100px">Na ile dni:</td><td class="f">
+		<select name="na_dni">
+			<option value="0">bez bana</option>
+			<option value="1">1</option>
+			<option value="2">2</option>
+			<option value="3">3</option>
+			<option value="4">4</option>
+			<option value="5">5</option>
+			<option value="6">6</option>
+			<option value="7">7</option>
+		</select>
+	</td>
+	<td><input type="submit" value="Akceptuj"></td>
+</tr>
+
+<tr>
+	<td colspan="3" class="l" align="center">Uzasadnienie:<br><textarea name="powod" rows="10" cols="50"></textarea></td>
+</tr>
+
+</table>
+</form>
+<table width="400px">
+{% for w in wiadomosci %}
+<tr>
+<td class="c">{{w.kto.username}}</td>
+<td class="c" align=right>{{w.data}}</td>
+</tr>
+<tr><td colspan=2 class="f">{{w.tekst|bbcodes|linebreaks}}</td></tr>
+{% endfor %}
+</table>
+
+</center>
+{% include 'game/simple_footer.html' %}

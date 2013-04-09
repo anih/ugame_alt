@@ -1,0 +1,19 @@
+{% include 'game/simple_header.html' %}
+
+<center>
+<table width="569">
+
+<tr>
+<td class="c">Kto zgłosił:</td><td class="c">Powód:</td><td class="c">&nbsp;</td>
+</tr>
+
+{% for w in wiadomosci %}
+<tr>
+<th>{{w.kto_raportowal.username}}</th>
+<th>{{w.powod}}</th>
+<th><a href="{{ url('cms.views.wiadomosc_przeslana', kwargs={'id':w.pk}) }}" class="guzik">więcej</a></th>
+</tr>
+{% endfor %}
+
+</table>
+{% include 'game/simple_footer.html' %}

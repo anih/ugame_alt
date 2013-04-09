@@ -1,0 +1,24 @@
+{% include 'game/simple_header.html' %}
+{% include 'game/topnav.html' %}
+
+<center>
+<table align=center width=100%><tr align=center><td>
+
+<form action="" method=post enctype="multipart/form-data">
+<table border="0" cellspacing="1" cellpadding="5">
+{% for f in form %}
+<tr style="height:45px">
+	<td width=100>{{ f.label }}</td>
+	<td>{{ f }}<span style="vertical-align:top;color:red;padding-left:20px">{{ f.errors|join(', ')|e }}</span></td>
+</tr>
+{% endfor %}
+<tr bgcolor="#F3A705" align=center>
+<td colspan=2><input type=submit value="Zapisz"></td>
+</tr>
+</table>
+</form>
+
+
+</td></tr></table>
+</center>
+{% include 'game/simple_footer.html' %}

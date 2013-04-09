@@ -1,0 +1,79 @@
+{% extends this.application+'/base.html' %}
+{% block content %}
+{% include this.application+'/game/topnav.html' %}
+
+<table align="center"><tr>
+  <td class="l"><a href="{{ url(this.urls.main) }}">rynek</a></td>
+  <td class="l"><a href="{{ url(this.urls.for_sale) }}">wystaw na rynku</a></td>
+  <td class="l"><a href="{{ url(this.urls.dealer) }}">handlarz</a></td>
+</tr></table>
+<table width=530>
+
+<tr>
+	<td class="c" >Wystawianie surowców</td>
+</tr>
+<tr><td class="l">
+	Firma obsługująca przesyłanie surowców pobiera 5% prowizji za wystawienie,<br> 
+	w cenie usługi zawarty jest przechowywanie surowca i transport teleportem ;)<br>
+	Na rynku jedna osoba moze mieć 100 ofert. Oferta ważna jest 7 dni, po tym czasie gracz<br>
+	traci surowce na rzecz loterii, więcej informacji na forum.
+</td></tr>
+
+<tr><td>
+<form action="{{ url(this.url) }}" method=post>
+<table width="100%">
+	{% for f in rynek_form %}
+	<tr><td class="l">{{ f.label }}</td><td class="l">{{ f }} </td></tr>
+	{% endfor %}
+<tr><td class="l" colspan="2"><input type="submit" value="Wystaw"></td></tr>
+</tr>
+
+
+</table>
+</form>
+</td></tr>
+
+<tr><td>
+	
+<table width="100%">
+<tr>
+	<td class="c">Oferuję: </td>
+	<td class="c">Ile: </td>
+	<td class="c">Za:</td>
+	<td class="c">Ile: </td>
+	<td class="c">Stosunek: </td>
+	<td class="c">Dostępne: </td>
+	<td class="c">Data: </td>
+	<td class="c" width="100">&nbsp;</td></tr>
+{% for r in rynek_twoje %}
+<tr>
+	<td class="l">{{ r.get_co_display()|e }}</td>
+	<td class="l">{{ r.co_ile|e }}</td>
+	<td class="l">{{ r.get_na_display()|e }}</td>
+	<td class="l">{{ r.na_ile|e }}</td>
+	<td class="l">{{ r.ratio|e }}</td>
+	<td class="l">{{ r.ilosc|e }} X</td>
+	<td class="l">{{ r.data|e }}</</td>
+	<td class="l">
+		<a href="?wycofaj={{ r.pk|e }}">wycofaj</a>
+	</td>
+</tr>
+{% endfor %}
+</table>	
+</td></tr>
+
+
+<tr><td colspan="8">
+	<div style="text-align:center">
+		{% for i in paginator.page_range %}
+		{% if i == page %}<div class="paginator"><span class="paginate-current">{{ i|e }}</span></div>
+		{% else %}<div class="paginator"><span class="paginate-link"><a href="{{ url(this.url, page=i) }}">{{ i|e }}</a></span></div>
+		{% endif %}
+		{% endfor %}
+	</div>
+</td></tr>
+
+</table>
+
+
+{% endblock %}
