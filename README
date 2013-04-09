@@ -1,0 +1,4 @@
+So this code is about 6-7 years old.
+I was start writing it when there was a django 0.96_trunk ;)
+This was my first project in django and i was learning django(and python) by writing this game.
+So time to rewrite some parts and give it back to OS community az AGPL license(without media files).
