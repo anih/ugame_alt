@@ -5,7 +5,7 @@
 <table align=center width=100%><tr bgcolor="#64759E" align=center><td>
 
   <table align="center"><tr>
-  <td class="l"><a href="/game/sojusz/zaloz/">załóż</a></td>
+  <td class="l"><a href="{{ url(this.all_urls.alliance.zaloz) }}">załóż</a></td>
   </tr></table>
 
   {% if zaproszenia %}
@@ -14,8 +14,8 @@
   <tr><td colspan=3>&nbsp;</td></tr>
   {% for z in zaproszenia %}
   <tr><td align="center" class="l">{{ z.sojusz.nazwa|e }}</td>
-  <td align="center" class="l" width="50">{% if not sojusz %}<a href="/game/sojusz/dolacz/{{ z.sojusz.pk|e }}/">dołącz</a>{% else %}&nbsp;{% endif %}</td>
-  <td align="center" class="l" width="50"><a href="/game/sojusz/odrzuc/{{ z.pk|e }}/" style="color:red">odrzuć</a></td>
+  <td align="center" class="l" width="50">{% if not sojusz %}<a href="{{ url(this.all_urls.alliance.dolacz, object_id=z.sojusz_id) }}">dołącz</a>{% else %}&nbsp;{% endif %}</td>
+  <td align="center" class="l" width="50"><a href="{{ url(this.all_urls.alliance.odrzuc, object_id=z.pk) }}" style="color:red">odrzuć</a></td>
   </tr>
   <tr><td colspan=3 align="center" style="color:white;background-color:black">{{ z.text|e }}</td></tr>
   <tr><td colspan=3>&nbsp;</td></tr>

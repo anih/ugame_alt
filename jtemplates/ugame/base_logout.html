@@ -1,0 +1,34 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict //EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <meta name="verify-v1" content="V1IBcPhrc76Iv2xKcXeQyaCBkRhy01CcDal+NiwROlc="/>
+    <link rel="shortcut icon" href="/images/favicon.ico" type="/image/x-icon">
+    <title>Alfa Ugame</title>
+
+    <link rel="stylesheet" type="text/css" href="/media/css/styles.css">
+    <link rel="stylesheet" type="text/css" href="/media/css/about.css">
+    <link rel="stylesheet" type="text/css" href="/media_static/libs/bootstrap/css/bootstrap-responsive.css">
+    <script src="/media/js/registration.js"></script>
+</head>
+<body>
+<a href="#pustekuchen" style="display: none;">Link Login</a>
+
+<div id="main">
+    <div id="mainmenu">
+        <div class="menupoint">
+            Start
+        </div>
+        <a href="{{ url(this.all_urls.user.registration) }}">Rejestracja</a>
+    </div>
+
+
+    {% block content %}{% endblock %}
+    <div class="clearfix"></div>
+    <div id="downmenu">
+        <a href="/">Start</a>
+        <a href="{{ url(this.all_urls.main.regulamin) }}">Zasady</a>&nbsp; <a target="_blank"
+                                                                              href="{{ url(this.all_urls.main.regulamin) }}">OWU</a>
+    </div>
+</div>
+</body>
+</html>

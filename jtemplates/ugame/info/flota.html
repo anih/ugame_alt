@@ -1,0 +1,62 @@
+{% extends this.application+'/base.html' %}
+{% block content %}
+    {% include this.application+'/game/topnav.html' %}
+
+
+    <table width=519>
+        <tr>
+            <td class=c colspan=2>Konstrukcja:</td>
+        </tr>
+        <tr>
+            <th>Nazwa</th>
+            <th>{{ budynek.nazwa|e }}</th>
+        </tr>
+        <tr>
+            <th colspan=2>
+                <table>
+                    <tr>
+                        <td><img border=0 src="/media/flota/{{ budynek.pk|e }}.gif" align=top width=120 height=120></td>
+                        <td>{{ budynek.opis_dlugi|safe|e }}</td>
+                    </tr>
+                </table>
+                {% if produkcja %}
+                    <table align=center>
+                        <tr>
+                            <td class="c">Poziom</td>
+                            {% if pp.metal %}
+                                <td class="c">Metal/Godz.</td>
+                            {% endif %}
+                            {% if pp.krysztal %}
+                                <td class="c">Kryształ/Godz.</td>
+                            {% endif %}
+                            {% if pp.deuter %}
+                                <td class="c">Deuter/Godz.</td>
+                            {% endif %}
+                            {% if pp.energia %}
+                                <td class="c">Energia/Godz.</td>
+                            {% endif %}
+                        </tr>
+                        {% for p in produkcja %}
+                            <tr>
+                                <th>{{ p.level|e }}</th>
+                                {% if pp.metal %}
+                                    <th style="color:{{ pp.metal|e }}">{{ p.metal|e }}</th>
+                                {% endif %}
+                                {% if pp.krysztal %}
+                                    <th style="color:{{ pp.krysztal|e }}">{{ p.krysztal|e }}</th>
+                                {% endif %}
+                                {% if pp.deuter %}
+                                    <th style="color:{{ pp.deuter|e }}">{{ p.deuter|e }}</th>
+                                {% endif %}
+                                {% if pp.energia %}
+                                    <th style="color:{{ pp.energia|e }}">{{ p.energia|e }}</th>
+                                {% endif %}
+                            </tr>
+                        {% endfor %}
+                    </table>
+                {% endif %}
+            </th>
+        </tr>
+    </table>
+
+{% endblock %}

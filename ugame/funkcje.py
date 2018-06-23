@@ -7,6 +7,7 @@ from math import sqrt, ceil
 from django.contrib.auth.models import User
 from settings import GAME_SPEED, RES_SPEED, MAX_GALAXY, MAX_PLANETA, MAX_SYSTEM, FLEET_SPEED
 from ugame.cron_fun import helpers
+from ugame.models import send_error_message
 from ugame.models.all import UserProfile, Planets, Fleets, Galaxy, Flota, \
     Flota_p, Badania
 
@@ -68,9 +69,11 @@ def zawroc(flota, user):
             flota.fleet_back = 1
             flota.save(force_update=True)
         except:
-            user.message_set.create(message="Wybierz poprawną flote")
+            message="Wybierz poprawną flote"
+            send_error_message(user=user, message=message)
     else:
-        user.message_set.create(message="Nie ma takiej floty do zawrócenia")
+        message="Nie ma takiej floty do zawrócenia"
+        send_error_message(user=user, message=message)
     # except:
     #    print "lipa z zawracania"
 
@@ -155,24 +158,28 @@ def icon(request):
 def check_free_planet(user, planeta_id, system_id, galaktyka_id):
 
     if not planeta_id > 0 or planeta_id > MAX_PLANETA or not galaktyka_id > 0 or galaktyka_id > MAX_GALAXY or not system_id > 0 or system_id > MAX_SYSTEM:
-        user.message_set.create(message="Niepoprawne dane dotyczące pozycji planety w systemie planetarnym")
+        message="Niepoprawne dane dotyczące pozycji planety w systemie planetarnym"
+        send_error_message(user=user, message=message)
         return False
 
     if Galaxy.objects.filter(galaxy=galaktyka_id, system=system_id, field=planeta_id, planet__owner__isnull=False).count() > 0:
-        user.message_set.create(message="Niestety planeta " + str(galaktyka_id) + ":" + str(system_id) + ":" + str(planeta_id) + " jest już zajęta")
+        message="Niestety planeta " + str(galaktyka_id) + ":" + str(system_id) + ":" + str(planeta_id) + " jest już zajęta"
+        send_error_message(user=user, message=message)
         return False
     return True
 
 def check_is_planet(user, planeta_id, system_id, galaktyka_id):
 
     if not planeta_id > 0 or planeta_id > MAX_PLANETA or not galaktyka_id > 0 or galaktyka_id > MAX_GALAXY or not system_id > 0 or system_id > MAX_SYSTEM:
-        user.message_set.create(message="Niepoprawne dane dotyczące pozycji planety w systemie planetarnym")
+        message="Niepoprawne dane dotyczące pozycji planety w systemie planetarnym"
+        send_error_message(user=user, message=message)
         return False
     tmp = Galaxy.objects.filter(galaxy=galaktyka_id, system=system_id, field=planeta_id, planet__owner__isnull=True).count()
     print tmp
     if Galaxy.objects.filter(galaxy=galaktyka_id, system=system_id, field=planeta_id, planet__owner__isnull=True).count() > 0:
         print "kurwaaaaaaaaaaa"
-        user.message_set.create(message="Niestety planeta " + str(galaktyka_id) + ":" + str(system_id) + ":" + str(planeta_id) + " nie istnieje")
+        message="Niestety planeta " + str(galaktyka_id) + ":" + str(system_id) + ":" + str(planeta_id) + " nie istnieje"
+        send_error_message(user=user, message=message)
         return False
     return True
 
@@ -182,7 +189,8 @@ def check_mamy_kolonizator(user, planeta):
     if ilosc > 0:
         return True
     else:
-        user.message_set.create(message="Niestety nie posiadasz statku kolonizacyjnego")
+        message="Niestety nie posiadasz statku kolonizacyjnego"
+        send_error_message(user=user, message=message)
         return False
 
 def check_mamy_recycler(user, planeta):
@@ -191,7 +199,8 @@ def check_mamy_recycler(user, planeta):
     if ilosc > 0:
         return True
     else:
-        user.message_set.create(message="Niestety nie posiadasz statku recyclerskiego")
+        message="Niestety nie posiadasz statku recyclerskiego"
+        send_error_message(user=user, message=message)
         return False
 
 
@@ -200,12 +209,14 @@ def is_planet_owner(user, planeta_dane, odwrotne=False):
     planet_obj = galaxy.planet
     if not odwrotne:
         if not planet_obj.owner_id == user.pk:
-            user.message_set.create(message="Niestety planeta %s:%s:%s nie jest twoja" % (planeta_dane.galaktyka_id, planeta_dane.system_id, planeta_dane.planeta_id))
+            message="Niestety planeta %s:%s:%s nie jest twoja" % (planeta_dane.galaktyka_id, planeta_dane.system_id, planeta_dane.planeta_id)
+            send_error_message(user=user, message=message)
             return False
         return True
     else:
         if planet_obj.owner_id == user.pk:
-            user.message_set.create(message="Niestety planeta %s:%s:%s jest twoja" % (planeta_dane.galaktyka_id, planeta_dane.system_id, planeta_dane.planeta_id))
+            message="Niestety planeta %s:%s:%s jest twoja" % (planeta_dane.galaktyka_id, planeta_dane.system_id, planeta_dane.planeta_id)
+            send_error_message(user=user, message=message)
             return True
         return False
 
@@ -263,20 +274,23 @@ def get_ship_request(GraObject, planeta, request, user, planeta_dane, check_kolo
     request.session['id_statkow'] = id_statkow
 
     if bledne_ilosci:
-
-        user.message_set.create(message="Niestety wprowadziłeś błędne ilości statków")
+        message="Niestety wprowadziłeś błędne ilości statków"
+        send_error_message(user=user, message=message)
         return False
 
     if check_kolonizacja and not kolonizacyjny:
-        user.message_set.create(message="Musisz wybrać statek kolonizacyjny")
+        message="Musisz wybrać statek kolonizacyjny"
+        send_error_message(user=user, message=message)
         return False
 
     if check_recycler and not recyclerski:
-        user.message_set.create(message="Musisz wybrać statek recyclerski")
+        message="Musisz wybrać statek recyclerski"
+        send_error_message(user=user, message=message)
         return False
     if not jakikolwiek_statek:
         if wiadomosci:
-            user.message_set.create(message="Musisz wybrać statki")
+            message="Musisz wybrać statki"
+            send_error_message(user=user, message=message)
         return False
     return {"id_statkow":id_statkow, "ship_request":ship_request, "dane_floty":dane_floty, "statki_podsumowanie":statki_podsumowanie}
 
@@ -327,27 +341,31 @@ def check_ship_request(GraObject, request, planeta, planeta_dane, id_statkow, sh
     request.session['id_statkow'] = id_statkow
 
     if bledne_ilosci:
-        user.message_set.create(message="Niestety wprowadziłeś błędne ilości statków")
+        message="Niestety wprowadziłeś błędne ilości statków"
+        send_error_message(user=user, message=message)
         del request.session['id_statkow']
         del request.session['ship_request']
         del request.session['planeta_dane']
         return False
 
     if check_kolonizacja and not kolonizacyjny:
-        user.message_set.create(message="Musisz wybrać statek kolonizacyjny")
+        message="Musisz wybrać statek kolonizacyjny"
+        send_error_message(user=user, message=message)
         del request.session['id_statkow']
         del request.session['ship_request']
         del request.session['planeta_dane']
         return False
 
     if check_recycler and not recyclerski:
-        user.message_set.create(message="Musisz wybrać statek recyclerski")
+        message="Musisz wybrać statek recyclerski"
+        send_error_message(user=user, message=message)
         del request.session['id_statkow']
         del request.session['ship_request']
         del request.session['planeta_dane']
         return False
     if not jakikolwiek_statek:
-        user.message_set.create(message="Musisz wybrać statki")
+        message="Musisz wybrać statki"
+        send_error_message(user=user, message=message)
         return False
     return {"id_statkow":id_statkow, "ship_request":ship_request, "dane_floty":dane_floty, "statki_podsumowanie":statki_podsumowanie}
 
@@ -362,7 +380,8 @@ def check_surowce(request, planeta, dane_floty):
         zab_met = wieksze_od_zera(int(request.REQUEST['zab_met']))
         print "met:", zab_met, planeta.metal
         if zab_met > planeta.metal:
-            user.message_set.create(message="Nie masz tyle metalu na planecie")
+            message="Nie masz tyle metalu na planecie"
+            send_error_message(user=user, message=message)
             surowce_poprawne = False
     except:
         zab_met = 0
@@ -370,7 +389,8 @@ def check_surowce(request, planeta, dane_floty):
         zab_cry = wieksze_od_zera(int(request.REQUEST['zab_cry']))
         print "cry:", zab_cry, planeta.crystal
         if zab_cry > planeta.crystal:
-            user.message_set.create(message="Nie masz tyle kryształu na planecie")
+            message="Nie masz tyle kryształu na planecie"
+            send_error_message(user=user, message=message)
             surowce_poprawne = False
     except:
         zab_cry = 0
@@ -378,14 +398,16 @@ def check_surowce(request, planeta, dane_floty):
         zab_deu = wieksze_od_zera(int(request.REQUEST['zab_deu']))
         print "deu:", zab_deu, planeta.deuter, dane_floty.zuzycie_deuter
         if zab_deu > planeta.deuter - dane_floty.zuzycie_deuter:
-            user.message_set.create(message="Nie masz tyle deuteru na planecie")
+            message="Nie masz tyle deuteru na planecie"
+            send_error_message(user=user, message=message)
             surowce_poprawne = False
     except:
         zab_deu = 0
 
     zabieramy = zab_cry + zab_deu + zab_met
     if zabieramy > dane_floty.ladownosc:
-        user.message_set.create(message="Nie możesz zabrać tyle ładunku na statki")
+        message="Nie możesz zabrać tyle ładunku na statki"
+        send_error_message(user=user, message=message)
         surowce_poprawne = False
     if not surowce_poprawne:
          return False

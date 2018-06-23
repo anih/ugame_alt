@@ -326,6 +326,13 @@ class UserProfile(models.Model):
     class Meta:
         app_label = APP_LABEL
 
+    def get_alliance(self):
+        try:
+            return Sojusz.objects.get(czlonkowie__user=self.user)
+        except Sojusz.DoesNotExist:
+            pass
+        return None
+
 
 class Budynki_p(models.Model):
     objects = models.Manager()

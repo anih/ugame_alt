@@ -16,9 +16,9 @@
         <tr>
             <td>
                 {% if output.user_data.userprofile.podglad_flota %}
-                {% include 'game/overview_body_flota.html' %}
+                {% include this.application+'/game/overview_body_flota.html' %}
                 {% else %}
-                {% include 'game/overview_body_flota_short.html' %}
+                {% include this.application+'/game/overview_body_flota_short.html' %}
                 {% endif %}
             </td>
             <td align="center" width="50">
@@ -30,7 +30,7 @@
 	</td>
 	</tr>
 </table>
-	
+
 <table width="750">
     <tr>
         <td class="c" colspan="4">
@@ -103,10 +103,10 @@
                                     		  }
                                     		  pp.innerHTML=pp.innerHTML-1;
                                     		  window.setTimeout("t_div_bxx1();",999);
-                                    
+
                                     	  }
                                     t_div_bxx1();
-                                
+
             </script>
             {% endif %}
             {% if output.current_zajete.badanie %}
@@ -152,10 +152,10 @@
                                     	}
                                     	pp.innerHTML=pp.innerHTML-1;
                                     	window.setTimeout("t_div_bxx2();",999);
-                                    
+
                                     }
                                     t_div_bxx2();
-                                
+
             </script>
             {% endif %}
             {% if output.current_zajete.flota %}
@@ -201,10 +201,10 @@
                                     	}
                                     	pp.innerHTML=pp.innerHTML-1;
                                     	window.setTimeout("t_div_bxx3();",999);
-                                    
+
                                     }
                                     t_div_bxx3();
-                                
+
             </script>
             {% endif %}
             {% if output.current_zajete.obrona %}
@@ -250,10 +250,10 @@
                                     	}
                                     	pp.innerHTML=pp.innerHTML-1;
                                     	window.setTimeout("t_div_bxx4();",999);
-                                    
+
                                     }
                                     t_div_bxx4();
-                                
+
             </script>
             {% endif %}
             {% if output.current_zajete.building_free %}
@@ -275,17 +275,17 @@
                                 </tr>
                                 <tr>
                                     <td class="c" align="center">
-                                        <a href="/game/overview/?cp={{ p.id|e }}">przejdź</a>
+                                        <a href="?cp={{ p.id|e }}">przejdź</a>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td class="c" align="center">
-                                        <a href="/game/fs/surowce/?g={{ p.galaxy.galaxy|e }}&s={{ p.galaxy.system|e }}&p={{ p.galaxy.field|e }}">transport</a>
+                                        <a href="{{ url(this.all_urls.get('flight/materials').choose) }}?g={{ p.galaxy.galaxy|e }}&s={{ p.galaxy.system|e }}&p={{ p.galaxy.field|e }}">transport</a>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td class="c" align="center">
-                                        <a href="/game/fs/przeslij/?g={{ p.galaxy.galaxy|e }}&s={{ p.galaxy.system|e }}&p={{ p.galaxy.field|e }}">prześlij</a>
+                                        <a href="{{ url(this.all_urls.get('flight/send').choose) }}?g={{ p.galaxy.galaxy|e }}&s={{ p.galaxy.system|e }}&p={{ p.galaxy.field|e }}">prześlij</a>
                                     </td>
                                 </tr>
                             </table>

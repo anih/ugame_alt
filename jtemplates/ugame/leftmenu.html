@@ -51,21 +51,21 @@
 			<td align="center"><a href="{{ url(this.all_urls.alliance.main) }}">Sojusz</a></td>
 		</tr>
 		<tr>
-			<td align="center"><a href="/game/usr/" accesskey="a" target="mainframe">Profil</a></td>
+			<td align="center"><a href="{{ url(this.all_urls.profile.edit) }}">Profil</a></td>
 		</tr>
 		<tr>
 			<td align="center"><img src="/media/gfx/info-help.jpg" width="110" height="19"/></td>
 		</tr>
 	
 		<tr>
-			<td align="center"><a href="/game/stats/{{ stats_page|e }}" accesskey="k" target="mainframe">Statystyki</a></td>
+			<td align="center"><a href="{{ url(this.all_urls.stats.show, page=stats_page) }}">Statystyki</a></td>
 		</tr>
 	
 		<tr>
-			<td align="center"><a href="/game/raporty/" accesskey="c" target="mainframe">Raporty</a></td>
+			<td align="center"><a href="{{ url(this.all_urls.reports.list) }}">Raporty</a></td>
 		</tr>
 		<tr>
-			<td align="center"><a href="/game/messages/" accesskey="c" target="mainframe">Wiadomości</a></td>
+			<td align="center"><a href="{{ url(this.all_urls.messages.list) }}">Wiadomości</a></td>
 		</tr>
 		{% if this.user.is_staff %}
 		<tr>
@@ -80,7 +80,7 @@
 		</tr>
 	
 		<tr>
-			<td align="center"><a href="javascript:top.location.href='/accounts/logout/'" accesskey="s" style="color:red">Logout</a></td>
+			<td align="center"><a href="{{ url(this.all_urls.user.logout) }}" style="color:red">Logout</a></td>
 		</tr>
 	</table>
 </div>

@@ -1,0 +1,66 @@
+{% extends this.application+'/base.html' %}
+{% block content %}
+{% include this.application+'/game/topnav.html' %}
+
+{% if msg %}
+<table width=530>
+{% for m in msg %}
+<tr><td align="center" class="f" style="width:400px;height:30px;color:red;font-size: 10pt;font-weight: bold;">{{ m|e }}</td></tr>
+{% endfor %}
+</table>
+{% endif %}
+
+<form action="" method=post>
+<table width=530>
+
+<tr><td colspan=3 align=center><table>
+
+{% if p.has_previous() %}
+    <td><input name="statsLeft" value="&lt;-" onclick="document.location.href='{{ url(this.url, page=p.previous_page_number()) }}'" type="button"></td>{% endif %}
+{% if p.has_next() %}
+    <td><input name="statsRight" value="-&gt;" onclick="document.location.href='{{ url(this.url, page=p.next_page_number()) }}'" type="button"></td>{% endif %}
+<tr></table></td></tr>
+
+<tr class="c">
+	<td class="c">Miejsce</td>
+	<td class="c">Nick</td>
+	<td class="c">Punkty</td>
+</tr>
+	
+
+{% for s in stats %}
+<tr class="l">
+	{% if zaznaczony_user.pk == s.user.user.pk %}
+		<td bgcolor="#64759E">{{ s.miejsce|e }}</td>
+		<td bgcolor="#64759E">
+		    <a href="{{ url(this.all_urls.profile.show, object_id=s.user.user_id) }}">{{ s.user.user.username|e }}</a>
+		    <a href="{{ url(this.all_urls.messages.compose, object_id=s.user.user_id) }}">
+                <img src="/media/img/m.gif" alt="Wyslij wiadomosć" title="Wyslij wiadomosć" border="0">
+            </a>
+		</td>
+	    <td bgcolor="#64759E">{{ s.user.points|floatformat(0)|intcomma|e }}</td>
+	{% else %}
+		<td class="l">{{ s.miejsce|e }}</td>
+		<td class="l">
+		<a href="{{ url(this.all_urls.profile.show, object_id=s.user.user_id) }}">{{ s.user.user.username|e }}</a>
+		<a href="{{ url(this.all_urls.messages.compose, object_id=s.user.user_id) }}">
+            <img src="/media/img/m.gif" alt="Wyslij wiadomosć" title="Wyslij wiadomosć" border="0">
+        </a>
+		</td>
+		<td class="l">{{ s.user.points|floatformat(0)|intcomma|e }}</td>
+	{% endif %}
+</tr>
+{% endfor %}
+</table>
+</form>
+
+<form action="" method=post>
+<table width=530>
+<tr>
+	<td class="l">Gracz:<input type="text" name="user"></td>
+	<td class="l"><input type="submit" value="Pokaż"></td>
+</tr>
+</table>
+</form>
+
+{% endblock %}

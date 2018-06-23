@@ -1,0 +1,60 @@
+{% extends this.application+'/base.html' %}
+{% block content %}
+{% include this.application+'/game/topnav.html' %}
+
+<table align=center width=100%><tr align=center><td>
+
+<table border="0" cellspacing="1" cellpadding="5">
+<tr>
+<td class="c" width=100>Nick:</td>
+<th class="c">{{ u.user.username }}</th>
+<td width=100 class="c">Data urodzin:</td>
+<th class="c">{{ u.data_urodzenia }}</th>
+</tr>
+
+<tr>
+<td class="c" width=100>Płeć:</td>
+<th class="c">{{ u.get_sex_display() }}</th>
+<td width=100 class="c">Zamieszkały w:</td>
+<th class="c">{{ u.miasto }}</th>
+</tr>
+
+<tr>
+<td class="c" width=100>Punkty:</td>
+<th class="c">{{ u.points }}</th>
+<td width=100 class="c">Sojusz:</td>
+<th class="c">
+    {% set alliance = u.get_alliance() %}
+	{%if alliance %}
+	<a href="{{ url(this.all_urls.alliance.show, object_id=alliance.id) }}">{{ alliance.nazwa }}</a>
+	{%else%}
+        brak
+    {%endif%}
+</th>
+
+</tr>
+
+
+
+{% if u.avatar %}
+<tr>
+<th colspan=4 align="center"><img src="/{{ u.avatar|thumbnail }}"></th>
+</tr>
+
+{% endif %}
+
+<tr>
+<td colspan=4 class="c" align="center">Opis:</td>
+</tr>
+
+<tr>
+<th colspan=4 align="center">{{ u.sign|e|bbcodes|linebreaks }}</th>
+</tr>
+
+</table>
+
+
+</td></tr></table>
+
+
+{% endblock %}

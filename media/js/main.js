@@ -1,8 +1,3 @@
-$(function () {
-	console.log(":Asd")
-	$('.affix').affix()
-})
-
 function toInt(str){
 	if(isNaN(parseInt(str))){
 		return 0;
@@ -145,10 +140,10 @@ function t(){
 
 }
 
-function edytuj_uprawnienia(id_usera){
+function edytuj_uprawnienia(url, id_usera){
 	$.ajax({
 			type: 'GET',
-			url: '/game/sojusz/uprawnienia/'+id_usera+'/',
+			url: url,
 			timeout: 2000,
 			cache: false,
 			success: function(data){

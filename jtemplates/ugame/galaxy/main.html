@@ -1,137 +1,168 @@
 {% extends this.application+'/base.html' %}
 {% block content %}
-{% include this.application+'/game/topnav.html' %}
+    {% include this.application+'/game/topnav.html' %}
 
-<form action="/game/galaxy/" method="post" id="galaxy_form">
+    <form action="/game/galaxy/" method="post" id="galaxy_form">
 
-<table border="0"> 
-<tbody><tr>
-<td>
-<table>
-<tbody><tr>
-<td class="c" colspan="3">Galaktyka</td>
-</tr>
-<tr>
-<td class="l"><input name="galaxyLeft" value="&lt;-" onclick="document.location.href='/game/galaxy/{{ dane.galaxy-1 }}/{{ dane.system|e }}/'" type="button"></td>
-<td class="l"><input name="galaxy" value="{{ dane.galaxy|e }}" size="5" maxlength="3" tabindex="1" type="text">
-</td><td class="l"><input name="galaxyRight" value="-&gt;" onclick="document.location.href='/game/galaxy/{{ dane.galaxy+1 }}/{{ dane.system|e }}/'" type="button"></td>
-</tr>
-</tbody></table>
-</td>
-<td>
+        <table border="0">
+            <tbody>
+            <tr>
+                <td>
+                    <table>
+                        <tbody>
+                        <tr>
+                            <td class="c" colspan="3">Galaktyka</td>
+                        </tr>
+                        <tr>
+                            <td class="l"><input name="galaxyLeft" value="&lt;-"
+                                                 onclick="document.location.href='/game/galaxy/{{ dane.galaxy-1 }}/{{ dane.system|e }}/'"
+                                                 type="button"></td>
+                            <td class="l"><input name="galaxy" value="{{ dane.galaxy|e }}" size="5" maxlength="3"
+                                                 tabindex="1" type="text">
+                            </td>
+                            <td class="l"><input name="galaxyRight" value="-&gt;"
+                                                 onclick="document.location.href='/game/galaxy/
+                                                         {{ dane.galaxy+1 }}/{{ dane.system|e }}/'" type="button"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </td>
+                <td>
 
-<table>
+                    <table>
 
-<tbody><tr>
+                        <tbody>
+                        <tr>
 
-<td class="c" colspan="3">Układ Słoneczny</td>
+                            <td class="c" colspan="3">Układ Słoneczny</td>
 
-</tr>
+                        </tr>
 
-<tr>
+                        <tr>
 
-<td class="l"><input name="systemLeft" value="&lt;-" onclick="document.location.href='/game/galaxy/{{ dane.galaxy|e }}/{{ dane.system-1 }}/'" type="button"></td>
+                            <td class="l"><input name="systemLeft" value="&lt;-"
+                                                 onclick="document.location.href='/game/galaxy/{{ dane.galaxy|e }}/{{ dane.system-1 }}/'"
+                                                 type="button"></td>
 
-<td class="l"><input name="system" value="{{ dane.system|e }}" size="5" maxlength="3" tabindex="2" type="text">
+                            <td class="l"><input name="system" value="{{ dane.system|e }}" size="5" maxlength="3"
+                                                 tabindex="2" type="text">
 
-</td><td class="l"><input name="systemRight" value="-&gt;" onclick="document.location.href='/game/galaxy/{{ dane.galaxy|e }}/{{ dane.system+1 }}/'" type="button"></td>
+                            </td>
+                            <td class="l"><input name="systemRight" value="-&gt;"
+                                                 onclick="document.location.href='/game/galaxy/{{ dane.galaxy|e }}/
+                                                         {{ dane.system+1 }}/'" type="button"></td>
 
-</tr>
+                        </tr>
 
-</tbody></table>
+                        </tbody>
+                    </table>
 
-</td>
+                </td>
 
-</tr>
+            </tr>
 
-<tr>
+            <tr>
 
-<td colspan="2" align="center"> <input value="Pokaż" type="submit"></td>
+                <td colspan="2" align="center"><input value="Pokaż" type="submit"></td>
 
-</tr>
+            </tr>
 
-</tbody></table>
+            </tbody>
+        </table>
 
-</form>
+    </form>
 
-<table width="569">
+    <table width="569">
 
-<tbody><tr>
-<td class="c" colspan="8">Układ Słoneczny {{ dane.galaxy|e }}:{{ dane.system|e }}</td>
-</tr>
+        <tbody>
+        <tr>
+            <td class="c" colspan="8">Układ Słoneczny {{ dane.galaxy|e }}:{{ dane.system|e }}</td>
+        </tr>
 
-<tr>
-<td class="c">Lp</td>
-<td class="c">Planeta</td>
-<td class="c">Nazwa (aktywność)</td>
-<td class="c">Księżyc</td>
-<td class="c">Szczątki</td>
-<td class="c">Gracz (status)</td>
-<td class="c">Sojusz</td>
-<td class="c">Akcje</td>
-</tr>
+        <tr>
+            <td class="c">Lp</td>
+            <td class="c">Planeta</td>
+            <td class="c">Nazwa (aktywność)</td>
+            <td class="c">Księżyc</td>
+            <td class="c">Szczątki</td>
+            <td class="c">Gracz (status)</td>
+            <td class="c">Sojusz</td>
+            <td class="c">Akcje</td>
+        </tr>
 
 
-{% for i in fields %}
-<tr>
-<th width="30">
-<a href="#" tabindex="12">{{ loop.index|e }}</a>
-</th>
-<th width="30">
-{% if i.planet.owner %}
-<a style="cursor: pointer;" onmouseover="this.T_WIDTH=250;this.T_OFFSETX=-110;this.T_OFFSETY=-30;this.T_STICKY=true;this.T_TEMP=5000;this.T_STATIC=true;
-return escape('<table width=\'240\'><tr><td class=\'c\' colspan=\'2\'>Planeta {{ i.planet.name|escapejs|e }}[{{ dane.galaxy|e }}:{{ dane.system|e }}:{{ i.field|e }}]</td></tr><tr><th width=\'80\'><img src=\'/media/planeten/small/s_{{ i.planet.image|e }}.jpg\' height=\'75\' width=\'75\'/></th><th style=\'text-align: left\'><a href=\'/game/fs/spy/?g={{ dane.galaxy|e }}&s={{ dane.system|e }}&p={{ i.field|e }}\' onclick=\'\'>Szpieguj</a><br /><br /><a href=\'/game/fs/atak/?g={{ dane.galaxy|e }}&s={{ dane.system|e }}&p={{ i.field|e }}\'>Atakuj</a><br /><a href=\'/game/fs/surowce/?g={{ dane.galaxy|e }}&s={{ dane.system|e }}&p={{ i.field|e }}\'>Transportuj</a><br /><a href=\'/game/fs/zlom/?g={{ dane.galaxy|e }}&s={{ dane.system|e }}&p={{ i.field|e }}\'>Zbieraj złom</a></th></tr></table>');">
-<img src="/media/planeten/small/s_{{ i.planet.image|e }}.jpg" height="30" width="30"></a>
-{% endif %}
-</th>
+        {% for i in fields %}
+            <tr>
+                <th width="30">
+                    <a href="#" tabindex="12">{{ loop.index|e }}</a>
+                </th>
+                <th width="30">
+                    {% if i.planet.owner %}
+                        <a style="cursor: pointer;"
+                           onmouseover="this.T_WIDTH=250;this.T_OFFSETX=-110;this.T_OFFSETY=-30;this.T_STICKY=true;this.T_TEMP=5000;this.T_STATIC=true;
+                                   return escape('<table width=\'240\'><tr><td class=\'c\' colspan=\'2\'>Planeta {{ i.planet.name|escapejs|e }}[{{ dane.galaxy|e }}:{{ dane.system|e }}:{{ i.field|e }}]</td></tr><tr><th width=\'80\'><img src=\'/media/planeten/small/s_{{ i.planet.image|e }}.jpg\' height=\'75\' width=\'75\'/></th><th style=\'text-align: left\'><a href=\'/game/fs/spy/?g={{ dane.galaxy|e }}&s={{ dane.system|e }}&p={{ i.field|e }}\' onclick=\'\'>Szpieguj</a><br /><br /><a href=\'/game/fs/atak/?g={{ dane.galaxy|e }}&s={{ dane.system|e }}&p={{ i.field|e }}\'>Atakuj</a><br /><a href=\'/game/fs/surowce/?g={{ dane.galaxy|e }}&s={{ dane.system|e }}&p={{ i.field|e }}\'>Transportuj</a><br /><a href=\'/game/fs/zlom/?g={{ dane.galaxy|e }}&s={{ dane.system|e }}&p={{ i.field|e }}\'>Zbieraj złom</a></th></tr></table>');">
+                            <img src="/media/planeten/small/s_{{ i.planet.image|e }}.jpg" height="30" width="30"></a>
+                    {% endif %}
+                </th>
 
-<th style="white-space: nowrap;" width="130">{% if i.planet.name %}{{ i.planet.name|e }}{% endif %}</th>
+                <th style="white-space: nowrap;" width="130">{% if i.planet.name %}{{ i.planet.name|e }}{% endif %}</th>
 
-<th style="white-space: nowrap;" width="30"></th>
+                <th style="white-space: nowrap;" width="30"></th>
 
-<th style="background-image: none;" width="30">M:{{ i.metal|floatformat(0)|intcomma|e }}<br>K:{{ i.crystal|floatformat(0)|intcomma|e }}</th>
-<th width="150"> 
-{%if i.planet.owner_id>0%}
-<a style="cursor: pointer;" onmouseover="this.T_WIDTH=200;this.T_OFFSETX=-20;this.T_OFFSETY=-30;this.T_STICKY=true;this.T_TEMP=5000;return escape('<table width=\'190\'><tr><td class=\'c\' colspan=\'2\'>Gracz {{ i.planet.owner.username|escapejs|e }}</td></tr><tr><td><a href=\'/game/compose/{{ i.planet.owner.pk|e }}\'>Wyślij wiadomość</a></td></tr><tr><td><a href=\'#\'>Dodaj do przyjaciół</a></td></tr><tr><td><a href=\'/game/usr/{{ i.planet.owner.pk|e }}/\'>Zobacz profil</a></td></tr></table>');"><span class="noob">{{ i.planet.owner.username|e }}</span></a>
-{%else%}&nbsp;{%endif%}
-</th>
+                <th style="background-image: none;" width="30">M:{{ i.metal|floatformat(0)|intcomma|e }}
+                <br>K:{{ i.crystal|floatformat(0)|intcomma|e }}</th>
+                <th width="150">
+                    {% if i.planet.owner_id>0 %}
+                        <a style="cursor: pointer;"
+                           onmouseover="this.T_WIDTH=200;this.T_OFFSETX=-20;this.T_OFFSETY=-30;this.T_STICKY=true;this.T_TEMP=5000;return escape('<table width=\'190\'><tr><td class=\'c\' colspan=\'2\'>Gracz {{ i.planet.owner.username|escapejs|e }}</td></tr><tr><td><a href=\'/game/compose/{{ i.planet.owner.pk|e }}\'>Wyślij wiadomość</a></td></tr><tr><td><a href=\'#\'>Dodaj do przyjaciół</a></td></tr><tr><td><a href=\'/game/usr/{{ i.planet.owner.pk|e }}/\'>Zobacz profil</a></td></tr></table>');"><span
+                                class="noob">{{ i.planet.owner.username|e }}</span></a>
+                    {% else %}&nbsp;{% endif %}
+                </th>
 
-<th width="80">
-	{%if models.Czlonkowie.objects.filter(user=i.planet.owner).count() > 0 %}
-	<a href="/game/sojusz_podglad/{{ models.Sojusz.objects.get(czlonkowie__user=i.planet.owner).pk}}/">{{ models.Sojusz.objects.get(czlonkowie__user=i.planet.owner).nazwa|e }}</a>
-	{%else%}&nbsp;{%endif%}
-</th>
+                <th width="80">
+                    {% if models.Czlonkowie.objects.filter(user=i.planet.owner).count() > 0 %}
+                        <a href="/game/sojusz_podglad/{{ models.Sojusz.objects.get(czlonkowie__user=i.planet.owner).pk }}/">{{ models.Sojusz.objects.get(czlonkowie__user=i.planet.owner).nazwa|e }}</a>
+                    {% else %}&nbsp;{% endif %}
+                </th>
 
-<th style="white-space: nowrap;" width="125">
-{% if i.planet.owner %}
-<a href="/game/fs/spy/?g={{ dane.galaxy|e }}&s={{ dane.system|e }}&p={{ i.field|e }}"><img src="/media/img/e.gif" alt="Szpieguj" title="Szpieguj" border="0"></a>
-<a href="/game/compose/{{ i.planet.owner.pk|e }}"><img src="/media/img/m.gif" alt="Wyslij wiadomosć" title="Wyslij wiadomosć" border="0"></a>
-<a href="/game/fleet/?fast_fleet_add={{ i.planet.pk|e }}"><img src="/media/img/b.gif" alt="Dodaj do przyjaciół" title="Dodaj do szybkiej floty" border="0"></a>
-{% else %}
-<a href="/game/fs/kolonizuj/?g={{ dane.galaxy|e }}&s={{ dane.system|e }}&p={{ loop.index|e }}">Kolonizuj</a>
-{% endif %}
-</th>
-</tr>
-{% endfor %}
+                <th style="white-space: nowrap;" width="125">
+                    {% if i.planet.owner %}
+                        <a href="/game/fs/spy/?g={{ dane.galaxy|e }}&s={{ dane.system|e }}&p={{ i.field|e }}"><img
+                                src="/media/img/e.gif" alt="Szpieguj" title="Szpieguj" border="0"></a>
+                        <a href="/game/compose/{{ i.planet.owner.pk|e }}"><img src="/media/img/m.gif"
+                                                                               alt="Wyslij wiadomosć"
+                                                                               title="Wyslij wiadomosć" border="0"></a>
+                        <a href="/game/fleet/?fast_fleet_add={{ i.planet.pk|e }}"><img src="/media/img/b.gif"
+                                                                                       alt="Dodaj do przyjaciół"
+                                                                                       title="Dodaj do szybkiej floty"
+                                                                                       border="0"></a>
+                    {% else %}
+                        <a href="{{ url(this.all_urls.get('flight/colonize').choose) }}?g={{ dane.galaxy|e }}&s={{ dane.system|e }}&p={{ loop.index|e }}">Kolonizuj</a>
+                    {% endif %}
+                </th>
+            </tr>
+        {% endfor %}
 
-<tr style="display: none;" id="fleetstatusrow"><th colspan="8"><!--<div id="fleetstatus"></div>-->
+        <tr style="display: none;" id="fleetstatusrow">
+            <th colspan="8"><!--<div id="fleetstatus"></div>-->
 
-<table style="font-weight: bold;" id="fleetstatustable" width="100%">
+                <table style="font-weight: bold;" id="fleetstatustable" width="100%">
 
-<!-- will be filled with content later on while processing ajax replys -->
+                    <!-- will be filled with content later on while processing ajax replys -->
 
-</table>
+                </table>
 
-</th>
+            </th>
 
-</tr>
+        </tr>
 
-</tbody></table>
+        </tbody>
+    </table>
 
-<!--(*) Movimiento de flotas o actividad en el planeta &nbsp;&nbsp;&nbsp;&nbsp;(g) Usuario suspendido<br>(i) Jugador 2 semanas inactivo&nbsp;&nbsp;&nbsp;    (I) Jugador 4 semanas inactivo<br>
+    <!--(*) Movimiento de flotas o actividad en el planeta &nbsp;&nbsp;&nbsp;&nbsp;(g) Usuario suspendido<br>(i) Jugador 2 semanas inactivo&nbsp;&nbsp;&nbsp;    (I) Jugador 4 semanas inactivo<br>
 
-<font color="#ffa0a0">Jugador fuerte </font> &nbsp;&nbsp;&nbsp; <font color="#a0ffa0">Jugador débil</font><font color="#ffffff">&nbsp;&nbsp;&nbsp; <font color="#0000ff">Modo de vacaciones</font>-->
+    <font color="#ffa0a0">Jugador fuerte </font> &nbsp;&nbsp;&nbsp; <font color="#a0ffa0">Jugador débil</font><font color="#ffffff">&nbsp;&nbsp;&nbsp; <font color="#0000ff">Modo de vacaciones</font>-->
 
-<script language="JavaScript" src="/media/js/wz_tooltip.js"></script>
+    <script language="JavaScript" src="/media/js/wz_tooltip.js"></script>
 
 {% endblock %}

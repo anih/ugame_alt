@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from ..generic.cms_metaclass import CmsMetaclass
-from ugame.klasy.BaseGame import BaseGame
 from ugame.funkcje import Output
 from ugame.models.all import Obrona, Obrona_p, Buildings, Obrona_f
 from settings import GAME_SPEED
@@ -19,8 +18,7 @@ class CMS(object):
     __metaclass__ = CmsMetaclass
 
     def site_main(self):
-        GraObject = BaseGame(self)
-        current_planet = GraObject.get_current_planet()
+        current_planet = self.game.get_current_planet()
 
         fl = Obrona.objects.all().order_by("id")
         for f in fl:
@@ -29,11 +27,11 @@ class CMS(object):
                 try:
                     ilosc = int(self.request.POST[key])
                     if ilosc > 0:
-                        GraObject.buduj_obrone(f, ilosc)
+                        self.game.buduj_obrone(f, ilosc)
                 except:
                     pass
         if "anuluj" in self.request.REQUEST:
-            GraObject.anuluj_obrone(self.request.REQUEST['anuluj'])
+            self.game.anuluj_obrone(self.request.REQUEST['anuluj'])
         floty = []
         for f in fl:
             flota = Output()
@@ -52,7 +50,7 @@ class CMS(object):
             flota.c_czas = (f.c_cry + f.c_met) / GAME_SPEED
             flota.mozna = 1
             for i in Buildings.objects.filter(minus_czas_flota_tak__gt=0):
-                level = floor(GraObject.bud_get_level(current_planet, i.id))
+                level = floor(self.game.bud_get_level(current_planet, i.id))
                 flota.c_czas = flota.c_czas * eval(i.minus_czas_flota)
             flota.c_czas = pretty_time(int(flota.c_czas * 60 * 60))
 
@@ -105,7 +103,7 @@ class CMS(object):
             for zal in zaleznosc:
                 budynek = split(zal, ",")
                 if len(budynek) > 1:
-                    if(int(budynek[1]) > int(GraObject.bud_get_level(current_planet, budynek[0]))):
+                    if(int(budynek[1]) > int(self.game.bud_get_level(current_planet, budynek[0]))):
                         flota.niedodawaj = 1
                         break
             if not flota.niedodawaj:
@@ -113,7 +111,7 @@ class CMS(object):
                 for zal in zaleznosc:
                     badanie = split(zal, ",")
                     if len(badanie) > 1:
-                        if(int(badanie[1]) > int(GraObject.bad_get_level(GraObject.user, badanie[0]))):
+                        if(int(badanie[1]) > int(self.game.bad_get_level(self.game.user, badanie[0]))):
                             flota.niedodawaj = 1
                             break
             if not flota.niedodawaj:
@@ -133,7 +131,7 @@ class CMS(object):
         except:
             kolejka = None
 
-        topnav = topnav_site(GraObject)
+        topnav = topnav_site(self.game)
         return {
                 "floty": floty, 'topnav': topnav,
                 "kolejka": kolejka,

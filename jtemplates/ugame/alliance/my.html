@@ -1,51 +1,87 @@
 {% extends this.application+'/base.html' %}
 {% block content %}
-{% include this.application+'/game/topnav.html' %}
+    {% include this.application+'/game/topnav.html' %}
 
-<table align=center width="650"><tr align=center><td>
+    <table align=center width="650">
+        <tr align=center>
+            <td>
 
-  {% include this.application+'/'+this.module+'/menu.html' %}
-  
-  <table width="100%"><tr><td class="c" align="center">Twój sojusz</td></tr></table>
-  
+                {% include this.application+'/'+this.module+'/menu.html' %}
 
-  
-  <table border="0" cellpadding="2" cellspacing="3" style="padding:5px"  width="100%">
-  	
-  <tr><td class="c" align="center">Nazwa:</td><td align="center" class="l"><strong>{{ sojusz.nazwa|e }}</strong></td></tr>
-  
- 	{% if sojusz.avatar %}
-		<tr><td align="center" class="c" colspan="2"><strong>Avatar:</strong></td></tr>
-		<tr><th align="center" colspan="2"><img src="/media/{{ sojusz.avatar|thumbnail|e }}"></th></tr>
-	{% endif %}
-  
-  {% if sojusz.profil %}
-  	<tr><td align="center" class="c" colspan="2"><strong>Profil:</strong></td></tr>
-	<tr><th align="center" colspan="2">{{ sojusz.profil|e|bbcodes|linebreaks }}</th></tr>
-  {% endif %}
-  
-  {% if GraObject.soj_czy_moze_edytowac_opis() %}
-  <tr><td class="c" align="center" colspan=2><a href="/game/sojusz/profil_edytuj/"><font color=#00FF00>edytuj</font></a></td></tr>
-  {% endif %}
-  
-  </table>
-  
-  {% if zaproszenia %}
-  <table border="0" cellpadding="0" cellspacing="1" width="100%">
-  <tr><td align="center" class="c" colspan=3><strong>Zaproszenia z innych sojuszy:</strong></td></tr>
-  <tr><td colspan=3>&nbsp;</td></tr>
-  {% for z in zaproszenia %}
-  <tr><td align="center" class="l">{{ z.sojusz.nazwa|e }}</td>
-  <td align="center" class="l" width="50">&nbsp;</td>
-  <td align="center" class="l" width="50"><a href="/game/sojusz/odrzuc/{{ z.pk|e }}/" style="color:red">odrzuć</a></td>
-  </tr>
-  <tr><td colspan=3 align="center" style="color:white;background-color:black">{{ z.text|e }}</td></tr>
-  <tr><td colspan=3>&nbsp;</td></tr>
-  {% endfor %}
-  <tr><td class="c" align="center" colspan=3>dołączyć możesz jeśli nie jesteś już w jakimś sojuszu</td></tr>
-  </table>
-  {% endif %}
+                <table width="100%">
+                    <tr>
+                        <td class="c" align="center">Twój sojusz</td>
+                    </tr>
+                </table>
 
-</td></tr></table>
+
+                <table border="0" cellpadding="2" cellspacing="3" style="padding:5px" width="100%">
+
+                    <tr>
+                        <td class="c" align="center">Nazwa:</td>
+                        <td align="center" class="l"><strong>{{ sojusz.nazwa|e }}</strong></td>
+                    </tr>
+
+                    {% if sojusz.avatar %}
+                        <tr>
+                            <td align="center" class="c" colspan="2"><strong>Avatar:</strong></td>
+                        </tr>
+                        <tr>
+                            <th align="center" colspan="2"><img src="/media/{{ sojusz.avatar|thumbnail|e }}"></th>
+                        </tr>
+                    {% endif %}
+
+                    {% if sojusz.profil %}
+                        <tr>
+                            <td align="center" class="c" colspan="2"><strong>Profil:</strong></td>
+                        </tr>
+                        <tr>
+                            <th align="center" colspan="2">{{ sojusz.profil|e|bbcodes|linebreaks }}</th>
+                        </tr>
+                    {% endif %}
+
+                    {% if this.game.soj_czy_moze_edytowac_opis() %}
+                        <tr>
+                            <td class="c" align="center" colspan=2><a href="{{ url(this.urls.profil_edytuj) }}"><font
+                                    color=#00FF00>edytuj</font></a></td>
+                        </tr>
+                    {% endif %}
+
+                </table>
+
+                {% if zaproszenia %}
+                    <table border="0" cellpadding="0" cellspacing="1" width="100%">
+                        <tr>
+                            <td align="center" class="c" colspan=3><strong>Zaproszenia z innych sojuszy:</strong></td>
+                        </tr>
+                        <tr>
+                            <td colspan=3>&nbsp;</td>
+                        </tr>
+                        {% for z in zaproszenia %}
+                            <tr>
+                                <td align="center" class="l">{{ z.sojusz.nazwa|e }}</td>
+                                <td align="center" class="l" width="50">&nbsp;</td>
+                                <td align="center" class="l" width="50"><a href="{{ url(this.urls.odrzuc, object_id=z.pk) }}"
+                                                                           style="color:red">odrzuć</a></td>
+                            </tr>
+                            <tr>
+                                <td colspan=3 align="center"
+                                    style="color:white;background-color:black">{{ z.text|e }}</td>
+                            </tr>
+                            <tr>
+                                <td colspan=3>&nbsp;</td>
+                            </tr>
+                        {% endfor %}
+                        <tr>
+                            <td class="c" align="center" colspan=3>dołączyć możesz jeśli nie jesteś już w jakimś
+                                sojuszu
+                            </td>
+                        </tr>
+                    </table>
+                {% endif %}
+
+            </td>
+        </tr>
+    </table>
 
 {% endblock %}

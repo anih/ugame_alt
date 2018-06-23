@@ -1,19 +1,25 @@
 # -*- coding: utf-8 -*-
 from __future__ import division
+
 from datetime import datetime
 
+from django.contrib import messages
 from django.contrib.auth.models import User
+
+from ugame.models.all import Planets, UserProfile
 from ..klasy.BaseHelper import BaseHelper
-from ..klasy.CronBase import CronBase
 from ..klasy.BuildBuilding import BuildBuilding
 from ..klasy.BuildFleet import BuildFleet
 from ..klasy.BuildObrona import BuildObrona
 from ..klasy.BuildTech import BuildTech
-from ..klasy.SojuszHelper import SojuszHelper
 from ..klasy.CacheClass import CacheClass
-from ugame.models.all import UserProfile, Planets
+from ..klasy.CronBase import CronBase
+from ..klasy.SojuszHelper import SojuszHelper
 
-class Output():pass
+
+class Output(): pass
+
+
 class BaseGame(BaseHelper, CronBase, BuildBuilding, BuildFleet, BuildObrona, BuildTech, SojuszHelper):
     view = None
     request = None
@@ -21,9 +27,10 @@ class BaseGame(BaseHelper, CronBase, BuildBuilding, BuildFleet, BuildObrona, Bui
     userprofile = None
     cache_obj = None
     czy_zapis = False
+
     def __init__(self, view, czas_teraz=None, cron=True):
         self.view = view
-        self.request = view.request
+        self.request = getattr(view, 'request', None)
         self.user = None
         self.userprofile = None
         self.current_planet_id = None
@@ -42,7 +49,10 @@ class BaseGame(BaseHelper, CronBase, BuildBuilding, BuildFleet, BuildObrona, Bui
 
     def __del__(self):
         if not self.czy_zapis:
-            print self.user.username, self.request.path, "    aaaaaaaaaaaaaaaaaaaaaaadddddddddddddddddddddddaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            print self.user.username, self.request.path, \
+                "    " \
+                "aaaaaaaaaaaaaaaaaaaaaaadddddddddddddddddddddddaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+
     def save_all(self):
         self.czy_zapis = True
         self.user.save(force_update=True)
@@ -58,7 +68,7 @@ class BaseGame(BaseHelper, CronBase, BuildBuilding, BuildFleet, BuildObrona, Bui
         # rollback()
 
     def send_message(self, message):
-        self.user.message_set.create(message=message)
+        messages.info(self.request, message=message)
         return True
 
     def userprofile_podglad_flota(self):
@@ -69,33 +79,33 @@ class BaseGame(BaseHelper, CronBase, BuildBuilding, BuildFleet, BuildObrona, Bui
                 self.userprofile.podglad_flota = True
 
     def lock_user(self):
-            if not self.request:
-                raise NameError('BaseGame->lock_user')
-
-            self.user = User.objects.select_for_update().get(pk=self.view.user.id)
-            self.userprofile = UserProfile.objects.select_for_update().get(user=self.user)
-            try:
-                if self.request.REQUEST:
-                    self.user.last_login = datetime.now()
-            except:
-                print "----------------------------------------------------aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa------------------------------------"
-                pass
-            self.change_planet()
-            if Planets.objects.filter(pk=self.userprofile.current_planet_id).count() > 0:
-                self.current_planet_id = self.userprofile.current_planet_id
-            else:
-                self.userprofile.current_planet = Planets.objects.select_for_update().filter(owner=self.user)[0]
-                self.current_planet_id = self.userprofile.current_planet_id
+        self.user = User.objects.select_for_update().get(pk=self.view.user.id)
+        self.userprofile = UserProfile.objects.select_for_update().get(user=self.user)
+        try:
+            if self.request:
+                self.user.last_login = datetime.now()
+        except:
+            print "----------------------------------------------------aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" \
+                  "------------------------------------"
+            pass
+        self.change_planet()
+        if Planets.objects.filter(pk=self.userprofile.current_planet_id).count() > 0:
+            self.current_planet_id = self.userprofile.current_planet_id
+        else:
+            self.userprofile.current_planet = Planets.objects.select_for_update().filter(owner=self.user)[0]
+            self.current_planet_id = self.userprofile.current_planet_id
 
     def lock_alien_user(self, user_id):
-            user = User.objects.select_for_update().get(pk=user_id)
-            userprofile = UserProfile.objects.select_for_update().get(user=user)
-            return user, userprofile
+        user = User.objects.select_for_update().get(pk=user_id)
+        userprofile = UserProfile.objects.select_for_update().get(user=user)
+        return user, userprofile
 
     def change_planet(self):
-        if "cp" in self.request.REQUEST:
-            if int(self.request.REQUEST['cp']) > 0:
-                if self.user.planets_set.filter(pk=self.request.REQUEST['cp']).count() > 0:
+        if not self.request:
+            return
+        if "cp" in self.request.GET:
+            if int(self.request.GET['cp']) > 0:
+                if self.user.planets_set.filter(pk=self.request.GET['cp']).count() > 0:
 
-                    planeta_nowa = self.get_planet(self.request.REQUEST['cp'])
+                    planeta_nowa = self.get_planet(self.request.GET['cp'])
                     self.userprofile.current_planet = planeta_nowa

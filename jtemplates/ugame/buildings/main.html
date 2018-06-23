@@ -32,9 +32,9 @@
 	{% if builds %}
 	{% for b in builds %}
 	<tr>
-		<td class="l"><a href="/game/info/bud/{{ b.id|e }}"> <img border="0" src="/media/gebaeude/{{ b.id|e }}.gif" align="top" width="120" height="120"> </a></td>
+		<td class="l"><a href="{{ url(this.all_urls.info.budynki, object_id=b.id) }}"> <img border="0" src="/media/gebaeude/{{ b.id|e }}.gif" align="top" width="120" height="120"> </a></td>
 
-		<td class="l"><a href="/game/info/bud/{{ b.id|e }}">{{ b.nazwa|e }}</a> (Poziom {{ b.level_faktyczny|e }})
+		<td class="l"><a href="{{ url(this.all_urls.info.budynki, object_id=b.id) }}">{{ b.nazwa|e }}</a> (Poziom {{ b.level_faktyczny|e }})
 		<br>
 		{{ b.opis|e }}
 		<br>

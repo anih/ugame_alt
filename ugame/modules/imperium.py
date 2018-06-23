@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
+from django.http import HttpResponseRedirect
+
+from ugame.models import send_error_message
 from ..generic.cms_metaclass import CmsMetaclass
-from ugame.klasy.BaseGame import BaseGame
 from ugame.topnav import topnav_site, Output
 from ugame.models.all import Buildings, Badania, Flota, Obrona
 from utils.jinja.filters import url
-from django.http import HttpResponseRedirect
 
 
 class CMS(object):
@@ -20,8 +21,7 @@ class CMS(object):
         except:
             typ = None
 
-        GraObject = BaseGame(self)
-        planety = GraObject.get_all_planets()
+        planety = self.game.get_all_planets()
 
         planets = []
         budynki = None
@@ -34,25 +34,25 @@ class CMS(object):
             budynki = Buildings.objects.all().order_by('id')
             colspan = len(budynki)
             for p_id in planety:
-                GraObject.cron_function(p_id)
-                planeta = GraObject.get_planet(p_id)
+                self.game.cron_function(p_id)
+                planeta = self.game.get_planet(p_id)
                 pl = Output()
                 pl.planeta = planeta
                 pl.budynki = []
                 for b in budynki:
-                    level = GraObject.bud_get_level(planeta, b.pk)
+                    level = self.game.bud_get_level(planeta, b.pk)
                     if b.pk in razem:
                         razem[b.pk] += level
                     else:
                         razem[b.pk] = level
                     pl.budynki.append(level)
-                # pl.planeta.powierzchnia_max =  planeta.powierzchnia_max
+                    # pl.planeta.powierzchnia_max =  planeta.powierzchnia_max
                 planets.append(pl)
         elif typ == 'badania':
             badania = Badania.objects.all().order_by('id')
             colspan = len(badania)
             for b in badania:
-                level = GraObject.bad_get_level(GraObject.user, b.pk)
+                level = self.game.bad_get_level(self.game.user, b.pk)
                 if b.pk in razem:
                     razem[b.pk] += level
                 else:
@@ -63,8 +63,8 @@ class CMS(object):
             floty = Flota.objects.all().order_by('id')
             colspan = len(floty)
             for p_id in planety:
-                GraObject.cron_function(p_id)
-                planeta = GraObject.get_planet(p_id)
+                self.game.cron_function(p_id)
+                planeta = self.game.get_planet(p_id)
                 pl = Output()
                 pl.planeta = planeta
                 pl.floty = []
@@ -83,8 +83,8 @@ class CMS(object):
             obrona = Obrona.objects.all().order_by('id')
             colspan = len(obrona)
             for p_id in planety:
-                GraObject.cron_function(p_id)
-                planeta = GraObject.get_planet(p_id)
+                self.game.cron_function(p_id)
+                planeta = self.game.get_planet(p_id)
                 pl = Output()
                 pl.planeta = planeta
                 pl.obrona = []
@@ -107,8 +107,8 @@ class CMS(object):
             razem['ene_used'] = 0
             razem['ene_max'] = 0
             for p_id in planety:
-                planeta = GraObject.get_planet(p_id)
-                GraObject.cron_function(p_id)
+                planeta = self.game.get_planet(p_id)
+                self.game.cron_function(p_id)
                 pl = Output()
                 pl.planeta = planeta
                 razem['met'] += planeta.metal
@@ -120,27 +120,28 @@ class CMS(object):
                 planets.append(pl)
         colspan += 5
 
-        topnav = topnav_site(GraObject)
+        topnav = topnav_site(self.game)
         return {
-                'topnav': topnav, "colspan": colspan, "razem": razem,
-                "planety": planets, "budynki": budynki, "badania": badania,
-                "obrona": obrona, "floty": floty, "typ": typ
-                }
+            'topnav': topnav, "colspan": colspan, "razem": razem,
+            "planety": planets, "budynki": budynki, "badania": badania,
+            "obrona": obrona, "floty": floty, "typ": typ
+        }
+
     site_main.url = "^ugame/imperium/$"
 
     def site_change_planets_order(self):
-        GraObject = BaseGame(self)
-        planety = GraObject.get_all_planets()
+        planety = self.game.get_all_planets()
 
         for p_id in planety:
-            planeta = GraObject.get_planet(p_id)
+            planeta = self.game.get_planet(p_id)
             kolej_str = 'kolej_%s' % (p_id)
             if kolej_str in self.request.POST:
                 try:
                     planeta.kolej = int(self.request.POST[kolej_str])
                 except:
                     pass
-        GraObject.user.message_set.create(message='Kolejność planet została uaktualniona')
+        message='Kolejność planet została uaktualniona'
+        send_error_message(user=self.game.user, message=message)
 
         redirect_url = url(self.urls.main)
         if 'HTTP_REFERER' in self.request.META:

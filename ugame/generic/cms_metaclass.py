@@ -1,7 +1,11 @@
 # -*- coding: utf-8 -*-
+from math import ceil
 from urllib import quote, urlencode
 from inspect import getargspec
 from django.core.urlresolvers import RegexURLPattern, reverse, NoReverseMatch
+from settings import STATS_PERPAGE
+from ugame.klasy.BaseGame import BaseGame
+from ugame.models import UserProfile
 from utils.jinja.fun_jinja import jrender
 from django.http import HttpResponseRedirect
 from django.contrib.auth import REDIRECT_FIELD_NAME
@@ -114,8 +118,10 @@ def render_html(new_self, config, response_data,):
         response_data["this"] = new_self
         response_data["urls"] = urls
         response_data['request'] = new_self.request
-        response_data['cms_user'] = new_self.user
+        response_data['user'] = new_self.user
         response_data['user_messages'] = get_messages(new_self.request)
+        if new_self.user and new_self.user.is_active:
+            response_data["stats_page"] = int(ceil(float(UserProfile.objects.filter(points__gt=new_self.user.userprofile.points).count()) / STATS_PERPAGE))
 
         response_data["url"] = url_wrapper(new_self.request, response_data, config, new_self.kwargs)
         response_data["back_url"] = back_url_wrapper(new_self.request, config, new_self.kwargs)
@@ -204,7 +210,7 @@ class CmsMetaclass(type):
         application = CmsMetaclass.__module__.split(".", 1)[0]
 
         def view(request, *args, **kwargs):
-            application_user = AnonymousUser()
+            application_user = None
             if MODULE_AUTH_SESSION_KEY in request.session:
                 try:
                     application_user = User.objects.get(pk=request.session[MODULE_AUTH_SESSION_KEY])
@@ -213,11 +219,12 @@ class CmsMetaclass(type):
 
             new_self = self()
             setattr(request, application, application_user)
+            request.user = application_user
             set_user(application_user)
 
             real_function = getattr(new_self, func)
             if not getattr(real_function, "without_user", False):
-                if not application_user.is_authenticated() or (not application_user.is_superuser and not application_user.is_staff):
+                if not application_user or not application_user.is_authenticated() or (not application_user.is_superuser and not application_user.is_staff):
                     return HttpResponseRedirect('%s?%s=%s' % (reverse(self.all_urls.user.login), REDIRECT_FIELD_NAME, quote(request.get_full_path())))
 
                 if getattr(self, "superuser", False) and not application_user.is_superuser:
@@ -230,6 +237,10 @@ class CmsMetaclass(type):
             new_self.kwargs = kwargs
             new_self.url = config.urlname
 
+            if application_user:
+                new_self.game = BaseGame(new_self)
+            else:
+                new_self.game = None
             old_module_history = []
             if 'h' in request.session:
                 if new_self.module in request.session['h']:
@@ -246,6 +257,9 @@ class CmsMetaclass(type):
                     else:
                         old_module_history.append(history_object)
                 request.session["h"] = {new_self.module: old_module_history}
+
+            if new_self.game:
+                new_self.game.save_all()
 
             if result_type == 'html':
                 return render_html(new_self, config, response_data)

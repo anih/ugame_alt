@@ -1,7 +1,7 @@
 
 <html>
 <head>
-<!-- TradeDoubler site verification 1620297 --> 
+<!-- TradeDoubler site verification 1620297 -->
 <title>Alfa Ugame</title>
 <link rel="SHORTCUT ICON" href="favicon.ico">
 <link href="/media_static/libs/bootstrap/css/bootstrap.css" rel="stylesheet">
@@ -54,9 +54,9 @@
     });
 </script>
 
-<div class="container-fluid">
-  <div class="row-fluid">
-    <div class="span1 bs-docs-sidebar">
+<div class="container">
+  <div class="row">
+    <div class="span3 bs-docs-sidebar">
     	{% include this.application+'/leftmenu.html' %}
     </div><!--/span-->
     <div class="span9">
@@ -65,7 +65,7 @@
 			{% for m in user_messages%}
 				<div class="alert alert-{{ m.tags }}">
 				    <a class="close" data-dismiss="alert" href="#">×</a>
-				    <h4 class="alert-heading">{{m|safe}}</h4>
+				    <h4 class="alert-heading">{{m.message|safe}}</h4>
 			    </div>
 			{%endfor%}
 		{%endif%}

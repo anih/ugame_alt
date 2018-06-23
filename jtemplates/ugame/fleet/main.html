@@ -57,10 +57,10 @@
 		<th>{{ p.name|e }} [{{ p.galaxy.galaxy|e }}:{{ p.galaxy.system|e }}:{{ p.galaxy.field|e }}]</th>
 		<th><a href="/game/usr/{{ p.owner.pk|e }}/">{{ p.owner.username|e }}</a></th>
 		<th>
-			<a href="/game/fs/atak/?g={{ p.galaxy.galaxy|e }}&s={{ p.galaxy.system|e }}&p={{ p.galaxy.field|e }}" class="guzik2">a</a>
-			<a href="/game/fs/surowce/?g={{ p.galaxy.galaxy|e }}&s={{ p.galaxy.system|e }}&p={{ p.galaxy.field|e }}" class="guzik2">t</a>
-			<a href="/game/fs/zlom/?g={{ p.galaxy.galaxy|e }}&s={{ p.galaxy.system|e }}&p={{ p.galaxy.field|e }}" class="guzik2">z</a>
-			<a href="/game/fs/spy/?g={{ p.galaxy.galaxy|e }}&s={{ p.galaxy.system|e }}&p={{ p.galaxy.field|e }}" class="guzik2">s</a>
+			<a href="{{ url(this.all_urls.get('flight/attack').choose) }}?g={{ p.galaxy.galaxy|e }}&s={{ p.galaxy.system|e }}&p={{ p.galaxy.field|e }}" class="guzik2">a</a>
+			<a href="{{ url(this.all_urls.get('flight/materials').choose) }}?g={{ p.galaxy.galaxy|e }}&s={{ p.galaxy.system|e }}&p={{ p.galaxy.field|e }}" class="guzik2">t</a>
+			<a href="{{ url(this.all_urls.get('flight/scrap').choose) }}?g={{ p.galaxy.galaxy|e }}&s={{ p.galaxy.system|e }}&p={{ p.galaxy.field|e }}" class="guzik2">z</a>
+			<a href="{{ url(this.all_urls.get('flight/spy').choose) }}?g={{ p.galaxy.galaxy|e }}&s={{ p.galaxy.system|e }}&p={{ p.galaxy.field|e }}" class="guzik2">s</a>
 		</th>
 		<th><a href="/game/fleet/?fast_fleet_del={{ p.pk|e }}" class="guzik2">usuń</a></th>
 	</tr>

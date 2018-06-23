@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from ..generic.cms_metaclass import CmsMetaclass
-from ugame.klasy.BaseGame import BaseGame
 from ugame.topnav import topnav_site, Output
 from ugame.models.all import Buildings, Badania, Budynki_p, Badania_f
 from settings import GAME_SPEED
@@ -18,13 +17,12 @@ class CMS(object):
     __metaclass__ = CmsMetaclass
 
     def site_main(self):
-        GraObject = BaseGame(self)
-        current_planet = GraObject.get_current_planet()
+        current_planet = self.game.get_current_planet()
 
         if "bud" in self.request.REQUEST:
-            GraObject.buduj_technologie(self.request.REQUEST['bud'])
+            self.game.buduj_technologie(self.request.REQUEST['bud'])
         elif "anuluj" in self.request.REQUEST:
-            GraObject.anuluj_technologie(self.request.REQUEST['anuluj'])
+            self.game.anuluj_technologie(self.request.REQUEST['anuluj'])
 
         ts = Badania.objects.all().order_by("id")
         builds = []
@@ -35,8 +33,8 @@ class CMS(object):
             tech.nazwa = t.nazwa
             tech.opis = t.opis
 
-            tech.level = GraObject.bad_get_level(GraObject.user, t.id, 1) + 1
-            tech.level_faktyczny = GraObject.bad_get_level(GraObject.user, t.id)
+            tech.level = self.game.bad_get_level(self.game.user, t.id, 1) + 1
+            tech.level_faktyczny = self.game.bad_get_level(self.game.user, t.id)
             tech.c_met = t.c_met * pow(t.c_factor, tech.level - 1)
             tech.c_cry = t.c_cry * pow(t.c_factor, tech.level - 1)
             tech.c_deu = t.c_deu * pow(t.c_factor, tech.level - 1)
@@ -50,18 +48,18 @@ class CMS(object):
                     budynki_laczy_level = budynki_laczy_level[0]
                     # try:
                     if True:
-                        ilosc_polaczonych = GraObject.user.badania_p_set.filter(badanie=budynki_laczy_level)
-                        level = floor(GraObject.bud_get_level(current_planet, i.id))
+                        ilosc_polaczonych = self.game.user.badania_p_set.filter(badanie=budynki_laczy_level)
+                        level = floor(self.game.bud_get_level(current_planet, i.id))
                         if len(ilosc_polaczonych) > 0:
                             ilosc_polaczonych = ilosc_polaczonych[0].level
                             if ilosc_polaczonych > 0:
-                                kandydaci = Budynki_p.objects.filter(planeta__owner=GraObject.user, budynek=i).exclude(planeta=current_planet).order_by("-level")[:ilosc_polaczonych]
+                                kandydaci = Budynki_p.objects.filter(planeta__owner=self.game.user, budynek=i).exclude(planeta=current_planet).order_by("-level")[:ilosc_polaczonych]
                                 for z in kandydaci:
                                     level += floor(z.level)
                     # except:
-                    #    level = floor(GraObject.bud_get_level(planetrow, i.id))
+                    #    level = floor(self.game.bud_get_level(planetrow, i.id))
                 else:
-                    level = floor(GraObject.bud_get_level(current_planet, i.id))
+                    level = floor(self.game.bud_get_level(current_planet, i.id))
                 tech.c_czas = tech.c_czas * (eval(i.minus_czas_bad))
             tech.c_czas = int(tech.c_czas * 60 * 60)
             tech.z_met = current_planet.metal - tech.c_met
@@ -89,7 +87,7 @@ class CMS(object):
             for zal in zaleznosc:
                 budynek = split(zal, ",")
                 if len(budynek) > 1:
-                    if(int(budynek[1]) > int(GraObject.bud_get_level(current_planet, budynek[0]))):
+                    if(int(budynek[1]) > int(self.game.bud_get_level(current_planet, budynek[0]))):
                         tech.niedodawaj = 1
                         break
             if not tech.niedodawaj:
@@ -97,7 +95,7 @@ class CMS(object):
                 for zal in zaleznosc:
                     badanie = split(zal, ",")
                     if len(badanie) > 1:
-                        if(int(badanie[1]) > int(GraObject.bad_get_level(GraObject.user, badanie[0]))):
+                        if(int(badanie[1]) > int(self.game.bad_get_level(self.game.user, badanie[0]))):
                             tech.niedodawaj = 1
                             break
                 # TODO badania trzeba zrobic
@@ -105,7 +103,7 @@ class CMS(object):
                 builds.append(tech)
 
         try:
-            kol = Badania_f.objects.filter(user=GraObject.user).order_by("time")
+            kol = Badania_f.objects.filter(user=self.game.user).order_by("time")
             print Badania_f.objects.filter(user=1)
             kolejka = []
             czas_minus = time() - 1
@@ -119,7 +117,7 @@ class CMS(object):
         except:
             kolejka = None
 
-        topnav = topnav_site(GraObject)
+        topnav = topnav_site(self.game)
         return {
                 "builds": builds, 'topnav': topnav, "kolejka": kolejka
                 }

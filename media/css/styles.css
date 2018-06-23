@@ -183,13 +183,13 @@ a:hover {
 
 
 #downmenu {
+    left: 400px;
     position: absolute;
-    top: 110px;
-    left: 270px;
-    font-size: 10px;
-    color:#666666; 
+    top: 547px;
+    width: 450px;
+    z-index: 10;
     text-align: right;
-    width: 169px;
+    font-size: 12px;
 }
 
 #copyright {

@@ -76,7 +76,7 @@
 {% if topnav.new_message %}
 <table>
 <tr><td align="center" class="f" style="width:400px;height:30px">
-<a href="/game/messages/" style="color:red;font-size: 10pt;font-weight: bold;">Masz {{ topnav.new_message|e }} wiadomo{% if topnav.new_message != 1 %}ści{% else %}ść{% endif %}</a>
+<a href="{{ url(this.all_urls.messages.list) }}" style="color:red;font-size: 10pt;font-weight: bold;">Masz {{ topnav.new_message|e }} wiadomo{% if topnav.new_message != 1 %}ści{% else %}ść{% endif %}</a>
 </td></tr>
 </table>
 {% endif %}
@@ -84,7 +84,7 @@
 {% if topnav.nowe_raporty %}
 <table>
 <tr><td align="center" class="f" style="width:400px;height:30px">
-<a href="/game/raporty/" style="color:red;font-size: 10pt;font-weight: bold;">Masz {{ topnav.nowe_raporty|e }} {% if topnav.nowe_raporty != 1 %}nowe raporty{% else %}nowy raport{% endif %}</a>
+<a href="{{ url(this.all_urls.reports.list) }}" style="color:red;font-size: 10pt;font-weight: bold;">Masz {{ topnav.nowe_raporty|e }} {% if topnav.nowe_raporty != 1 %}nowe raporty{% else %}nowy raport{% endif %}</a>
 </td></tr>
 </table>
 {% endif %}

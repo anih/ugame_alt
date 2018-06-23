@@ -5,6 +5,8 @@ from string import split
 from math import sqrt, floor
 
 from django.contrib.auth.models import User
+
+from ugame.models import send_error_message
 from ..klasy.BaseHelper import BaseHelper
 from ..klasy.CronBase import CronBase
 from ..cron_fun import helpers
@@ -48,23 +50,27 @@ class BuildObrona():
                 except:flota.ilosc = 0
 
                 if f.limit < flota.ilosc + kol_ilosc + ilosc:
-                    self.user.message_set.create(message="Limit dla " + f.nazwa + " został wyczerpany")
+                    message="Limit dla " + f.nazwa + " został wyczerpany"
+                    send_error_message(user=self.user, message=message)
                     flota.mozna = None
 
 
             flota.z_met = planeta.metal - flota.c_met
             if flota.z_met < 0:
-                self.user.message_set.create(message="Za mało metalu do wybudowania " + f.nazwa)
+                message="Za mało metalu do wybudowania " + f.nazwa
+                send_error_message(user=self.user, message=message)
                 flota.mozna = None
 
             flota.z_cry = planeta.crystal - flota.c_cry
             if flota.z_cry < 0:
-                self.user.message_set.create(message="Za mało kryształu do wybudowania " + f.nazwa)
+                message="Za mało kryształu do wybudowania " + f.nazwa
+                send_error_message(user=self.user, message=message)
                 flota.mozna = None
 
             flota.z_deu = planeta.deuter - flota.c_deu
             if flota.z_deu < 0:
-                self.user.message_set.create(message="Za mało deuteru do wybudowania " + f.nazwa)
+                message="Za mało deuteru do wybudowania " + f.nazwa
+                send_error_message(user=self.user, message=message)
                 flota.mozna = None
             zaleznosc = split(f.w_bud, ";")
             if flota.mozna:
@@ -72,7 +78,8 @@ class BuildObrona():
                     budynek = split(zal, ",")
                     if len(budynek) > 1:
                         if(int(budynek[1]) > int(self.bud_get_level(planeta, budynek[0]))):
-                            self.user.message_set.create(message="Nie spełnione zależności budynków dla " + f.nazwa)
+                            message="Nie spełnione zależności budynków dla " + f.nazwa
+                            send_error_message(user=self.user, message=message)
                             flota.mozna = None
                             break
             if flota.mozna:
@@ -81,7 +88,8 @@ class BuildObrona():
                     badanie = split(zal, ",")
                     if len(badanie) > 1:
                         if(int(badanie[1]) > int(self.bad_get_level(self.user, badanie[0]))):
-                            self.user.message_set.create(message="Nie spełnione zależności badań dla " + f.nazwa)
+                            message="Nie spełnione zależności badań dla " + f.nazwa
+                            send_error_message(user=self.user, message=message)
                             flota.mozna = None
                             break
             if flota.mozna:

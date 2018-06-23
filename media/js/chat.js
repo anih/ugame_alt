@@ -1,7 +1,8 @@
 var last_chat_id=0;
 var interval_sojusz;
-
-function init_sojusz_chat(){
+var chat_get_url;
+function init_sojusz_chat(url){
+    chat_get_url=url;
 	if(interval_sojusz){
 		clearInterval(interval_sojusz);
 	}
@@ -13,7 +14,7 @@ function chat_sojusz(){
 	if(!$('#chat_sojusz'))return false;
 	$.ajax({
    		type: "POST",
-   		url: "/game/sojusz/chat/get/?id="+last_chat_id,
+   		url: chat_get_url+"?id="+last_chat_id,
 		dataType: "json",
 		//async:false,
         success: function(data){
@@ -28,18 +29,18 @@ function chat_sojusz(){
     });
 }
 
-function chat_sojusz_send(){
+function chat_sojusz_send(url){
 	var wiadomosc = $('#id_chat_message').val();
 	if(!wiadomosc.length>0)return false;
 	$('#id_chat_message').val("");
 	$.ajax({
    		type: "POST",
-   		url: "/game/sojusz/chat/send/",
+   		url: url,
 		data: {"msg":wiadomosc},
 		dataType: "text",
 		//async:false,
         success: function(data){
-			init_sojusz_chat();
+			init_sojusz_chat(chat_get_url);
 		},
     });
 }

@@ -1,0 +1,38 @@
+{% extends this.application+'/base.html' %}
+{% block content %}
+{% include this.application+'/game/topnav.html' %}
+
+<table width="300">
+
+<tr>
+<td class="c" width="100px">Temat:</td><td class="f">{{ temat.temat|e }}</td>
+</tr>
+
+<tr>
+<td class="c">Rozmówca:</td><td class="f">{% if temat.nadawca != user %}{{ temat.nadawca.username|e }}{% else %}{{ temat.odbiorca.username|e }}{% endif %}</td>
+</tr>
+
+<tr>
+<td class="c" colspan=2 align="center"><a href="{{ url(this.urls.report, object_id=temat.pk) }}">Zgłoś naruszenie regulaminu</a></td>
+</tr>
+
+
+</table>
+
+<form action="" method="post">
+<table width="400px">
+{% for w in wiadomosci %}
+<tr>
+<td class="c">{{ w.kto.username|e }}</td>
+<td class="c" align=right>{{ w.data|e }}</td>
+</tr>
+<tr><td colspan=2 class="f">{{ w.tekst|e|bbcodes|linebreaks }}</td></tr>
+{% endfor %}
+<tr><td colspan=2>&nbsp;</td></tr>
+<tr><td colspan=2><textarea name="text" rows=10></textarea></td></tr>
+<tr><td class="c" colspan=2 align=center><input type=submit value="Odpowiedz"></td></tr>
+</table>
+</form>
+
+<script language="JavaScript" src="/media/js/wz_tooltip.js"></script>
+{% endblock %}

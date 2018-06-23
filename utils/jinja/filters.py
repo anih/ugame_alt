@@ -5,9 +5,9 @@ from datetime import datetime
 # from django.template import Library
 import re
 import os
-import Image
-import ImageFilter
-from django.utils.encoding import force_unicode, iri_to_uri
+from PIL import Image
+from PIL import ImageFilter
+from django.utils.encoding import force_unicode, iri_to_uri, force_text
 from django.core.urlresolvers import reverse
 from django.conf import settings
 from kwotaslownie import kwotaslownie
@@ -38,7 +38,7 @@ def bbcodes(value):
     Generates (X)HTML from string with BBCode "markup".
     By using the postmark lib from:
     @see: http://code.google.com/p/postmarkup/
-    
+
     """
     try:
         from postmarkup import render_bbcode
@@ -54,11 +54,11 @@ def bbcodes(value):
         return ret
 
 def strip_bbcode(value):
-    """ 
+    """
     Strips BBCode tags from a string
-    By using the postmark lib from: 
+    By using the postmark lib from:
     @see: http://code.google.com/p/postmarkup/
-    
+
     """
     try:
         from postmarkup import strip_bbcode
@@ -283,11 +283,7 @@ def date(value, arg=None):
 
 
 def escapejs(value):
-
-    """Hex encodes characters for use in JavaScript strings."""
-    for bad, good in _js_escapes:
-        value = value.replace(bad, good)
-    return value
+    return mark_safe(force_text(value).translate(_js_escapes))
 
 
 def floatformat(value, arg= -1):  # @IgnorePep8

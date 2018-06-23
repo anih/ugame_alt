@@ -13,6 +13,7 @@ MEDIA_ROOT2 = os.path.join(DIR_ROOT, 'media2/')
 MEDIA_INCLUDER_INPUT_DIR = MEDIA_STATIC_ROOT = os.path.join(DIR_ROOT, 'media_static/')
 MEDIA_STATIC_URL = '/media_static/'
 MEDIA_URL_HIDDEN = "/media_hidden/"
+MEDIA_URL = '/media/'
 
 STATS_PERPAGE = 20
 GAME_SPEED = 5000
@@ -96,6 +97,7 @@ MIDDLEWARE_CLASSES = (
 ROOT_URLCONF = 'urls'
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 # SESSION_COOKIE_AGE=1800
+MESSAGE_STORAGE = 'ugame.models.messages.DBStorage'
 
 TEMPLATE_DIRS = (
                                   DIR_ROOT + "/jtemplates/",

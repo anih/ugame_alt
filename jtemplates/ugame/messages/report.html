@@ -1,0 +1,28 @@
+{% extends this.application+'/base.html' %}
+{% block content %}
+{% include this.application+'/game/topnav.html' %}
+
+<form action="" method="post">
+<table width="569">
+
+<tr>
+<td class="l" colspan="2" style="color:red;font-weight:bold">Nieuzasadnione raportowanie wiadomości będzie skutkować banem na określony czas!!!</td>
+</tr>
+<tr>
+<td class="l" colspan="2" style="font-weight:bold">
+	Formularz ten dotyczy tylko zgłaszania obrazy lub złamania regulaminu wynikającego z treści wiadomości zawartych w tym temacie
+</td>
+</tr>
+<tr>
+<td class="c" width="150">Temat wiadomości:</td><td class="c">{{ temat.temat }}</td>
+</tr>
+<tr>
+<th colspan="2" align="center">Uzasadnij zgłoszenie:<br>{{ form.powod }}</th>
+</tr>
+<tr>
+<td class="c" colspan="2"><input type="submit" value="Wyślij"></td>
+</tr>
+</table>
+</form>
+
+{% endblock %}

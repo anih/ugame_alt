@@ -5,10 +5,12 @@ from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import AnonymousUser
+from django.contrib import messages
 
 from ..generic.cms_metaclass import CmsMetaclass
 from ..generic.constants import MODULE_AUTH_SESSION_KEY
-from django.contrib import messages
+from ugame.forms.forms import UserCreationForm
+from utils.jinja.filters import url
 
 
 class CMS(object):
@@ -25,7 +27,7 @@ class CMS(object):
         """
         if user is None:
             user = self.user
-        # TODO: It would be nice to support different login methods, like signed cookies.
+            # TODO: It would be nice to support different login methods, like signed cookies.
         user.last_login = datetime.now()
         user.save()
 
@@ -43,7 +45,7 @@ class CMS(object):
             setattr(self.request, self.application, AnonymousUser())
 
     def site_login(self):
-        if  'username' in self.request.POST and 'password' in self.request.POST:
+        if 'username' in self.request.POST and 'password' in self.request.POST:
             username = self.request.POST['username']
             password = self.request.POST['password']
             user = authenticate(username=username, password=password)
@@ -57,8 +59,32 @@ class CMS(object):
                 return {}
         else:
             return {}
+
     site_login.without_user = True
 
     def site_logout(self):
         self.admin_mine_logout()
-        return HttpResponseRedirect(reverse(self.urls.main))
+        return HttpResponseRedirect(reverse(self.all_urls.main.main))
+
+    def site_registration(self):
+        form = UserCreationForm()
+
+        if self.request.method == 'POST':
+            form = UserCreationForm(data=self.request.POST)
+            if form.is_valid():
+                user = form.save()
+                self._mine_login(user)
+                messages.info(self.request, message="Dziękujemy za zarejestrowanie się")
+
+                #RegistrationEmailTask.delay_countdown(user.id)
+
+                if 'next' in self.request.REQUEST and self.request.REQUEST["next"] != url(self.urls.registration):
+                    return HttpResponseRedirect(self.request.REQUEST['next'])
+                return HttpResponseRedirect(url(self.all_urls.main.main))
+
+        return {
+            "form": form,
+        }
+
+    site_registration.without_user = True
+    site_registration.url = "zarejestruj/{r}$"

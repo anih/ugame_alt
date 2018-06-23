@@ -1,0 +1,48 @@
+{% extends this.application+'/base.html' %}
+{% block content %}
+    {% include this.application+'/game/topnav.html' %}
+
+
+<center>
+<table align=center width=100%><tr align=center><td>
+
+  {% if sojusz %}
+
+  {% include this.application+'/'+this.module+'/menu.html' %}
+  <script language="JavaScript1.2">
+  	$(document).ready(function(){
+    
+    	$("#chat_form").submit(function() {
+      		chat_sojusz_send('{{ url(this.urls.chat_send) }}');
+        	return false;
+    	});
+
+  	});
+  </script>
+  <table width="100%">
+  	<tr align="center">
+	
+		<td valign="top">
+			<div id="chat_sojusz">
+				<div class="row">
+				</div>
+			</div>
+		</td>
+	</tr>
+	<tr align="center">
+		<td valign="top">
+			<form action="{{ url(this.urls.chat_send) }}" id="chat_form" name="chat_form">
+				<input type="text" name="chat_message" id="id_chat_message" style="width:500px">
+			</form>
+		</td>
+
+  	</tr>
+  </table>
+
+  {% endif %}
+
+</td></tr></table>
+<script language="JavaScript1.2">
+	init_sojusz_chat('{{ url(this.urls.chat_get) }}');
+</script>
+{% endblock %}

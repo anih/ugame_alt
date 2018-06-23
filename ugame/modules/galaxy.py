@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from ..generic.cms_metaclass import CmsMetaclass
-from ugame.klasy.BaseGame import BaseGame
 from ugame.topnav import topnav_site, Output
 from settings import MAX_GALAXY, MAX_SYSTEM, MAX_PLANETA
 from ugame.models.all import Galaxy
@@ -15,10 +14,9 @@ class CMS(object):
     __metaclass__ = CmsMetaclass
 
     def site_main(self, galaxy=None, system=None):
-        GraObject = BaseGame(self)
-        current_planet = GraObject.get_current_planet()
+        current_planet = self.game.get_current_planet()
         print current_planet.pk
-        current_galaxy = GraObject.get_galaxy(current_planet.galaxy_id)
+        current_galaxy = self.game.get_galaxy(current_planet.galaxy_id)
         print current_galaxy.planet.pk
 
         try:
@@ -58,7 +56,7 @@ class CMS(object):
             except:
                 fields.append(None)
 
-        topnav = topnav_site(GraObject)
+        topnav = topnav_site(self.game)
         jsbody = 'onmousemove="tt_Mousemove(event);"'
         return {
                 "jsbody": jsbody, "topnav": topnav,

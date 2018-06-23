@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from ..generic.cms_metaclass import CmsMetaclass
-from ugame.klasy.BaseGame import BaseGame
 from ugame.topnav import topnav_site, Output
 from ugame.models.all import Buildings, Flota
 
@@ -13,8 +12,7 @@ class CMS(object):
     __metaclass__ = CmsMetaclass
 
     def site_main(self):
-        GraObject = BaseGame(self)
-        current_planet = GraObject.get_current_planet()
+        current_planet = self.game.get_current_planet()
 
         budynki_produkujace = Buildings.objects.filter(czy_produkcja__gt=0)
         flota_produkujaca = Flota.objects.filter(czy_produkcja__gt=0)
@@ -25,42 +23,42 @@ class CMS(object):
         if self.request.POST:
 
             for tmp in budynki:
-                b = GraObject.cache_obj.get_budynek_p(current_planet.pk, tmp.budynek_id)
+                b = self.game.cache_obj.get_budynek_p(current_planet.pk, tmp.budynek_id)
                 if b:
                     building_key = "bud_%s" % b.budynek_id
                     if building_key in self.request.POST:
                         try:
                             tmp_procenty = int(self.request.POST[building_key])
-                            if(tmp_procenty <= 100) and tmp_procenty >= 0:
+                            if (tmp_procenty <= 100) and tmp_procenty >= 0:
                                 b.procent = tmp_procenty
                         except:
                             pass
 
             for tmp in flota:
-                b = GraObject.cache_obj.get_flota_p(current_planet.pk, tmp.budynek_id)
+                b = self.game.cache_obj.get_flota_p(current_planet.pk, tmp.budynek_id)
                 if b:
                     building_key = "flo_%s" % b.budynek_id
                     if building_key in self.request.POST:
                         try:
                             tmp_procenty = int(self.request.POST[building_key])
-                            if(tmp_procenty <= 100) and tmp_procenty >= 0:
+                            if (tmp_procenty <= 100) and tmp_procenty >= 0:
                                 b.procent = tmp_procenty
                         except:
                             pass
 
-        # GraObject.cron_function(current_planet.pk)
-        # GraObject.save_all()
+        # self.game.cron_function(current_planet.pk)
+        # self.game.save_all()
         surowce = []
 
         resources = []
         for tmp in budynki:
             i = Output()
-            i.dane = GraObject.cache_obj.get_budynek_p(current_planet.pk, tmp.budynek_id)
+            i.dane = self.game.cache_obj.get_budynek_p(current_planet.pk, tmp.budynek_id)
             i.czy_budynek = 1
             resources.append(i)
         for tmp in flota:
             i = Output()
-            i.dane = GraObject.cache_obj.get_flota_p(current_planet.pk, tmp.budynek_id)
+            i.dane = self.game.cache_obj.get_flota_p(current_planet.pk, tmp.budynek_id)
             i.czy_statek = 1
             resources.append(i)
 
@@ -114,9 +112,10 @@ class CMS(object):
         produkcja.deuter_miesiac = produkcja.deuter_dzien * 30
         produkcja.deuter_ladownosc_procent = int(current_planet.deuter * 100 / current_planet.deuter_max)
 
-        topnav = topnav_site(GraObject)
+        topnav = topnav_site(self.game)
         return {
-                'topnav': topnav, "surowce": surowce,
-                "planet": current_planet, "produkcja": produkcja
-                }
+            'topnav': topnav, "surowce": surowce,
+            "planet": current_planet, "produkcja": produkcja
+        }
+
     site_main.url = "^ugame/resources/$"

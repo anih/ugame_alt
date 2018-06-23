@@ -1,0 +1,39 @@
+{% extends this.application+'/base.html' %}
+{% block content %}
+{% include this.application+'/game/topnav.html' %}
+
+<table align=center width=100%><tr align=center><td>
+
+<form action="" method=post enctype="multipart/form-data">
+<table border="0" cellspacing="1" cellpadding="5">
+{% for f in form %}
+<tr>
+	<th width=150>{{ f.label }}<br></th>
+	<th>{{ f }}<span style="vertical-align:top;color:red;padding-left:20px">{{ f.errors|join(', ') }}</span></th>
+</tr>
+{% endfor %}
+<tr align="center">
+	<th colspan="2"><strong>Jeśli chcesz zmienić hasło lub email wypełnij tutaj,<br>na emaila zostanie wysłany link potwierdzający:</strong></th>
+</tr>
+{% for f in form_change %}
+<tr>
+	<th width=150>{{ f.label }}<br></th>
+	<th>{{ f }}<span style="vertical-align:top;color:red;padding-left:20px">{{ f.errors|join(', ') }}</span></th>
+</tr>
+{% endfor %}
+
+
+<tr align=center>
+<th colspan=2><input type=submit value="Zapisz"></th>
+</tr>
+<tr align=center>
+	<th colspan=2><a href="{{ url(this.urls.show, object_id=user.pk) }}">Zobacz swój profil</a></th>
+</tr>
+</table>
+</form>
+
+
+</td></tr></table>
+
+
+{% endblock %}

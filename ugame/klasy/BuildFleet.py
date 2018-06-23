@@ -1,23 +1,18 @@
 # -*- coding: utf-8 -*-
 from __future__ import division
-from time import localtime, strftime, time
+
+from math import floor
 from string import split
-from math import sqrt, floor
 
-from django.contrib.auth.models import User
-
-from ..klasy.BaseHelper import BaseHelper
-from ..klasy.CronBase import CronBase
-from ..cron_fun import helpers
-from settings import GAME_SPEED, RES_SPEED
-
-from django.db import connection, backend, models
+from settings import GAME_SPEED
+from ugame.models import send_error_message
 from ugame.models.all import Buildings, Flota_f
 
-class Output:pass
+
+class Output: pass
+
 
 class BuildFleet():
-
 
     def buduj_flote(self, bud, ilosc):
         # query = "lock table game_flota_f in ACCESS EXCLUSIVE MODE"
@@ -37,20 +32,22 @@ class BuildFleet():
             flota.c_czas_one = flota.c_czas * 60 * 60
             flota.c_czas = flota.c_czas * 60 * 60 * ilosc
 
-
             flota.z_met = planeta.metal - flota.c_met
             if flota.z_met < 0:
-                self.user.message_set.create(message=u"Za mało metalu do wybudowania %s" % (bud.nazwa,))
+                message = u"Za mało metalu do wybudowania %s" % (bud.nazwa,)
+                send_error_message(user=self.user, message=message)
                 flota.mozna = None
 
             flota.z_cry = planeta.crystal - flota.c_cry
             if flota.z_cry < 0:
-                self.user.message_set.create(message=u"Za mało kryształu do wybudowania %s" % (bud.nazwa,))
+                message = u"Za mało kryształu do wybudowania %s" % (bud.nazwa,)
+                send_error_message(user=self.user, message=message)
                 flota.mozna = None
 
             flota.z_deu = planeta.deuter - flota.c_deu
             if flota.z_deu < 0:
-                self.user.message_set.create(message=u"Za mało deuteru do wybudowania %s" % (bud.nazwa,))
+                message = u"Za mało deuteru do wybudowania %s" % (bud.nazwa,)
+                send_error_message(user=self.user, message=message)
                 flota.mozna = None
             zaleznosc = split(bud.w_bud, ";")
             if flota.mozna:
@@ -58,7 +55,8 @@ class BuildFleet():
                     budynek = split(zal, ",")
                     if len(budynek) > 1:
                         if int(budynek[1]) > self.bud_get_level(planeta, budynek[0]):
-                            self.user.message_set.create(message=u"Nie spełnione zależności budynków dla %s" % (bud.nazwa,))
+                            message = u"Nie spełnione zależności budynków dla %s" % (bud.nazwa,)
+                            send_error_message(user=self.user, message=message)
                             flota.mozna = None
                             break
             if flota.mozna:
@@ -67,18 +65,19 @@ class BuildFleet():
                     badanie = split(zal, ",")
                     if len(badanie) > 1:
                         if int(badanie[1]) > self.bad_get_level(self.user, badanie[0]):
-                            self.user.message_set.create(message=u"Nie spełnione zależności badań dla %s" % (bud.nazwa,))
+                            message = u"Nie spełnione zależności badań dla %s" % (bud.nazwa,)
+                            send_error_message(user=self.user, message=message)
                             flota.mozna = None
                             break
             if flota.mozna:
                 czas = self.get_flota_kolejka_czas(planeta)
                 flota.points = (bud.c_met + bud.c_cry + bud.c_deu) / 1000.0
-                kolejka = Flota_f.objects.create(budynek=bud, planeta=planeta, ilosc=ilosc, time=czas + flota.c_czas, points=flota.points, time_one=flota.c_czas_one * (ilosc - 1))
+                kolejka = Flota_f.objects.create(budynek=bud, planeta=planeta, ilosc=ilosc, time=czas + flota.c_czas,
+                                                 points=flota.points, time_one=flota.c_czas_one * (ilosc - 1))
                 self.cache_obj.get_flota_f(planeta.pk, kolejka.pk)
                 planeta.metal -= flota.c_met
                 planeta.crystal -= flota.c_cry
                 planeta.deuter -= flota.c_deu
-
 
     def anuluj_flote(self, id_poz):
         planeta = self.get_current_planet()
@@ -102,10 +101,13 @@ class BuildFleet():
             c_czas = max_level.time
             self.cache_obj.del_flota_f(planeta.pk, max_level.pk)
 
-            kolejka = Flota_f.objects.values_list('id', flat=True).select_for_update().filter(planeta=planeta, time__gt=c_czas).order_by("time")
+            kolejka = Flota_f.objects.values_list('id', flat=True).select_for_update().filter(planeta=planeta,
+                                                                                              time__gt=c_czas).order_by(
+                "time")
             if len(kolejka) > 0:
                 try:
-                    poprzednie = Flota_f.objects.select_for_update().filter(planeta=planeta, time__lt=c_czas).order_by("-time")[0]
+                    poprzednie = \
+                    Flota_f.objects.select_for_update().filter(planeta=planeta, time__lt=c_czas).order_by("-time")[0]
                     c_czas = c_czas - poprzednie.time
                 except:
                     c_czas = c_czas - time()
@@ -113,5 +115,4 @@ class BuildFleet():
                     obj = self.cache_obj.get_flota_f(planeta.pk, k)
                     obj.time -= c_czas
         # except:
-            # pass
-
+        # pass

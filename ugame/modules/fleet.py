@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
+from ugame.models import send_info_message, send_error_message
 from ..generic.cms_metaclass import CmsMetaclass
-from ugame.klasy.BaseGame import BaseGame
 from ugame.topnav import topnav_site
 from ugame.models.all import Flota_p, Planets
 from django.core.paginator import Paginator
@@ -16,16 +16,15 @@ class CMS(object):
     __metaclass__ = CmsMetaclass
 
     def site_main(self):
-        GraObject = BaseGame(self)
-        GraObject.userprofile_podglad_flota()
-        current_planet = GraObject.get_current_planet()
+        self.game.userprofile_podglad_flota()
+        current_planet = self.game.get_current_planet()
 
         if "fast_fleet_del" in self.request.REQUEST:
-            GraObject.userprofile.fast_fleet.remove(self.request.REQUEST['fast_fleet_del'])
+            self.game.userprofile.fast_fleet.remove(self.request.REQUEST['fast_fleet_del'])
         if "fast_fleet_add" in self.request.REQUEST:
             try:
                 fast_planet = Planets.objects.get(pk=self.request.REQUEST['fast_fleet_add'])
-                GraObject.userprofile.fast_fleet.add(fast_planet)
+                self.game.userprofile.fast_fleet.add(fast_planet)
             except:
                 pass
 
@@ -35,7 +34,7 @@ class CMS(object):
                 page = 1
         except:
             page = 1
-        paginator = Paginator(GraObject.userprofile.fast_fleet.all(), 20, allow_empty_first_page=True)
+        paginator = Paginator(self.game.userprofile.fast_fleet.all(), 20, allow_empty_first_page=True)
         if page > paginator.num_pages:
             page = paginator.num_pages
 
@@ -43,8 +42,9 @@ class CMS(object):
         fast_fleet = p.object_list
 
         if "fs_zawroc" in self.request.REQUEST:
-            GraObject.user.message_set.create(message="Flotę zawrócono")
-            zawroc(self.request.REQUEST['fs_zawroc'], GraObject.user)
+            message="Flotę zawrócono"
+            send_info_message(user=self.game.user, message=message)
+            zawroc(self.request.REQUEST['fs_zawroc'], self.game.user)
 
         if "g" in self.request.REQUEST and "s" in self.request.REQUEST and "p" in self.request.REQUEST and "typ" in self.request.REQUEST:
             try:
@@ -64,20 +64,21 @@ class CMS(object):
                 elif self.request.REQUEST['typ'] == 's':
                     return HttpResponseRedirect("/game/fs/spy/?g=%d&s=%d&p=%d" % (g, s, p))
             except:
-                GraObject.user.message_set.create(message="Wprowadź poprawne dane do ataku")
+                message="Wprowadź poprawne dane do ataku"
+                send_error_message(user=self.game.user, message=message)
                 pass
 
         dostepne_statki_tmp = Flota_p.objects.filter(planeta=current_planet, budynek__lata__gt=0, ilosc__gt=0).order_by("budynek")
         dostepne_statki = []
         for i in dostepne_statki_tmp:
             d = i
-            d.speed = int(get_speed(GraObject, i.budynek, GraObject.user))
+            d.speed = int(get_speed(self.game, i.budynek, self.game.user))
             dostepne_statki.append(d)
 
         # userprofile.fast_fleet.add(planeta)
 
-        floty_own, floty_obce, _ = get_flota(GraObject)
-        topnav = topnav_site(GraObject)
+        floty_own, floty_obce, _ = get_flota(self.game)
+        topnav = topnav_site(self.game)
         return {
                 "paginator": paginator, "fast_fleet": fast_fleet,
                 "floty_own": floty_own, "floty_obce": floty_obce,
