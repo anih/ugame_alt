@@ -8,16 +8,9 @@ from math import floor
 from time import localtime
 
 from django.contrib.auth.models import User
-from django.shortcuts import get_object_or_404
-
-from main.models import Config
-from ugame.models import Fleets
-from ugame.models import Galaxy
-from ugame.models import Lang
-from ugame.models import Planets
 
 
-class Output:pass
+class Output: pass
 
 
 def topnav_site(GraObject):
@@ -35,7 +28,7 @@ def topnav_site(GraObject):
     zaznaczona = False
     topnav.prevp = None
     topnav.nextp = None
-    for pl  in GraObject.get_all_planets():
+    for pl in GraObject.get_all_planets():
         pl = GraObject.get_planet(pl)
         if pl.destroyed == 0:
             planet = Output()
@@ -55,17 +48,25 @@ def topnav_site(GraObject):
 
     topnav.energy = floor(current_planet.energy_max - current_planet.energy_used)
 
-    if topnav.energy > 0:topnav.energy_color = '#00FF00'
-    else:topnav.energy_color = '#FF0000'
+    if topnav.energy > 0:
+        topnav.energy_color = '#00FF00'
+    else:
+        topnav.energy_color = '#FF0000'
 
-    if current_planet.metal < current_planet.metal_max:topnav.metal_color = '#00FF00'
-    else:topnav.metal_color = '#FF0000'
+    if current_planet.metal < current_planet.metal_max:
+        topnav.metal_color = '#00FF00'
+    else:
+        topnav.metal_color = '#FF0000'
 
-    if current_planet.crystal < current_planet.crystal_max:topnav.crystal_color = '#00FF00'
-    else:topnav.crystal_color = '#FF0000'
+    if current_planet.crystal < current_planet.crystal_max:
+        topnav.crystal_color = '#00FF00'
+    else:
+        topnav.crystal_color = '#FF0000'
 
-    if current_planet.deuter < current_planet.deuter_max:topnav.deuter_color = '#00FF00'
-    else:topnav.deuter_color = '#FF0000'
+    if current_planet.deuter < current_planet.deuter_max:
+        topnav.deuter_color = '#00FF00'
+    else:
+        topnav.deuter_color = '#FF0000'
     gm = localtime()
     topnav.czas_serwera = gm[3] * 3600 + gm[4] * 60 + gm[5]
     czas_od_klikniecia = datetime.datetime.now() - datetime.timedelta(minutes=10)

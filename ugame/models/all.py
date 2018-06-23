@@ -63,12 +63,6 @@ class IPAccess(models.Model):
         list_display = ('ip', 'user')
 
 
-# Create your models here.
-class Errors(models.Model):
-    objects = models.Manager()
-    text = models.TextField(max_length=1024)
-
-
 class Raporty(models.Model):
     objects = models.Manager()
     TYP = (
@@ -473,16 +467,6 @@ class Fleets(models.Model):
     fleet_resource_deuterium = models.IntegerField(max_length=11, default=0)
     fleet_back = models.IntegerField(max_length=11, default=0)
     bak = models.IntegerField(max_length=11, default=0)
-
-    class Meta:
-        app_label = APP_LABEL
-
-
-class Lang(models.Model):
-    objects = models.Manager()
-    number = models.IntegerField(max_length=32, default=0)
-    type = models.CharField(max_length=11)
-    text = models.CharField(max_length=255)
 
     class Meta:
         app_label = APP_LABEL
