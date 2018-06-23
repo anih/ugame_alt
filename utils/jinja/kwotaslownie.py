@@ -5,6 +5,11 @@ kwotaslownie - kwota słownie ("sto pięć złotych 3 grosze")
 lslownie - liczba slownie ("dwieście dwadzieścia trzy")
 cosslownie - rzecz słownie, odmiana jako argument ("dwadzieścia niedźwiedzi")
 """
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
+
 from decimal import Decimal
 
 jednostki = [u""] + u"jeden dwa trzy cztery pięć sześć siedem osiem dziewięć".split()

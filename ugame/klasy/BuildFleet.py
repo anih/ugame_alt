@@ -1,12 +1,16 @@
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import
 from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 
 from math import floor
 from string import split
 
 from settings import GAME_SPEED
 from ugame.models import send_error_message
-from ugame.models.all import Buildings, Flota_f
+from ugame.models.all import Buildings
+from ugame.models.all import Flota_f
 
 
 class Output: pass

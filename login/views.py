@@ -1,9 +1,16 @@
 # -*- coding: utf-8 -*-
 # from login.models import User
-from django.http import HttpResponseRedirect
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
+
 # from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate
+from django.contrib.auth import login
 from django.contrib.auth import logout
+from django.http import HttpResponseRedirect
+
 from utils.jinja.fun_jinja import jrender
 
 
@@ -12,10 +19,7 @@ def main(request):
         username = request.POST['username']
         password = request.POST['password']
         user = authenticate(username=username, password=password)
-        print user
         if user is not None and user.is_active:
-            print user
-            print user.is_active
             login(request, user)
             return HttpResponseRedirect('/game/main/')
         elif user is not None and not user.is_active:
@@ -32,8 +36,6 @@ def log_hidden(request):
         password = request.POST['password']
         user = authenticate(username=username, password=password)
         if user is not None and user.is_active:
-            print user
-            print user.is_active
             login(request, user)
             return HttpResponseRedirect('/game/main/')
         else:

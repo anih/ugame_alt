@@ -1,41 +1,52 @@
 # -*- coding: utf-8 -*-
-import simplejson
-import sys
-from django.shortcuts import render_to_response
-from django.template import RequestContext
-from django.http import HttpResponse, HttpResponseRedirect
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
+
 import csv
-from django.contrib.auth import REDIRECT_FIELD_NAME, logout
+import datetime
+import json
+import sys
 from functools import wraps
 from urllib import quote
-import datetime
 
-from ugame.models import Bany
+from django.contrib.auth import REDIRECT_FIELD_NAME
+from django.contrib.auth import logout
+from django.http import HttpResponse
+from django.http import HttpResponseRedirect
+from django.shortcuts import render_to_response
+from django.template import RequestContext
+
 from ugame.klasy.BaseGame import BaseGame
+from ugame.models import Bany
+
+
 def check_active(view_func):
     """
     Decorator for views that checks that the user passes the given test.
-    
+
     Anonymous users will be redirected to login_url, while users that fail
     the test will be given a 403 error.
     """
     from django.conf import settings
     login_url = settings.LOGIN_URL
+
     def _checklogin(request, *args, **kwargs):
         if request.user.is_authenticated() and request.user.is_active:
             bany = Bany.objects.filter(user=request.user, do__gte=datetime.datetime.now())
             if bany.count() > 0:
                 # logout(request)
-                return render_to_response("game/bany_info.html", {"bany":bany})
+                return render_to_response("game/bany_info.html", {"bany": bany})
             request.GameObj = BaseGame(request)
             to_return = view_func(request, *args, **kwargs)
-            print "bef save", request.path
             request.GameObj.save_all()
             return to_return
         else:
             logout(request)
 
             return HttpResponseRedirect('%s?%s=%s' % (login_url, REDIRECT_FIELD_NAME, quote(request.get_full_path())))
+
     return wraps(view_func)(_checklogin)
 
 
@@ -55,6 +66,7 @@ def render_csv(dane):
         writer.writerow(wiersz)
 
     return response
+
 
 def json_view(func):
     def wrap(request, *a, **kw):
@@ -80,18 +92,18 @@ def json_view(func):
             message = 'Traceback:\n%s\n\nRequest:\n%s' % (
                 '\n'.join(traceback.format_exception(*exc_info)),
                 request_repr,
-                )
-            print message
+            )
 
             # Come what may, we're returning JSON.
             if hasattr(e, 'message'):
                 msg = e.message
             else:
-                msg = _('Internal error') + ': ' + str(e)
+                msg = 'Internal error' + ': ' + str(e)
             response = {'result': 'error',
                         'text': msg}
             raise
 
-        json = simplejson.dumps(response)
-        return HttpResponse(json, mimetype='application/json')
+        json_string = json.dumps(response)
+        return HttpResponse(json_string, mimetype='application/json')
+
     return wrap

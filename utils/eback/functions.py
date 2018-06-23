@@ -1,5 +1,12 @@
 # -*- coding: utf-8 -*-
-from django.http import HttpResponseRedirect, HttpResponse
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
+
+from django.http import HttpResponse
+from django.http import HttpResponseRedirect
+
 from utils.eback.jsonwraper import dumps
 
 
@@ -13,9 +20,6 @@ def sortfunc(x, y):
 
 def return_json(new_self, response):
     try:
-        if new_self.user and not new_self.user.is_anonymous():
-            print "USER", new_self.user
-
         if isinstance(response, HttpResponseRedirect):
             response = {"wynik": "ERROR_REDIRECT", "Location": response['location']}
         assert isinstance(response, (dict, list))

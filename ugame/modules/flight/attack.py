@@ -1,15 +1,30 @@
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
+
 from time import time
+
 from django.http import HttpResponseRedirect
 
-from ugame.models import send_error_message
-from ...generic.cms_metaclass import CmsMetaclass
 from settings import FLEET_SPEED
+from ugame.funkcje import check_is_planet
+from ugame.funkcje import check_ship_request
+from ugame.funkcje import get_ship_request
+from ugame.funkcje import get_speed
+from ugame.funkcje import get_zuzycie_deuteru
+from ugame.funkcje import getCzasLotu
+from ugame.funkcje import is_planet_owner
+from ugame.funkcje import odleglosc
 from ugame.klasy.BaseGame import Output
+from ugame.models import send_error_message
+from ugame.models.all import Fleets
+from ugame.models.all import Flota_p
+from ugame.models.all import Galaxy
 from ugame.topnav import topnav_site
-from ugame.models.all import Flota_p, Galaxy, Fleets
-from ugame.funkcje import get_speed, check_is_planet, is_planet_owner, get_ship_request, check_ship_request, \
-    odleglosc, getCzasLotu, get_zuzycie_deuteru
+
+from ...generic.cms_metaclass import CmsMetaclass
 
 
 class CMS(object):

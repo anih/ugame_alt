@@ -1,9 +1,19 @@
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
+
 from string import split
 
+from ugame.models.all import Badania
+from ugame.models.all import Buildings
+from ugame.models.all import Flota
+from ugame.models.all import Obrona
+from ugame.topnav import Output
+from ugame.topnav import topnav_site
+
 from ..generic.cms_metaclass import CmsMetaclass
-from ugame.topnav import topnav_site, Output
-from ugame.models.all import Buildings, Badania, Flota, Obrona
 
 
 class CMS(object):

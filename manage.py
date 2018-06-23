@@ -1,9 +1,14 @@
 #!/usr/bin/env python
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
+
 import os
 import sys
 
 if __name__ == "__main__":
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "settings")
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "settings_custom")
 
     from django.core.management import execute_from_command_line
 

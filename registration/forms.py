@@ -5,13 +5,19 @@ Forms and validation code for user registration.
 """
 
 
-from django import forms as forms
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 
-from django.utils.translation import ugettext as _
+import re
+
+from django import forms as forms
 from django.contrib.auth.models import User
+from django.utils.translation import ugettext as _
 
 from registration.models import RegistrationProfile
-import re
+
 alnum_re = re.compile(r'^\w+$')
 
 # I put this on all required fields, because it's easier to pick up

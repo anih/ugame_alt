@@ -1,11 +1,23 @@
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import
 from __future__ import division
-from string import split, find
+from __future__ import print_function
+from __future__ import unicode_literals
 
-from ..funkcje import lock_user_cron
-from ..cron_fun import helpers, raporty_fun
-from settings import GAME_SPEED, RES_SPEED, MNOZNIK_MAGAZYNOW, ILOSC_PLANET
+from string import find
+from string import split
+
+from settings import GAME_SPEED
+from settings import ILOSC_PLANET
+from settings import MNOZNIK_MAGAZYNOW
+from settings import RES_SPEED
 from ugame.models.all import Flota_p
+
+from ..cron_fun import helpers
+from ..cron_fun import raporty_fun
+from ..funkcje import lock_user_cron
+
+
 class Output():pass
 class FleetPrzeslij():
     def flota_przeslij_alien(self, flota, czas_teraz):
@@ -55,7 +67,6 @@ class FleetPrzeslij():
         if not galaktyka_end.planet.owner_id == self.user.pk:
             req_alien = Output()
             req_alien.user = flota.galaxy_end.planet.owner
-            print "atakkk-----------------------------------------------------------"
             from ..klasy.BaseGame import BaseGame
             GraAlienObj = BaseGame(req_alien, czas_teraz=flota.time - 1, cron=False)
             GraAlienObj.cron_function(flota.galaxy_end.planet_id, flota.time - 1)

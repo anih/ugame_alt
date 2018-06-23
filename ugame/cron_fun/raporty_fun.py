@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+from __future__ import absolute_import
 from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 
 import datetime
 from random import randint
@@ -100,7 +102,6 @@ def rap_atak(dane_raport, flota, wygrana):
             if randint(1, 5) == 3:
                 dane_raport['bez_technologii'] = 1
         tekst_agresor = render_to_string("ugame/reports_strings/atak.html", dane_raport)
-        # print tekst_agresor
     else:
         tekst_agresor = render_to_string("ugame/reports_strings/atak_przerwany.html")
 

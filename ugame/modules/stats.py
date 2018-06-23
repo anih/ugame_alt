@@ -1,12 +1,20 @@
 # -*- coding: utf-8 -*-
-from math import ceil
-from django.core.paginator import Paginator, InvalidPage
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 
-from ..generic.cms_metaclass import CmsMetaclass
+from math import ceil
+
+from django.core.paginator import InvalidPage
+from django.core.paginator import Paginator
+
 from settings import STATS_PERPAGE
 from ugame.klasy.BaseGame import Output
-from ugame.topnav import topnav_site
 from ugame.models.all import UserProfile
+from ugame.topnav import topnav_site
+
+from ..generic.cms_metaclass import CmsMetaclass
 
 
 class CMS(object):
@@ -34,9 +42,8 @@ class CMS(object):
                 punkty = punkty[0].points
 
                 start = ceil((UserProfile.objects.filter(points__gt=punkty).order_by("-points",
-                                                                                     "user").count() + 1) / STATS_PERPAGE)
-                print "staaaaaaaaaaaaaaaaaaart"
-                print start
+                                                                                     "user").count() + 1) /
+                             STATS_PERPAGE)
                 page = start + 1
         paginator = Paginator(UserProfile.objects.all().order_by("-points", "user"), STATS_PERPAGE,
                               allow_empty_first_page=True)

@@ -1,12 +1,23 @@
 # -*- coding: utf-8 -*-
-from ..generic.cms_metaclass import CmsMetaclass
-from ugame.topnav import topnav_site, Output
-from ugame.models.all import Buildings, Badania, Budynki_p, Badania_f
-from settings import GAME_SPEED
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
+
 from math import floor
 from string import split
 from time import time
+
+from settings import GAME_SPEED
+from ugame.models.all import Badania
+from ugame.models.all import Badania_f
+from ugame.models.all import Budynki_p
+from ugame.models.all import Buildings
+from ugame.topnav import Output
+from ugame.topnav import topnav_site
 from utils.jinja.filters import pretty_time
+
+from ..generic.cms_metaclass import CmsMetaclass
 
 
 class CMS(object):
@@ -104,7 +115,6 @@ class CMS(object):
 
         try:
             kol = Badania_f.objects.filter(user=self.game.user).order_by("time")
-            print Badania_f.objects.filter(user=1)
             kolejka = []
             czas_minus = time() - 1
             for i in kol:

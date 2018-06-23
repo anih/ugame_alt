@@ -1,11 +1,20 @@
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import
 from __future__ import division
-from time import localtime, strftime, time
-from string import split
+from __future__ import print_function
+from __future__ import unicode_literals
+
 from math import sqrt
+from string import split
+from time import localtime
+from time import strftime
+from time import time
 
 from django.contrib.auth.models import User
-from ugame.models.all import Planets, Galaxy
+
+from ugame.models.all import Galaxy
+from ugame.models.all import Planets
+
 
 class BaseHelper():
     current_planet_id = None
@@ -110,12 +119,6 @@ class BaseHelper():
 
     def get_all_planets(self):
         planety = list(Planets.objects.values_list('id', flat=True).select_for_update().filter(owner=self.user))
-        '''
-        for p in planety:
-            print "planeta:",p_id,planeta.kolej
-            self.get_planet(p.pk)
-        return self.user_planets
-        '''
         return planety
 
     def get_current_planet(self):

@@ -1,15 +1,29 @@
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
 from __future__ import unicode_literals
 
 from django.contrib.auth.models import User
-from django.http import Http404, HttpResponse, HttpResponseRedirect
-from django.template.defaultfilters import force_escape, striptags
+from django.http import Http404
+from django.http import HttpResponse
+from django.http import HttpResponseRedirect
+from django.template.defaultfilters import force_escape
+from django.template.defaultfilters import striptags
 
-from ugame.forms.forms import SojuszForm, UprawnieniaForm, ZaproszenieForm
-from ugame.models import send_error_message, send_info_message
-from ugame.models.all import Czlonkowie, Sojusz, SojuszChat, SojuszLog, Zaproszenia
+from ugame.forms.forms import SojuszForm
+from ugame.forms.forms import UprawnieniaForm
+from ugame.forms.forms import ZaproszenieForm
+from ugame.models import send_error_message
+from ugame.models import send_info_message
+from ugame.models.all import Czlonkowie
+from ugame.models.all import Sojusz
+from ugame.models.all import SojuszChat
+from ugame.models.all import SojuszLog
+from ugame.models.all import Zaproszenia
 from ugame.topnav import topnav_site
 from utils.jinja.filters import url
+
 from ..generic.cms_metaclass import CmsMetaclass
 
 
@@ -251,7 +265,6 @@ class CMS(object):
                         czlonek.delete()
 
         czlonkowie = sojusz_uzytkownika.czlonkowie_set.order_by("data")
-        print sojusz_uzytkownika.nazwa, self.game.soj_czy_zalozyciel()
         topnav = topnav_site(self.game)
         return {"topnav": topnav, "czlonkowie": czlonkowie, "self.game": self.game, }
 

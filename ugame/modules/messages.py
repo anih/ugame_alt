@@ -1,4 +1,9 @@
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
+
 import random
 import string
 from time import strftime
@@ -7,11 +12,16 @@ from django.contrib.auth.models import User
 from django.db.models import Q
 from django.http import HttpResponseRedirect
 
-from ..generic.cms_metaclass import CmsMetaclass
 from ugame.forms.forms import RaportujTemat
+from ugame.models.all import Tematy
+from ugame.models.all import TematyMod
+from ugame.models.all import UserProfile
+from ugame.models.all import Wiadomosci
+from ugame.models.all import WiadomosciMod
 from ugame.topnav import topnav_site
-from ugame.models.all import UserProfile, Tematy, TematyMod, WiadomosciMod, Wiadomosci
 from utils.jinja.filters import url
+
+from ..generic.cms_metaclass import CmsMetaclass
 
 
 class CMS(object):

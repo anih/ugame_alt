@@ -1,11 +1,22 @@
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
+
 import traceback
-from datetime import datetime
-from django.http import HttpResponse
+
 from django.conf import settings
 from django.core.urlresolvers import get_callable
-from jinja2 import FileSystemLoader, Environment, PackageLoader, ChoiceLoader, FileSystemBytecodeCache
+from django.http import HttpResponse
+from jinja2 import ChoiceLoader
+from jinja2 import Environment
+from jinja2 import FileSystemBytecodeCache
+from jinja2 import FileSystemLoader
+from jinja2 import PackageLoader
+
 from settings import URL
+
 # from django.template import RequestContext
 
 
@@ -51,11 +62,9 @@ for imp in global_tests:
 
 
 def render_from_string(str_template, context={}):
-
     code = env.compile(str_template, name="asdas.html", filename="asdas.html")
 
     template = env.template_class.from_code(env, code, env.globals)
-    print context
     return template.render(**context)
 
 
@@ -70,19 +79,16 @@ def render_to_string(filename, context={}):
 def jrender_response(filename, context={}, mimetype=default_mimetype):
     try:
         rendered = render_to_string(filename, context)
-        print datetime.now()
     except:
-        print traceback.format_exc()
+        print(traceback.format_exc())
         raise
     return HttpResponse(rendered, mimetype=mimetype)
 
 
 def jrender(request, filename, context={}, mimetype=default_mimetype):
     try:
-        print datetime.now()
         rendered = render_to_string(filename, context)
-        print datetime.now()
     except:
-        print traceback.format_exc()
+        print(traceback.format_exc())
         raise
     return HttpResponse(rendered, mimetype=mimetype)

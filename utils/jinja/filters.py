@@ -1,21 +1,33 @@
+# coding=utf-8
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
+
+import os
 # -*- coding: utf-8 -*-
-from math import floor, ceil
-from django import template
-from datetime import datetime
 # from django.template import Library
 import re
-import os
-from PIL import Image
-from PIL import ImageFilter
-from django.utils.encoding import force_unicode, iri_to_uri, force_text
-from django.core.urlresolvers import reverse
+from datetime import datetime
+from math import ceil
+from math import floor
+
+from django import template
 from django.conf import settings
-from kwotaslownie import kwotaslownie
-from django.utils.html import _js_escapes
+from django.core.urlresolvers import reverse
 from django.db.models import Model
 from django.template.defaultfilters import striptags
-from ugame.models import Smiles
+from django.utils.encoding import force_text
+from django.utils.encoding import force_unicode
+from django.utils.encoding import iri_to_uri
+from django.utils.html import _js_escapes
 from django.utils.safestring import mark_safe
+from PIL import Image
+from PIL import ImageFilter
+
+from ugame.models import Smiles
+
+from .kwotaslownie import kwotaslownie
 
 
 def emoticons(tekst):
@@ -44,7 +56,8 @@ def bbcodes(value):
         from postmarkup import render_bbcode
     except ImportError:
         if settings.DEBUG:
-            raise template.TemplateSyntaxError, "Error in {% bbcode %} filter: The Python postmarkup library isn't installed."
+            raise template.TemplateSyntaxError, "Error in {% bbcode %} filter: The Python postmarkup library isn't " \
+                                                "installed."
         return force_unicode(value)
     else:
         try:
@@ -52,6 +65,7 @@ def bbcodes(value):
         except:
             ret = 'Błąd składni'
         return ret
+
 
 def strip_bbcode(value):
     """
@@ -64,7 +78,8 @@ def strip_bbcode(value):
         from postmarkup import strip_bbcode
     except ImportError:
         if settings.DEBUG:
-            raise template.TemplateSyntaxError, "Error in {% bbcode %} filter: The Python postmarkup library isn't installed."
+            raise template.TemplateSyntaxError, "Error in {% bbcode %} filter: The Python postmarkup library isn't " \
+                                                "installed."
         return force_unicode(value)
     else:
         return mark_safe(strip_bbcode(value))
@@ -154,15 +169,15 @@ def pretty_time(seconds):
     min = int(seconds / 60 % 60)
     seg = int(seconds / 1 % 60)
     time = ''
-    if(day != 0):
+    if (day != 0):
         time += str(day) + ':'
-        if(hs < 10):
+        if (hs < 10):
             hs = "0" + str(hs)
-    if(min < 10):
+    if (min < 10):
         min = "0" + str(min)
     time += str(hs) + ':'
     time += str(min) + ':'
-    if(seg < 10):
+    if (seg < 10):
         seg = "0" + str(seg)
     time += str(seg) + ''
     return time
@@ -186,15 +201,14 @@ def thumbnail(file, size='200x200'):
     miniature_filename = os.path.join(settings.MEDIA_ROOT, miniature)
     miniature_url = os.path.join(miniature)
     # if the image wasn't already resized, resize it
-    if not os.path.exists(miniature_filename) or os.path.getmtime(miniature_filename) <= os.path.getmtime(os.path.join(settings.MEDIA_ROOT, file_name)):
-        print '>>> debug: resizing the image to the format %s!' % size
+    if not os.path.exists(miniature_filename) or os.path.getmtime(miniature_filename) <= os.path.getmtime(
+            os.path.join(settings.MEDIA_ROOT, file_name)):
         filename = os.path.join(settings.MEDIA_ROOT, file_name)
         if not os.path.exists(filename):
             return None
         image = Image.open(filename)
         size = image.size
         if not y > 0:
-            print "y nie podano"
             y = x * size[1] / size[0]
         image.thumbnail((x, y), Image.ANTIALIAS)  # generate a 200x200 thumbnail
         try:
@@ -213,13 +227,13 @@ def make_int(value):
 
 
 def tabularize(value, cols):
-        """modifies a list to become a list of lists
-        eg [1,2,3,4] becomes [[1,2], [3,4]] with an argument of 2"""
-        try:
-                cols = int(cols)
-        except ValueError:
-                return [value]
-        return map(*([None] + [value[i::cols] for i in range(0, cols)]))
+    """modifies a list to become a list of lists
+    eg [1,2,3,4] becomes [[1,2], [3,4]] with an argument of 2"""
+    try:
+        cols = int(cols)
+    except ValueError:
+        return [value]
+    return map(*([None] + [value[i::cols] for i in range(0, cols)]))
 
 
 def intcomma(value):
@@ -236,7 +250,6 @@ def intcomma(value):
 
 
 def url(*args, **kwargs):
-
     new_kwargs = {}
 
     if isinstance(args[0], dict):
@@ -286,7 +299,7 @@ def escapejs(value):
     return mark_safe(force_text(value).translate(_js_escapes))
 
 
-def floatformat(value, arg= -1):  # @IgnorePep8
+def floatformat(value, arg=-1):  # @IgnorePep8
     from django.template.defaultfilters import floatformat
     return floatformat(value, arg)
 

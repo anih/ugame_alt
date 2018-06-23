@@ -1,20 +1,26 @@
 # -*- coding: utf-8 -*-
-from functools import wraps
-from django.http import HttpResponseRedirect
-from django.utils import simplejson
-from django.core.mail import mail_admins
-from django.utils.translation import ugettext as _
-import sys
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 
-from django.contrib.auth import REDIRECT_FIELD_NAME,logout
+import os
+import re
+import sys
+from functools import wraps
+from urllib import quote
+
+from django import forms
+from django.contrib.auth import REDIRECT_FIELD_NAME
+from django.contrib.auth import logout
+from django.core.mail import mail_admins
+from django.db.models import Q
+from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.template import RequestContext
+from django.utils import simplejson
+from django.utils.translation import ugettext as _
 
-from urllib import quote
-import os
-from django import forms
-import re
-from django.db.models import Q
 
 def admin_required(view_func):
     """

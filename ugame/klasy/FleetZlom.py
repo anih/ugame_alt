@@ -1,10 +1,17 @@
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import
 from __future__ import division
-from string import split
-from math import floor
+from __future__ import print_function
+from __future__ import unicode_literals
 
-from ..cron_fun import helpers, raporty_fun
-from ugame.models.all import Fleets, Flota
+from math import floor
+from string import split
+
+from ugame.models.all import Fleets
+from ugame.models.all import Flota
+
+from ..cron_fun import helpers
+from ..cron_fun import raporty_fun
 
 
 class Output():
@@ -28,7 +35,6 @@ class FleetZlom():
             req_alien.user = fl.fleet_owner
             from ..klasy.BaseGame import BaseGame
             GraAlienWszesniejszeObj = BaseGame(req_alien, czas_teraz=flota.time, cron=False)
-            print "flota innnaa-----------------------------------------------------------"
             self.fleet_zlomuj(fl, GraAlienWszesniejszeObj, galaktyka)
             GraAlienWszesniejszeObj.save_all()
 
@@ -41,8 +47,6 @@ class FleetZlom():
         if planeta.owner and not planeta.owner_id == self.user.pk:
             req_alien = Output()
             req_alien.user = planeta.owner
-            print req_alien.user
-            print "zlom-----------------------------------------------------------"
             from ..klasy.BaseGame import BaseGame
             GraAlienObj = BaseGame(req_alien, czas_teraz=flota.time, cron=False)
             GraAlienObj.cron_function(planeta.pk, flota.time - 1)
@@ -60,7 +64,6 @@ class FleetZlom():
                 req_alien.user = fl.fleet_owner
                 from ..klasy.BaseGame import BaseGame
                 GraAlienWszesniejszeObj = BaseGame(req_alien, czas_teraz=flota.time, cron=False)
-                print "flota innnaa-----------------------------------------------------------"
                 self.fleet_zlomuj(fl, GraAlienWszesniejszeObj, galaktyka)
                 GraAlienWszesniejszeObj.save_all()
 
@@ -82,7 +85,6 @@ class FleetZlom():
                 pojemnosc_floty += statek.capacity * int(st[1])
 
         surowce_zdobyte = {}
-        print "pojemnosc zlomiarzy:", pojemnosc_floty
         if pojemnosc_floty > 0:
             metal_pojemnosc = floor(pojemnosc_floty / 2)
             if metal_pojemnosc < galaktyka.metal:

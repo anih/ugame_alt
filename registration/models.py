@@ -5,16 +5,22 @@ and an associated custom manager (``RegistrationManager``).
 """
 
 
-import datetime, random, re
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
+
+import datetime
+import random
+import re
 from hashlib import sha1 as sha
 
 from django.conf import settings
+from django.contrib.auth.models import User
+from django.contrib.sites.models import Site
 from django.db import models
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
-from django.contrib.auth.models import User
-from django.contrib.sites.models import Site
-
 
 SHA1_RE = re.compile('^[a-f0-9]{40}$')
 

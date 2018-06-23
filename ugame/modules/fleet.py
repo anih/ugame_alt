@@ -1,11 +1,22 @@
 # -*- coding: utf-8 -*-
-from ugame.models import send_info_message, send_error_message
-from ..generic.cms_metaclass import CmsMetaclass
-from ugame.topnav import topnav_site
-from ugame.models.all import Flota_p, Planets
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
+
 from django.core.paginator import Paginator
-from ugame.funkcje import zawroc, get_speed, get_flota
 from django.http import HttpResponseRedirect
+
+from ugame.funkcje import get_flota
+from ugame.funkcje import get_speed
+from ugame.funkcje import zawroc
+from ugame.models import send_error_message
+from ugame.models import send_info_message
+from ugame.models.all import Flota_p
+from ugame.models.all import Planets
+from ugame.topnav import topnav_site
+
+from ..generic.cms_metaclass import CmsMetaclass
 
 
 class CMS(object):

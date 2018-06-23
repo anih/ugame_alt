@@ -1,13 +1,19 @@
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
+
 from time import strftime
 
 from django.contrib.auth.models import User
 from django.db import connection
 
-from ..generic.cms_metaclass import CmsMetaclass
-from ugame.topnav import topnav_site
 import ugame.funkcje as fun
 from ugame.models.all import UserProfile
+from ugame.topnav import topnav_site
+
+from ..generic.cms_metaclass import CmsMetaclass
 
 
 class CMS(object):

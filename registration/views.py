@@ -3,22 +3,27 @@ Views which allow users to create and activate accounts.
 
 """
 
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 
-from django.conf import settings
-from django.http import HttpResponseRedirect
-from django.template import RequestContext
-from django.contrib.auth.models import User
-from django.contrib.auth import logout
-
-from game.models import Planets, Galaxy, UserProfile, GalaxyFree
-from settings import MAX_GALAXY, MAX_PLANETA, MAX_SYSTEM, MNOZNIK_MAGAZYNOW
 from random import randint
 from time import time
 
+from django.conf import settings
+from django.contrib.auth import logout
+from django.db import connection
+from django.http import HttpResponseRedirect
+
 from registration.forms import RegistrationForm
 from registration.models import RegistrationProfile
-from django.db import connection, backend, models
+from settings import MNOZNIK_MAGAZYNOW
+from ugame.models import Galaxy
+from ugame.models import Planets
+from ugame.models import UserProfile
 from utils.jinja.fun_jinja import jrender_response
+
 
 def logout_view(request):
     logout(request)
@@ -28,36 +33,38 @@ def logout_view(request):
 def registration_complete(request):
     return jrender_response("registration/registration_complete.html", {})
 
+
 def clean(request):
     from registration.models import RegistrationProfile
     del_users = RegistrationProfile.objects.delete_expired_users()
-    return jrender_response("clean.html", {"del":del_users})
+    return jrender_response("clean.html", {"del": del_users})
+
 
 def activate(request, activation_key, template_name='registration/activate.html'):
     """
     Activates a ``User``'s account, if their key is valid and hasn't
     expired.
-    
+
     By default, uses the template ``registration/activate.html``; to
     change this, pass the name of a template as the keyword argument
     ``template_name``.
-    
+
     Context:
-    
+
         account
             The ``User`` object corresponding to the account, if the
             activation was successful. ``False`` if the activation was
             not successful.
-    
+
         expiration_days
             The number of days for which activation keys stay valid
             after registration.
-    
+
     Template:
-    
+
         registration/activate.html or ``template_name`` keyword
         argument.
-    
+
     """
     activation_key = activation_key.lower()  # Normalize before trying anything with it.
 
@@ -67,23 +74,21 @@ def activate(request, activation_key, template_name='registration/activate.html'
         planet_name = tmp_activ[1]
     else:
         return jrender_response(template_name,
-                              { 'account': tmp_activ,
-                                'expiration_days': settings.ACCOUNT_ACTIVATION_DAYS })
+                                {'account': tmp_activ,
+                                 'expiration_days': settings.ACCOUNT_ACTIVATION_DAYS})
     test = Planets.objects.filter(owner=account).count()
     query = "lock table game_galaxy in ACCESS EXCLUSIVE MODE"
     cursor = connection.cursor()
     cursor.execute(query)
     if not test > 0:
-        print "brak planety"
 
         max = Galaxy.objects.filter(planet__owner__isnull=True, planet__nowa=True).order_by("-id")[0].pk
-        print "max" + str(max)
         rand = randint(1, int(max))
-        print "rand:" + str(rand)
         if Galaxy.objects.filter(id__gte=rand, planet__owner__isnull=True, planet__nowa=True).count() > 0:
             galaxy_obj = Galaxy.objects.filter(id__gte=rand, planet__owner__isnull=True, planet__nowa=True)[0]
         else:
-            galaxy_obj = Galaxy.objects.filter(id__lte=rand, planet__owner__isnull=True, planet__nowa=True).order_by("-id")[0]
+            galaxy_obj = \
+            Galaxy.objects.filter(id__lte=rand, planet__owner__isnull=True, planet__nowa=True).order_by("-id")[0]
 
         planeta = galaxy_obj.planet
         planet = galaxy_obj.field
@@ -114,8 +119,10 @@ def activate(request, activation_key, template_name='registration/activate.html'
             image = "eisplanet"
         planet_type = 1
         tmp = randint(1, 10)
-        if tmp < 10:image = image + "0" + str(tmp)
-        else: image = image + str(tmp)
+        if tmp < 10:
+            image = image + "0" + str(tmp)
+        else:
+            image = image + str(tmp)
 
         planeta.nowa = False
         planeta.last_update = time()
@@ -136,13 +143,15 @@ def activate(request, activation_key, template_name='registration/activate.html'
         planeta.owner = account
         planeta.save()
 
-        userprofile = UserProfile.objects.create(authlevel=0, sex="M", avatar="", sign="", current_planet=planeta, user_lastip='', onlinetime=0, noipcheck=0,
-                                                 points_tech=0, points=0, rank=0, new_message=0, ally_request_text='', user=account)
+        userprofile = UserProfile.objects.create(authlevel=0, sex="M", avatar="", sign="", current_planet=planeta,
+                                                 user_lastip='', onlinetime=0, noipcheck=0,
+                                                 points_tech=0, points=0, rank=0, new_message=0, ally_request_text='',
+                                                 user=account)
         # account.current_planet = planet_obj
         # account.save()
     return jrender_response(template_name,
-                              { 'account': account,
-                                'expiration_days': settings.ACCOUNT_ACTIVATION_DAYS })
+                            {'account': account,
+                             'expiration_days': settings.ACCOUNT_ACTIVATION_DAYS})
 
 
 def register(request, success_url='/accounts/register/complete/',
@@ -150,38 +159,38 @@ def register(request, success_url='/accounts/register/complete/',
              template_name='registration/registration_form.html'):
     """
     Allows a new user to register an account.
-    
+
     Following successful registration, redirects to either
     ``/accounts/register/complete/`` or, if supplied, the URL
     specified in the keyword argument ``success_url``.
-    
+
     By default, ``registration.forms.RegistrationForm`` will be used
     as the registration form; to change this, pass a different form
     class as the ``form_class`` keyword argument. The form class you
     specify must have a method ``save`` which will create and return
     the new ``User``, and that method must accept the keyword argument
     ``profile_callback`` (see below).
-    
+
     To enable creation of a site-specific user profile object for the
     new user, pass a function which will create the profile object as
     the keyword argument ``profile_callback``. See
     ``RegistrationManager.create_inactive_user`` in the file
     ``models.py`` for details on how to write this function.
-    
+
     By default, uses the template
     ``registration/registration_form.html``; to change this, pass the
     name of a template as the keyword argument ``template_name``.
-    
+
     Context:
-    
+
         form
             The registration form.
-    
+
     Template:
-    
+
         registration/registration_form.html or ``template_name``
         keyword argument.
-    
+
     """
     if request.method == 'POST':
         form = form_class(request.POST)
@@ -191,4 +200,4 @@ def register(request, success_url='/accounts/register/complete/',
     else:
         form = form_class()
     return jrender_response(template_name,
-                              { 'form': form })
+                            {'form': form})

@@ -1,8 +1,14 @@
 # -*- coding: utf-8 -*-
-from django.forms.models import ModelForm
-from django.core.urlresolvers import reverse
-from django.http import HttpResponseRedirect
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
+
 from django.contrib import messages
+from django.core.urlresolvers import reverse
+from django.forms.models import ModelForm
+from django.http import HttpResponseRedirect
+
 
 class CMSEditClass(object):
 
@@ -48,5 +54,3 @@ class CMSEditClass(object):
             instance.delete()
             messages.info(self.request, message="Dane zostały usunięte")
         return HttpResponseRedirect(reverse(self.urls.list))
-
-

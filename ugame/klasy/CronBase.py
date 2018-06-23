@@ -1,17 +1,30 @@
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import
 from __future__ import division
-from time import localtime, strftime, time
-from string import split
+from __future__ import print_function
+from __future__ import unicode_literals
+
 from math import sqrt
+from string import split
+from time import localtime
+from time import strftime
+from time import time
 
 from django.db.models import Q
-from ugame.models.all import Budynki_f, Badania_f, Flota_f, Obrona_f, Galaxy, \
-    Fleets
+
+from ugame.models.all import Badania_f
+from ugame.models.all import Budynki_f
+from ugame.models.all import Fleets
+from ugame.models.all import Flota_f
+from ugame.models.all import Galaxy
+from ugame.models.all import Obrona_f
+
+from ..klasy.CronSurowce import CronSurowce
+from ..klasy.FleetMain import FleetMain
+
 
 def sort_queue(x, y):
     return cmp(x.time, y.time)
-from ..klasy.CronSurowce import CronSurowce
-from ..klasy.FleetMain import FleetMain
 
 
 class CronBase(CronSurowce, FleetMain):

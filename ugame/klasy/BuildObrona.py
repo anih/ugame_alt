@@ -1,18 +1,32 @@
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import
 from __future__ import division
-from time import localtime, strftime, time
+from __future__ import print_function
+from __future__ import unicode_literals
+
+from math import floor
+from math import sqrt
 from string import split
-from math import sqrt, floor
+from time import localtime
+from time import strftime
+from time import time
 
 from django.contrib.auth.models import User
+from django.db import backend
+from django.db import connection
+from django.db import models
 
+from settings import GAME_SPEED
+from settings import RES_SPEED
 from ugame.models import send_error_message
+from ugame.models.all import Buildings
+from ugame.models.all import Obrona_f
+from ugame.models.all import Obrona_p
+
+from ..cron_fun import helpers
 from ..klasy.BaseHelper import BaseHelper
 from ..klasy.CronBase import CronBase
-from ..cron_fun import helpers
-from settings import GAME_SPEED, RES_SPEED
-from django.db import connection, backend, models
-from ugame.models.all import Buildings, Obrona_f, Obrona_p
+
 
 class Output:pass
 
@@ -114,7 +128,6 @@ class BuildObrona():
         # if True:
             id_budynek = int(id_budynek)
             max_level = self.cache_obj.get_obrona_f(planeta.pk, id_budynek)
-            print max_level
         except:
             max_level = None
 

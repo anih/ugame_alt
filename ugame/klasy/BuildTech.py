@@ -1,18 +1,32 @@
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import
 from __future__ import division
-from time import localtime, strftime, time
+from __future__ import print_function
+from __future__ import unicode_literals
+
+from math import floor
+from math import sqrt
 from string import split
-from math import sqrt, floor
+from time import localtime
+from time import strftime
+from time import time
 
 from django.contrib.auth.models import User
+from django.db import backend
+from django.db import connection
+from django.db import models
 
+from settings import GAME_SPEED
+from settings import RES_SPEED
+from ugame.models.all import Badania
+from ugame.models.all import Badania_f
+from ugame.models.all import Budynki_p
+from ugame.models.all import Buildings
+
+from ..cron_fun import helpers
 from ..klasy.BaseHelper import BaseHelper
 from ..klasy.CronBase import CronBase
-from ..cron_fun import helpers
-from settings import GAME_SPEED, RES_SPEED
 
-from django.db import connection, backend, models
-from ugame.models.all import Badania, Buildings, Budynki_p, Badania_f
 
 class Output:pass
 

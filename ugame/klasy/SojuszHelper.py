@@ -1,11 +1,21 @@
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import
 from __future__ import division
-from time import localtime, strftime, time
-from string import split
+from __future__ import print_function
+from __future__ import unicode_literals
+
 from math import sqrt
+from string import split
+from time import localtime
+from time import strftime
+from time import time
 
 from django.contrib.auth.models import User
-from ugame.models.all import Zaproszenia, Czlonkowie, Sojusz
+
+from ugame.models.all import Czlonkowie
+from ugame.models.all import Sojusz
+from ugame.models.all import Zaproszenia
+
 
 class Output():pass
 

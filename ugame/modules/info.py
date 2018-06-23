@@ -1,13 +1,23 @@
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
+
 from math import floor
 
 from django.shortcuts import get_object_or_404
 
-from ..generic.cms_metaclass import CmsMetaclass
 from settings import MNOZNIK_MAGAZYNOW
 from ugame.klasy.BaseGame import Output
+from ugame.models.all import Badania
+from ugame.models.all import Budynki_p
+from ugame.models.all import Buildings
+from ugame.models.all import Flota
+from ugame.models.all import Obrona
 from ugame.topnav import topnav_site
-from ugame.models.all import Buildings, Budynki_p, Badania, Obrona, Flota
+
+from ..generic.cms_metaclass import CmsMetaclass
 
 
 class CMS(object):

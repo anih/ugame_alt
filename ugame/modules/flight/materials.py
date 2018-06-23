@@ -1,17 +1,28 @@
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import
 from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 
 from time import time
 
 from django.http import HttpResponseRedirect
 
 from settings import FLEET_SPEED
-from ugame.funkcje import check_is_planet, check_ship_request, check_surowce, getCzasLotu, get_ship_request, \
-    get_speed, \
-    get_zuzycie_deuteru, odleglosc
+from ugame.funkcje import check_is_planet
+from ugame.funkcje import check_ship_request
+from ugame.funkcje import check_surowce
+from ugame.funkcje import get_ship_request
+from ugame.funkcje import get_speed
+from ugame.funkcje import get_zuzycie_deuteru
+from ugame.funkcje import getCzasLotu
+from ugame.funkcje import odleglosc
 from ugame.generic.cms_metaclass import CmsMetaclass
 from ugame.klasy.BaseGame import Output
-from ugame.models import Fleets, Flota_p, Galaxy, send_error_message
+from ugame.models import Fleets
+from ugame.models import Flota_p
+from ugame.models import Galaxy
+from ugame.models import send_error_message
 from ugame.topnav import topnav_site
 
 

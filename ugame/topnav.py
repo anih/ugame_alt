@@ -1,14 +1,21 @@
+from __future__ import absolute_import
 from __future__ import division
-from django.shortcuts import get_object_or_404
-from main.models import Config
-from ugame.models import Planets
-from ugame.models import Lang
-from ugame.models import Galaxy
-from ugame.models import Fleets
-from django.contrib.auth.models import User
+from __future__ import print_function
+from __future__ import unicode_literals
+
+import datetime
 from math import floor
 from time import localtime
-import datetime
+
+from django.contrib.auth.models import User
+from django.shortcuts import get_object_or_404
+
+from main.models import Config
+from ugame.models import Fleets
+from ugame.models import Galaxy
+from ugame.models import Lang
+from ugame.models import Planets
+
 
 class Output:pass
 

@@ -1,20 +1,35 @@
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import
 from __future__ import division
-from math import pow, ceil, floor
-from string import split, find
+from __future__ import print_function
+from __future__ import unicode_literals
+
+from math import ceil
+from math import floor
+from math import pow
 from random import randint
+from string import find
+from string import split
 from time import time
 
-from ..cron_fun import helpers, raporty_fun
-from settings import GAME_SPEED, RES_SPEED, MNOZNIK_MAGAZYNOW, ILOSC_PLANET
-from ugame.models.all import Fleets, Galaxy, Planets, Flota
+from settings import GAME_SPEED
+from settings import ILOSC_PLANET
+from settings import MNOZNIK_MAGAZYNOW
+from settings import RES_SPEED
+from ugame.models.all import Fleets
+from ugame.models.all import Flota
+from ugame.models.all import Galaxy
+from ugame.models.all import Planets
+
+from ..cron_fun import helpers
+from ..cron_fun import raporty_fun
+
 
 class Output():pass
 class FleetKolonizuj():
     def fleet_kolonizacja_alien(self, flota, czas_teraz):
         req_alien = Output()
         req_alien.user = flota.fleet_owner
-        print "atakkk-----------------------------------------------------------"
         from ..klasy.BaseGame import BaseGame
         GraAlienObj = BaseGame(req_alien, czas_teraz=flota.time, cron=False)
 
@@ -37,7 +52,6 @@ class FleetKolonizuj():
 
             req_alien = Output()
             req_alien.user = flota_kolonizacyjna.fleet_owner
-            print "atakkk-----------------------------------------------------------"
             from ..klasy.BaseGame import BaseGame
             GraAlienObj = BaseGame(req_alien, czas_teraz=flota_kolonizacyjna.time, cron=False)
             self.fleet_kolonizuj(flota_kolonizacyjna, GraAlienObj)
@@ -54,7 +68,6 @@ class FleetKolonizuj():
             kolej_planeta = Planets.objects.filter(owner=GraObj.user).order_by("-kolej")[0].kolej + 1
         except:
             kolej_planeta = 1
-            print "kurwaaaaaaaaaaaaaaaaaaaaaaaaaaaaa jak to sie moglo spierdolic"
             raise
         planeta.kolej = kolej_planeta
         if not planeta.owner:

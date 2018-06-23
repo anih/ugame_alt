@@ -1,6 +1,13 @@
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
+
 import inspect
+
 from cms.generic.functions import sortfunc
+
 
 class CMSMenuClass( object ):
     """
@@ -41,4 +48,3 @@ class CMSMenuClass( object ):
                     data["url"] = getattr( self.urls, name.replace( "site_", "" ) )
                     self.leftmenu.append( data )
         self.leftmenu.sort( cmp = sortfunc )
-

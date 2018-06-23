@@ -1,6 +1,15 @@
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
+
 from django.conf.urls.defaults import *  # @UnusedWildImport
-from settings import MEDIA_ROOT, MEDIA_STATIC_ROOT
+
+from settings import MEDIA_ROOT
+from settings import MEDIA_STATIC_ROOT
+from ugame.cms_controller import controller as ugame_control
+
 urlpatterns = patterns('',
 
      (r'^cms/', include('cms.urls')),
@@ -9,7 +18,6 @@ urlpatterns = patterns('',
 
 )
 
-from ugame.cms_controller import controller as ugame_control
 ugame_control.get_modules()
 urlpatterns += ugame_control.get_urls()
 

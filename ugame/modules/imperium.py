@@ -1,11 +1,21 @@
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
+
 from django.http import HttpResponseRedirect
 
 from ugame.models import send_error_message
-from ..generic.cms_metaclass import CmsMetaclass
-from ugame.topnav import topnav_site, Output
-from ugame.models.all import Buildings, Badania, Flota, Obrona
+from ugame.models.all import Badania
+from ugame.models.all import Buildings
+from ugame.models.all import Flota
+from ugame.models.all import Obrona
+from ugame.topnav import Output
+from ugame.topnav import topnav_site
 from utils.jinja.filters import url
+
+from ..generic.cms_metaclass import CmsMetaclass
 
 
 class CMS(object):

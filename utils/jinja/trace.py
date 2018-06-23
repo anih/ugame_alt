@@ -1,9 +1,15 @@
-import traceback
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
+
 import datetime
-from hashlib import md5 #@UnresolvedImport
-from django.http import Http404
+import traceback
+from hashlib import md5  # @UnresolvedImport
 
 from django.db import connection
+from django.http import Http404
+
 
 class TraceMiddleware( object ):
     def process_exception( self, request, exception ):

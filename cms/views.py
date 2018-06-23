@@ -1,12 +1,24 @@
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
+
 import datetime
 
-from django.contrib.auth import get_backends, login, logout
+from django.contrib.auth import get_backends
+from django.contrib.auth import login
+from django.contrib.auth import logout
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 
 from cms.funkcje import admin_required
-from ugame.models import Bany, TematyMod, User, WiadomosciMod, send_error_message, send_info_message
+from ugame.models import Bany
+from ugame.models import TematyMod
+from ugame.models import User
+from ugame.models import WiadomosciMod
+from ugame.models import send_error_message
+from ugame.models import send_info_message
 from utils.jinja.fun_jinja import jrender
 
 
@@ -14,7 +26,7 @@ from utils.jinja.fun_jinja import jrender
 def login_other(request, user_id):
     user = request.user
     if user.is_superuser:
-        print user.username
+        print(user.username)
         for backend in get_backends():
             try:
                 backend2 = backend

@@ -1,24 +1,39 @@
 # -*- coding: utf-8 -*-
-from math import ceil
-from urllib import quote, urlencode
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
+
+import base64
 from inspect import getargspec
-from django.core.urlresolvers import RegexURLPattern, reverse, NoReverseMatch
+from math import ceil
+from types import FunctionType
+from urllib import quote
+from urllib import urlencode
+
+from django.contrib import messages
+from django.contrib.auth import REDIRECT_FIELD_NAME
+from django.contrib.auth.models import AnonymousUser
+from django.contrib.auth.models import User
+from django.contrib.messages.api import get_messages
+from django.core.urlresolvers import NoReverseMatch
+from django.core.urlresolvers import RegexURLPattern
+from django.core.urlresolvers import reverse
+from django.http import HttpResponseRedirect
+from django.utils.encoding import iri_to_uri
+
 from settings import STATS_PERPAGE
 from ugame.klasy.BaseGame import BaseGame
 from ugame.models import UserProfile
-from utils.jinja.fun_jinja import jrender
-from django.http import HttpResponseRedirect
-from django.contrib.auth import REDIRECT_FIELD_NAME
-from ..generic.constants import MODULE_AUTH_SESSION_KEY
-from django.contrib.auth.models import AnonymousUser, User
-from utils.eback.functions import sortfunc, return_json
-from types import FunctionType
-from django.contrib.messages.api import get_messages
-import base64
-from utils.eback.jsonwraper import dumps, loads
+from utils.eback.functions import return_json
+from utils.eback.functions import sortfunc
+from utils.eback.jsonwraper import dumps
+from utils.eback.jsonwraper import loads
 from utils.eback.threadlocal import set_user
-from django.contrib import messages
-from django.utils.encoding import iri_to_uri
+from utils.jinja.fun_jinja import jrender
+
+from ..generic.constants import MODULE_AUTH_SESSION_KEY
+
 registry = []
 urlpatterns = []
 

@@ -1,9 +1,18 @@
 # -*- coding: utf-8 -*-
-from ..generic.cms_metaclass import CmsMetaclass
-from ugame.topnav import topnav_site, Output
-from settings import MAX_GALAXY, MAX_SYSTEM, MAX_PLANETA
-from ugame.models.all import Galaxy
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
+
+from settings import MAX_GALAXY
+from settings import MAX_PLANETA
+from settings import MAX_SYSTEM
 from ugame import models
+from ugame.models.all import Galaxy
+from ugame.topnav import Output
+from ugame.topnav import topnav_site
+
+from ..generic.cms_metaclass import CmsMetaclass
 
 
 class CMS(object):
@@ -15,9 +24,7 @@ class CMS(object):
 
     def site_main(self, galaxy=None, system=None):
         current_planet = self.game.get_current_planet()
-        print current_planet.pk
         current_galaxy = self.game.get_galaxy(current_planet.galaxy_id)
-        print current_galaxy.planet.pk
 
         try:
             galaxy = int(galaxy)
@@ -59,8 +66,8 @@ class CMS(object):
         topnav = topnav_site(self.game)
         jsbody = 'onmousemove="tt_Mousemove(event);"'
         return {
-                "jsbody": jsbody, "topnav": topnav,
-                "fields": fields, "dane": dane, "models": models,
-                }
+            "jsbody": jsbody, "topnav": topnav,
+            "fields": fields, "dane": dane, "models": models,
+        }
 
     site_main.url = "^ugame/galaxy/$"

@@ -1,11 +1,17 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
+
 from django.http import HttpResponseRedirect
 
-from ..generic.cms_metaclass import CmsMetaclass
-from ugame.topnav import topnav_site
 from ugame.models.all import Raporty
+from ugame.topnav import topnav_site
 from utils.jinja.filters import url
+
+from ..generic.cms_metaclass import CmsMetaclass
 
 
 class CMS(object):

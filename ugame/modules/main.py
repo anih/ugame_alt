@@ -1,7 +1,14 @@
 # -*- coding: utf-8 -*-
-from ..generic.cms_metaclass import CmsMetaclass
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
+
 from django.http import HttpResponseRedirect
+
 from utils.jinja.filters import url
+
+from ..generic.cms_metaclass import CmsMetaclass
 
 
 class CMS(object):
@@ -13,7 +20,6 @@ class CMS(object):
 
     def site_main(self):
         if self.user and self.user.is_active:
-            print self.user
             return HttpResponseRedirect(url(self.all_urls.game.main))
         return {}
     site_main.url = "^$"

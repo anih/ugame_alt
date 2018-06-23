@@ -1,19 +1,25 @@
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import
 from __future__ import division
+from __future__ import print_function
 from __future__ import unicode_literals
 
-from math import ceil, floor
+from math import ceil
+from math import floor
 
 from django.core.paginator import Paginator
 from django.http import HttpResponseRedirect
 
-from ugame.forms.forms import RynekForm, RynekSearch
+from ugame.forms.forms import RynekForm
+from ugame.forms.forms import RynekSearch
 from ugame.funkcje import Output
 from ugame.klasy.BaseGame import BaseGame
-from ugame.models import send_error_message, send_info_message
+from ugame.models import send_error_message
+from ugame.models import send_info_message
 from ugame.models.all import Rynek
 from ugame.topnav import topnav_site
 from utils.jinja.filters import url
+
 from ..generic.cms_metaclass import CmsMetaclass
 
 dlugie_nazwy = {
@@ -77,11 +83,9 @@ class CMS(object):
             self.request.session['handlarz_sort_surowiec_na'] = sortowanie_surowiec_na
 
         if sortowanie_surowiec_co:
-            print "zmiana co na:", sortowanie_surowiec_co
             rynek = rynek.filter(co=sortowanie_surowiec_co)
 
         if sortowanie_surowiec_na:
-            print "zmiana na na:", sortowanie_surowiec_na
             rynek = rynek.filter(na=sortowanie_surowiec_na)
 
         paginator = Paginator(rynek, 20, allow_empty_first_page=True)
@@ -260,7 +264,7 @@ class CMS(object):
 
         if rynek_obj.na == 'M':
             if ile_oddajemy > current_planet.metal:
-                message="Nie masz tyle surowców żeby to kupić"
+                message = "Nie masz tyle surowców żeby to kupić"
                 send_error_message(user=self.game.user, message=message)
                 GraAlienObject.save_all()
                 return HttpResponseRedirect(url(self.urls.main))
@@ -269,7 +273,7 @@ class CMS(object):
 
         elif rynek_obj.na == 'K':
             if ile_oddajemy > current_planet.crystal:
-                message="Nie masz tyle surowców żeby to kupić"
+                message = "Nie masz tyle surowców żeby to kupić"
                 send_error_message(user=self.game.user, message=message)
                 GraAlienObject.save_all()
                 return HttpResponseRedirect(url(self.urls.main))
@@ -278,7 +282,7 @@ class CMS(object):
 
         elif rynek_obj.na == 'D':
             if ile_oddajemy > current_planet.deuter:
-                message="Nie masz tyle surowców żeby to kupić"
+                message = "Nie masz tyle surowców żeby to kupić"
                 send_error_message(user=self.game.user, message=message)
                 GraAlienObject.save_all()
                 return HttpResponseRedirect(url(self.urls.main))
@@ -323,30 +327,30 @@ class CMS(object):
         poprawne_dane = True
 
         if 'co_sprzedaje' not in self.request.POST:
-            message="Musisz wybrać co sprzedajesz"
+            message = "Musisz wybrać co sprzedajesz"
             send_error_message(user=self.game.user, message=message)
             poprawne_dane = False
         else:
             co_sprzedaje = self.request.POST['co_sprzedaje']
             if co_sprzedaje not in ('m', 'k', 'd'):
-                message="Musisz wybrać co sprzedajesz"
+                message = "Musisz wybrać co sprzedajesz"
                 send_error_message(user=self.game.user, message=message)
                 poprawne_dane = False
 
         if 'sprzedaje_na' not in self.request.POST:
-            message="Musisz wybrać co kupujesz"
+            message = "Musisz wybrać co kupujesz"
             send_error_message(user=self.game.user, message=message)
             poprawne_dane = False
         else:
             sprzedaje_na = self.request.POST['sprzedaje_na']
             if sprzedaje_na not in ('m', 'k', 'd'):
-                message="Musisz wybrać co kupujesz"
+                message = "Musisz wybrać co kupujesz"
                 send_error_message(user=self.game.user, message=message)
                 poprawne_dane = False
         try:
             ilosc_sprzedawanego = int(self.request.POST['ilosc_sprzedawanego'])
         except:
-            message="Musisz podać poprawną ilość sprzedawanego surowca"
+            message = "Musisz podać poprawną ilość sprzedawanego surowca"
             send_error_message(user=self.game.user, message=message)
             poprawne_dane = False
 
@@ -360,11 +364,11 @@ class CMS(object):
                 ile_mam = planeta.deuter
 
             if ilosc_sprzedawanego < 0:
-                message="Ilość sprzedawanego musi być większa od 0"
+                message = "Ilość sprzedawanego musi być większa od 0"
                 send_error_message(user=self.game.user, message=message)
                 poprawne_dane = False
             elif ile_mam < ilosc_sprzedawanego:
-                message="Nie masz tyle surowca"
+                message = "Nie masz tyle surowca"
                 send_error_message(user=self.game.user, message=message)
                 poprawne_dane = False
             else:
@@ -382,7 +386,7 @@ class CMS(object):
                     planeta.crystal += ile_kupilismy
                 elif sprzedaje_na == 'd':
                     planeta.deuter += ile_kupilismy
-                message="Kupiłeś %s %s za %s %s" % (
+                message = "Kupiłeś %s %s za %s %s" % (
                     int(ile_kupilismy), dlugie_nazwy[sprzedaje_na], ilosc_sprzedawanego, dlugie_nazwy[co_sprzedaje])
                 send_info_message(user=self.game.user, message=message)
         return HttpResponseRedirect(url(self.urls.dealer))

@@ -1,12 +1,17 @@
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import
 from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 
 from datetime import datetime
 
 from django.contrib import messages
 from django.contrib.auth.models import User
 
-from ugame.models.all import Planets, UserProfile
+from ugame.models.all import Planets
+from ugame.models.all import UserProfile
+
 from ..klasy.BaseHelper import BaseHelper
 from ..klasy.BuildBuilding import BuildBuilding
 from ..klasy.BuildFleet import BuildFleet
@@ -47,12 +52,6 @@ class BaseGame(BaseHelper, CronBase, BuildBuilding, BuildFleet, BuildObrona, Bui
         if cron:
             self.cron_function(self.current_planet_id, czas_teraz)
 
-    def __del__(self):
-        if not self.czy_zapis:
-            print self.user.username, self.request.path, \
-                "    " \
-                "aaaaaaaaaaaaaaaaaaaaaaadddddddddddddddddddddddaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-
     def save_all(self):
         self.czy_zapis = True
         self.user.save(force_update=True)
@@ -62,7 +61,6 @@ class BaseGame(BaseHelper, CronBase, BuildBuilding, BuildFleet, BuildObrona, Bui
             self.user_planets[p].save(force_update=True)
         for p in self.galaktyki:
             self.galaktyki[p].save(force_update=True)
-        print "2saveeeeeeeeeeeeeeeeeeeee all"
         self.cache_obj.save_all()
         # from django.db.transaction import rollback
         # rollback()
@@ -81,13 +79,9 @@ class BaseGame(BaseHelper, CronBase, BuildBuilding, BuildFleet, BuildObrona, Bui
     def lock_user(self):
         self.user = User.objects.select_for_update().get(pk=self.view.user.id)
         self.userprofile = UserProfile.objects.select_for_update().get(user=self.user)
-        try:
-            if self.request:
-                self.user.last_login = datetime.now()
-        except:
-            print "----------------------------------------------------aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" \
-                  "------------------------------------"
-            pass
+        if self.request:
+            self.user.last_login = datetime.now()
+
         self.change_planet()
         if Planets.objects.filter(pk=self.userprofile.current_planet_id).count() > 0:
             self.current_planet_id = self.userprofile.current_planet_id

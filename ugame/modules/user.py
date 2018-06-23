@@ -1,16 +1,22 @@
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
+
 from datetime import datetime
 
-from django.http import HttpResponseRedirect
-from django.core.urlresolvers import reverse
+from django.contrib import messages
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import AnonymousUser
-from django.contrib import messages
+from django.core.urlresolvers import reverse
+from django.http import HttpResponseRedirect
+
+from ugame.forms.forms import UserCreationForm
+from utils.jinja.filters import url
 
 from ..generic.cms_metaclass import CmsMetaclass
 from ..generic.constants import MODULE_AUTH_SESSION_KEY
-from ugame.forms.forms import UserCreationForm
-from utils.jinja.filters import url
 
 
 class CMS(object):

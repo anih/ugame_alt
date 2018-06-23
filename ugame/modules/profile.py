@@ -1,19 +1,30 @@
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
+
 import datetime
 import random
 from hashlib import sha1
 
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
 from django.http import HttpResponseRedirect
 
-from settings import DEFAULT_FROM_EMAIL, URL
-from ugame.forms.forms import ChangePassMail, UserprofileForm
+from settings import URL
+from ugame.forms.forms import ChangePassMail
+from ugame.forms.forms import UserprofileForm
 from ugame.models import send_info_message
-from ugame.models.all import StareMaile, UserProfile, ZmianaHasla, ZmianaMaila
+from ugame.models.all import StareMaile
+from ugame.models.all import UserProfile
+from ugame.models.all import ZmianaHasla
+from ugame.models.all import ZmianaMaila
 from ugame.topnav import topnav_site
 from utils.jinja.filters import url
 from utils.jinja.fun_jinja import render_to_string
+
 from ..generic.cms_metaclass import CmsMetaclass
 
 
@@ -56,7 +67,6 @@ class CMS(object):
             if self.request.method == 'POST':
 
                 form_change = ChangePassMail(self.request.POST)
-                print form_change.errors
                 if form_change.is_valid():
                     pass1 = form_change.cleaned_data['password1']
                     pass2 = form_change.cleaned_data['password2']
@@ -69,7 +79,7 @@ class CMS(object):
                                                    {'link': '%s/change_pass/%s' % (URL, activation_key)})
                         subject = 'Link z %s' % (URL,)
                         subject = ''.join(subject.splitlines())
-                        send_mail(subject, message, DEFAULT_FROM_EMAIL, [self.game.user.email])
+                        send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [self.game.user.email])
                         message="Żeby dokończyć zmianę hasła, odbierz pocztę z emaila i kliknij w link"
                         send_info_message(user=self.game.user, message=message)
 
@@ -81,7 +91,7 @@ class CMS(object):
                                                    {'link': '%s/change_email/%s' % (URL, activation_key)})
                         subject = 'Link z %s' % (URL,)
                         subject = ''.join(subject.splitlines())
-                        send_mail(subject, message, DEFAULT_FROM_EMAIL, [self.game.user.email])
+                        send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [self.game.user.email])
                         message="Żeby dokończyć zmianę emaila, odbierz pocztę ze starego emaila i kliknij w link"
                         send_info_message(user=self.game.user, message=message)
                 form = UserprofileForm(self.request.POST, self.request.FILES, instance=self.game.userprofile)
@@ -90,7 +100,6 @@ class CMS(object):
                     if not obj.avatar:
                         obj.avatar = self.game.userprofile.avatar
                     obj.save()  # tu tak ma byc
-                    print "udalo sie2 :)"
                     return HttpResponseRedirect(url(self.url))
             else:
                 form = UserprofileForm(instance=self.game.userprofile)

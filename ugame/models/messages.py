@@ -1,11 +1,14 @@
 # -*- coding:utf-8 -*-
 from __future__ import absolute_import
+from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
 from django.contrib.auth.models import User
-from django.contrib.messages import INFO, constants
-from django.contrib.messages.storage.base import BaseStorage, LEVEL_TAGS
+from django.contrib.messages import INFO
+from django.contrib.messages import constants
+from django.contrib.messages.storage.base import LEVEL_TAGS
+from django.contrib.messages.storage.base import BaseStorage
 from django.db import models
 from django.utils.encoding import force_text
 
@@ -82,4 +85,3 @@ def send_error_message(user, message, extra_tags=''):
         message=message,
         extra_tags=extra_tags,
     )
-

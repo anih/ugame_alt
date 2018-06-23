@@ -1,6 +1,12 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
+
 from django.contrib.auth.models import AnonymousUser
-from ugame.models import IPAccess
 from django.db import reset_queries
+
+from ugame.models import IPAccess
 
 
 class IPAccessMiddleware(object):
@@ -10,8 +16,6 @@ class IPAccessMiddleware(object):
             try:
                     if not IPAccess.objects.filter(ip=remoteip, user=request.user).count() > 0:
                         try:
-                            print request.user.username
-                            print request.META['HTTP_FORWARD_X']
                             ip_wewn = request.META['HTTP_FORWARD_X']
                             ip_wewn = ip_wewn.split(",")[0].strip()
                         except:

@@ -1,10 +1,13 @@
 # Django settings for ugame project.
+from __future__ import absolute_import
 from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
+
 import os
 import sys
 
 DIR_ROOT = os.path.dirname(__file__)
-os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
 MEDIA_ROOT = os.path.join(DIR_ROOT, 'media/')
 MEDIA_STATIC_ROOT = os.path.join(DIR_ROOT, 'media_static/')
 MEDIA_ROOT_HIDDEN = os.path.join(DIR_ROOT, 'media_hidden/')
@@ -74,9 +77,8 @@ SECRET_KEY = 'm6mc8qq0(ewy5*6e^ai4a&&9m4qzesy!5e3ndk-n*t(s1ns#8y'
 # LOGIN_REDIRECT_URL = 'http://'
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.load_template_source',
-    'django.template.loaders.app_directories.load_template_source',
-#     'django.template.loaders.eggs.load_template_source',
+    'django.template.loaders.filesystem.Loader',
+    'django.template.loaders.app_directories.Loader',
 )
 
 
@@ -103,7 +105,7 @@ TEMPLATE_DIRS = (
                                   DIR_ROOT + "/jtemplates/",
  )
 
-TEMPLATE_CONTEXT_PROCESSORS = ("django.core.context_processors.request", "django.core.context_processors.auth")
+TEMPLATE_CONTEXT_PROCESSORS = ("django.core.context_processors.request", "django.contrib.auth.context_processors.auth",)
 
 ACCOUNT_ACTIVATION_DAYS = 7
 
@@ -140,6 +142,3 @@ JINJA_FILTERS = (
 
 JINJA_TESTS = (
 	      )
-
-from settings_custom import *  # @UnusedWildImport
-import utils.eback.monkey  # @UnusedImport

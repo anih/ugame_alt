@@ -1,13 +1,23 @@
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
+
 from math import floor
 from string import split
 from time import time
 
-from ..generic.cms_metaclass import CmsMetaclass
-from ugame.topnav import topnav_site, Output
-from ugame.models.all import Buildings, Flota, Flota_p, Flota_f
 from settings import GAME_SPEED
+from ugame.models.all import Buildings
+from ugame.models.all import Flota
+from ugame.models.all import Flota_f
+from ugame.models.all import Flota_p
+from ugame.topnav import Output
+from ugame.topnav import topnav_site
 from utils.jinja.filters import pretty_time
+
+from ..generic.cms_metaclass import CmsMetaclass
 
 
 class CMS(object):
@@ -90,8 +100,6 @@ class CMS(object):
                 budynek = split(zal, ",")
                 if len(budynek) > 1:
                     if (int(budynek[1]) > int(self.game.bud_get_level(current_planet, budynek[0]))):
-                        print budynek[0]
-                        print self.game.bud_get_level(current_planet, budynek[0])
                         flota.niedodawaj = 1
                         break
             if not flota.niedodawaj:
